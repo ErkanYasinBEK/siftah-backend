@@ -1,0 +1,44 @@
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. "index.html" Yazarsa Sil, Ana Sayfaya Yönlendir (İstediğin Özellik)
+RewriteCond %{THE_REQUEST} ^.*/index\.html [NC]
+RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
+
+# 3. Özel İsimlendirmeler (Maskeleme)
+RewriteRule ^hakkimizda$ about.html [L]
+RewriteRule ^urunler$ products.html [L]
+RewriteRule ^magazalar$ all-seller.html [L]
+RewriteRule ^giris$ buyer-login.html [L]
+RewriteRule ^kayit-ol$ buyer-register.html [L]
+RewriteRule ^satici-girisi$ seller-login.html [L]
+RewriteRule ^satici-basvuru$ seller-register.html [L]
+RewriteRule ^satis-yap$ buyer-seller.html [L]
+RewriteRule ^hesabim$ buyer-dashboard.html [L]
+RewriteRule ^satici-paneli$ seller-dashboard.html [L]
+RewriteRule ^yonetim$ admin-dashboard.html [L]
+RewriteRule ^urun-detay$ seller-detail.html [L]
+RewriteRule ^magaza-detay$ seller-store.html [L]
+RewriteRule ^favorilerim$ favorites.html [L]
+RewriteRule ^mesajlarim$ messages.html [L]
+RewriteRule ^hikayemiz$ siftah-story.html [L]
+RewriteRule ^hikaye-detay$ story-detail.html [L]
+RewriteRule ^yardim$ sss.html [L]
+RewriteRule ^vizyon-misyon$ vision-mission.html [L]
+RewriteRule ^gizlilik-sozlesmesi$ gizlilik-politikasi.html [L]
+RewriteRule ^iade-kosullari$ iade-politikasi.html [L]
+RewriteRule ^premium-uyelik$ premium.html [L]
+
+# 4. .html Uzantısını Gizle (Adres çubuğunda görünmesin)
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R=301]
+
+# 5. Uzantısız Girilenleri .html Dosyasına Bağla
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# 6. Hata Sayfası
+ErrorDocument 404 /404.html
