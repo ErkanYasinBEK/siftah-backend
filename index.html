@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siftah | Ana Sayfa</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <link rel="stylesheet" href="nav-footer.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <style>
+      /* --- PREMIUM BİLDİRİM (TOAST) CSS --- */
+      #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .siftah-toast {
+        min-width: 300px;
+        background: #fff;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-left: 5px solid #333;
+        animation: slideInRight 0.3s ease forwards;
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      .siftah-toast.success {
+        border-left-color: #27ae60;
+      }
+      .siftah-toast.error {
+        border-left-color: #e74c3c;
+      }
+      .siftah-toast.info {
+        border-left-color: #3498db;
+      }
+      .siftah-toast i {
+        font-size: 1.5rem;
+      }
+      .siftah-toast.success i {
+        color: #27ae60;
+      }
+      .siftah-toast.error i {
+        color: #e74c3c;
+      }
+      .siftah-toast.info i {
+        color: #3498db;
+      }
+      .toast-content {
+        display: flex;
+        flex-direction: column;
+      }
+      .toast-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #333;
+      }
+      .toast-msg {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 2px;
+      }
+
+      @keyframes slideInRight {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+      .btn-mini-fav i.fa-solid {
+        color: #e11d48;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <div id="toast-container"></div>
+
+    <div id="heroCarousel" class="carousel slide hero-slider" data-bs-ride="carousel" data-bs-interval="150000000">
+      
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+      </div>
+
+      <div class="carousel-inner">
+        
+        <div class="carousel-item active">
+          <section class="hero-slide-content default-hero">
+            <div class="container h-100">
+              <div class="row h-100 align-items-center">
+                <div class="col-lg-6 hero-text-area">
+                  <span class="badge-new">Yeni Nesil Ticaret</span>
+                  <h1>Vitrinini Aç,<br />Hikayeni Paylaş.</h1>
+                  <p>Binlerce alıcıya komisyonsuz ulaşmanın en şık yolu. Siftah ile ticaretin geleceğine adım at.</p>
+                  <div class="hero-buttons">
+                    <a href="satis-yap.html" class="btn-primary">Hemen Başla</a>
+                    <a href="hakkimizda.html" class="btn-secondary">Daha Fazla Bilgi</a>
+                  </div>
+                </div>
+                <div class="col-lg-6 hero-img-area">
+                  <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop" alt="Hero">
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="carousel-item">
+          <section class="hero-slide-content premium-products-hero">
+            <div class="container h-100">
+              <div class="slide-header text-center">
+                <span class="badge-gold"><i class="fa-solid fa-fire"></i> Son 24 Saat</span>
+                <h2>Vitrinin Yeni Yıldızları</h2>
+              </div>
+              <div class="hero-grid" id="heroLatestProducts">
+                <div class="loading-placeholder">Yükleniyor...</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="carousel-item">
+          <section class="hero-slide-content sellers-hero-slide">
+             <div class="container h-100">
+              <div class="row align-items-center h-100">
+                <div class="col-lg-4 text-white mt-2 mb-2">
+                  <span class="badge-white">Aramıza Katılanlar</span>
+                  <h2 class="display-5 fw-bold mt-2">Yeni Atölyeler Keşfet</h2>
+                  <p class="opacity-75 mt-1 mb-1">Her gün büyüyen ailemizin en yeni üyeleriyle tanışın.</p>
+                  <a href="#feedContainer" class="btn btn-light rounded-pill px-4 fw-bold">Tümünü Gör</a>
+                </div>
+                <div class="col-lg-8">
+                   <div class="hero-sellers-grid" id="heroLatestSellers">
+                      <div class="loading-placeholder">Yükleniyor...</div>
+                   </div>
+                </div>
+              </div>
+             </div>
+          </section>
+        </div>
+      </div>
+      </div>
+
+    <section
+      class="hero-section seller-hero"
+      id="sellerHero"
+      style="display: none"
+    >
+      <div class="hero-content">
+        <h1>İşler Nasıl Gidiyor? 🚀</h1>
+        <p>Panelini ziyaret et, yeni ürünler ekle veya vitrinini özelleştir.</p>
+        <a href="satici-paneli.html" class="btn-primary">Mağaza Paneli</a>
+      </div>
+    </section>
+
+    <main class="feed-container" id="feedContainer">
+      <div class="loading-feed">
+        <i class="fa-solid fa-circle-notch fa-spin"></i> Vitrinler Yükleniyor...
+      </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const API_BASE_URL = "http://localhost:5000";
+
+        function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null" || dbPath === "") {
+            return "https://placehold.co/300x300?text=Resim+Yok"; 
+        }
+
+        let cleanPath = String(dbPath).replace(/\\/g, "/");
+
+        if (cleanPath.startsWith("http")) return cleanPath;
+
+        if (cleanPath.includes("uploads/")) {
+            cleanPath = cleanPath.substring(cleanPath.indexOf("uploads/"));
+        } else if (cleanPath.startsWith("/")) {
+            cleanPath = cleanPath.substring(1);
+        }
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+
+        let icon = "fa-circle-check";
+        if (type === "error") icon = "fa-circle-exclamation";
+        if (type === "info") icon = "fa-circle-info";
+
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        toast.innerHTML = `
+            <i class="fa-solid ${icon}"></i>
+            <div class="toast-content">
+                <span class="toast-title">${title}</span>
+                <span class="toast-msg">${message}</span>
+            </div>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.animation = "fadeOut 0.3s ease forwards";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        loadHeroSliderData();
+        const user = JSON.parse(localStorage.getItem("user"));
+        const token = localStorage.getItem("token");
+
+        if (user && user.role === "seller") {
+          const heroCarousel = document.getElementById("heroCarousel"); 
+          const sh = document.getElementById("sellerHero");
+          if (heroCarousel) heroCarousel.style.display = "none";
+          if (sh) sh.style.display = "flex";
+        }
+
+        const feedContainer = document.getElementById("feedContainer");
+
+        let favoriteIds = new Set();
+        if (token) {
+          try {
+            const favRes = await fetch(
+              `${API_BASE_URL}/api/favorites/my-favorites`,
+              {
+                headers: { Authorization: "Bearer " + token },
+              }
+            );
+            if (favRes.ok) {
+              const favData = await favRes.json();
+              favData.forEach((f) => {
+                if (f.productId) favoriteIds.add(f.productId);
+                else if (f.Product && f.Product.id)
+                  favoriteIds.add(f.Product.id);
+              });
+            }
+          } catch (err) {
+            console.log("Favoriler çekilemedi:", err);
+          }
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/users/sellers/public`
+          );
+
+          if (!response.ok) throw new Error("Veri alınamadı");
+
+          const sellers = await response.json();
+
+          sellers.sort((a, b) => {
+            const countA =
+              a.badges && Array.isArray(a.badges) ? a.badges.length : 0;
+            const countB =
+              b.badges && Array.isArray(b.badges) ? b.badges.length : 0;
+            return countB - countA;
+          });
+
+          feedContainer.innerHTML = "";
+
+          if (sellers.length === 0) {
+            feedContainer.innerHTML =
+              '<p style="text-align:center; padding:50px; color:#888;">Henüz vitrin yok.</p>';
+            return;
+          }
+
+          let allFeedHtml = "";
+
+          sellers.forEach((seller) => {
+            const avatarName = seller.brandName || seller.name || "Siftah";
+            let logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              avatarName
+            )}&background=0f172a&color=fff&bold=true`;
+
+            if (
+              seller.logoUrl &&
+              seller.logoUrl !== "null" &&
+              seller.logoUrl !== ""
+            ) {
+              const fixedUrl = fixImageUrl(seller.logoUrl);
+              if (fixedUrl) logoUrl = fixedUrl;
+            } else if (seller.profileImage) {
+              // Logo yoksa profil resmini dene
+              const fixedProfile = fixImageUrl(seller.profileImage);
+              if (fixedProfile) logoUrl = fixedProfile;
+            }
+
+            let badgesHtml = "";
+
+            if (
+              seller.badges &&
+              Array.isArray(seller.badges) &&
+              seller.badges.length > 0
+            ) {
+              seller.badges.forEach((badge) => {
+                const label = badge.label || badge;
+                const colorName = badge.color || "blue";
+                const colorClass = `badge-${colorName}`;
+                const iconClass = badge.icon || "fa-solid fa-medal";
+                badgesHtml += `<span class="mini-badge ${colorClass}" title="${label}">
+                                <i class="${iconClass}"></i>
+                               </span>`;
+              });
+            }
+            const ratingValue = seller.averageRating
+              ? parseFloat(seller.averageRating).toFixed(1)
+              : "Yeni";
+            let productsHtml = "";
+            let products = seller.Products || [];
+
+            const totalProductCount =
+              seller.productCount !== undefined
+                ? seller.productCount
+                : products.length;
+
+            products = products.filter((prod) => {
+              if (prod.isApproved === undefined) return false;
+
+              return (
+                prod.isApproved === true ||
+                prod.isApproved === 1 ||
+                prod.isApproved === "true"
+              );
+            });
+
+            products.sort((a, b) => {
+                if (Boolean(a.isShowcase) === Boolean(b.isShowcase)) {
+                    return b.id - a.id; 
+                }
+                return Boolean(b.isShowcase) - Boolean(a.isShowcase);
+            });
+
+            products = products.slice(0, 4);
+
+            if (products.length > 0) {
+              products.forEach((prod) => {
+                let imgUrl = "https://placehold.co/300x300?text=Resim+Yok";
+
+                if (
+                  prod.images &&
+                  Array.isArray(prod.images) &&
+                  prod.images.length > 0
+                ) {
+                  const firstImage = prod.images[0]; 
+                  if (firstImage.startsWith("http")) {
+                    imgUrl = firstImage;
+                  } else {
+                    const cleanPath = firstImage
+                      .replace(/\\/g, "/")
+                      .replace(/^\/+/, "");
+                    imgUrl = `${API_BASE_URL}/${cleanPath}`;
+                  }
+                }
+
+                let priceDisplay = `${prod.price}₺`;
+                if (prod.discountPrice) {
+                  priceDisplay = `
+                    <span class="old-price">${prod.price}₺</span> 
+                    <span class="new-price">${prod.discountPrice}₺</span>
+                  `;
+                }
+
+                const isFav = favoriteIds.has(prod.id);
+                const heartClass = isFav ? "fa-solid" : "fa-regular";
+                const heartStyle = isFav ? 'style="color: #e11d48;"' : "";
+
+                productsHtml += `
+                    <a href="urun-detay.html?id=${prod.id}" class="mini-product-card">
+                        <div class="btn-mini-fav" onclick="toggleMiniFavorite(event, ${prod.id})">
+                            <i class="${heartClass} fa-heart" ${heartStyle}></i>
+                        </div>
+                        <div class="mini-card-img">
+                            <img src="${imgUrl}" alt="${prod.title}" loading="lazy">
+                        </div>
+                        <div class="mini-card-info">
+                            <h4>${prod.title}</h4>
+                            <div class="mini-card-price">${priceDisplay}</div>
+                        </div>
+                    </a>
+                `;
+              });
+            } else {
+              productsHtml =
+                '<div class="no-products">Bu mağazada henüz ürün yok.</div>';
+            }
+
+            const feedItem = `
+                <div class="feed-item">
+                    <div class="seller-profile-card">
+                        
+                        <div class="profile-header-premium">
+                            <div class="profile-avatar-wrapper">
+                                <img src="${logoUrl}" class="brand-logo-premium">
+                                <div class="verified-badge" title="Onaylı Satıcı"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="profile-info-premium">
+                                <h3 class="brand-name"><a href="magaza-detay.html?sellerId=${
+                                  seller.id
+                                }">${seller.brandName || seller.name}</a></h3>
+                                <div class="seller-personal-name"><i class="fa-regular fa-user"></i> ${
+                                  seller.name
+                                } ${seller.surname || ""}</div>
+                                <div class="store-rating">
+                                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i> 
+                                    <span>${
+                                      seller.averageRating
+                                        ? parseFloat(seller.averageRating).toFixed(1)
+                                        : "Yeni"
+                                    }</span> 
+                                    <span class="rating-label">Mağaza Puanı</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="profile-badges-area">
+                            <div class="area-title">Mağaza Rozetleri</div>
+                            <div class="badges-grid">
+                                ${
+                                  badgesHtml ||
+                                  '<span class="no-badge">Henüz rozet yok</span>'
+                                }
+                            </div>
+                        </div>
+
+                        <div class="profile-footer-premium">
+                            <div class="product-stat">
+                                <strong>${totalProductCount}</strong>
+                                <span>Ürün</span>
+                            </div>
+                            <a href="magaza-detay.html?sellerId=${
+                              seller.id
+                            }" class="btn-visit-premium">
+                                Mağazayı İncele
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="seller-products-showcase">
+                        ${productsHtml}
+                    </div>
+                </div>
+            `;
+            allFeedHtml += feedItem;
+          });
+          feedContainer.innerHTML = allFeedHtml;
+        } catch (error) {
+          console.error(error);
+          feedContainer.innerHTML =
+            '<p style="text-align:center; padding:30px;">Vitrinler yüklenemedi. Sunucuyu kontrol edin.</p>';
+        }
+      });
+
+      async function loadHeroSliderData() {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/products/public`); 
+          
+          if(res.ok) {
+            const data = await res.json();
+            const latestProducts = data.sort((a,b) => b.id - a.id).slice(0, 4);
+            
+            const container = document.getElementById("heroLatestProducts");
+            if(container) {
+                container.innerHTML = "";
+                
+                if (latestProducts.length === 0) {
+                    container.innerHTML = '<p style="color:white; grid-column:1/-1; text-align:center;">Henüz ürün eklenmemiş.</p>';
+                }
+
+                latestProducts.forEach(prod => {
+                    let img = "https://placehold.co/200x200?text=Urun";
+                    if(prod.images && Array.isArray(prod.images) && prod.images.length > 0) {
+                        img = fixImageUrl(prod.images[0]);
+                    } else if(prod.image) {
+                        img = fixImageUrl(prod.image);
+                    }
+
+                    const html = `
+                        <a href="urun-detay.html?id=${prod.id}" class="hero-product-card">
+                            <img src="${img}" class="hero-prod-img" alt="${prod.title}">
+                            <div class="hero-prod-title">${prod.title}</div>
+                            <div class="hero-prod-price">${prod.price}₺</div>
+                        </a>
+                    `;
+                    container.innerHTML += html;
+                });
+            }
+          } else {
+              console.error("Ürünler çekilemedi: 500 Hatası");
+              document.getElementById("heroLatestProducts").innerHTML = '<p style="color:white;">Veri alınamadı.</p>';
+          }
+        } catch(e) { 
+            console.error("Slider ürün hatası:", e); 
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/users/sellers/public`);
+            if(res.ok) {
+                const data = await res.json();
+                const latestSellers = data.sort((a,b) => b.id - a.id).slice(0, 4);
+                
+                const container = document.getElementById("heroLatestSellers");
+                if(container) {
+                    container.innerHTML = "";
+                    latestSellers.forEach(seller => {
+                        let img = `https://ui-avatars.com/api/?name=${seller.name}&background=random`;
+                        if(seller.logoUrl) img = fixImageUrl(seller.logoUrl);
+                        else if(seller.profileImage) img = fixImageUrl(seller.profileImage);
+
+                        const html = `
+                            <a href="magaza-detay.html?sellerId=${seller.id}" class="hero-seller-card" style="text-decoration:none;">
+                                <img src="${img}" class="hero-seller-img">
+                                <div style="text-align:center;">
+                                    <div style="font-weight:700; color:#333;">${seller.brandName || seller.name}</div>
+                                    <div style="font-size:0.8rem; color:#666;">${seller.category || 'Genel Satıcı'}</div>
+                                </div>
+                            </a>
+                        `;
+                        container.innerHTML += html;
+                    });
+                }
+            }
+        } catch(e) { console.error("Slider satıcı hatası:", e); }
+      }
+
+      loadHeroSliderData();
+
+      async function toggleMiniFavorite(event, productId) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          showToast(
+            "error",
+            "Giriş Yapmalısın",
+            "Favorilere eklemek için giriş yap."
+          );
+          setTimeout(() => (window.location.href = "giris.html"), 2000);
+          return;
+        }
+
+        const icon = event.currentTarget.querySelector("i");
+
+        try {
+          const res = await fetch(
+            "http://localhost:5000/api/favorites/toggle",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ productId }),
+            }
+          );
+
+          const data = await res.json();
+
+          if (data.success) {
+            if (data.action === "added") {
+              icon.classList.remove("fa-regular");
+              icon.classList.add("fa-solid");
+              icon.style.color = "#e11d48";
+              showToast("success", "Eklendi", "Ürün favorilere eklendi ❤️");
+            } else {
+              icon.classList.remove("fa-solid");
+              icon.classList.add("fa-regular");
+              icon.style.color = "";
+              showToast("info", "Çıkarıldı", "Favorilerden çıkarıldı 💔");
+            }
+          } else {
+            showToast("error", "Hata", "İşlem yapılamadı.");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("error", "Bağlantı Hatası", "Sunucuya ulaşılamadı.");
+        }
+      }
+    </script>
+  </body>
+</html>

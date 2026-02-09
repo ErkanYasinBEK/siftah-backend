@@ -1,0 +1,70 @@
+<nav class="navbar">
+  <div class="container nav-inner">
+    
+    <a href="/" class="nav-logo">
+      <img src="/images/navbar/logo.png" alt="Siftah Logo" />
+      <h1>siftah</h1>
+    </a>
+
+    <ul class="nav-links">
+      <li>
+        <a href="magazalar.html"><i class="fas fa-store"></i> Markalar</a>
+      </li>
+      <li>
+        <a href="hikayemiz.html"><i class="fa-solid fa-book-open"></i> Siftah Hikayeleri</a>
+      </li>
+      <li>
+        <a href="urunler.html"><i class="fa-solid fa-bag-shopping"></i> Ürünler</a>
+      </li>
+      <li>
+        <a href="hakkimizda.html"><i class="fa-solid fa-clover"></i> Hakkımızda</a>
+      </li>
+    </ul>
+
+    <div class="nav-actions">
+      
+      <a href="favorilerim.html" class="icon-btn" title="Favorilerim">
+        <i class="fa-regular fa-heart"></i>
+      </a>
+      <a href="mesajlarim.html" class="icon-btn" title="Mesajlarım">
+        <i class="fa-regular fa-message"></i>
+      </a>
+
+      <div class="dropdown" id="guest-menu">
+        <button class="icon-btn"><i class="fa-regular fa-user"></i></button>
+        <ul class="dropdown-menu">
+          <li><a href="giris.html" class="dropdown-item"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</a></li>
+          <li><a href="kayit-ol.html" class="dropdown-item"><i class="fa-solid fa-user-plus"></i> Üye Ol</a></li>
+        </ul>
+      </div>
+
+      <div class="dropdown user-logged-in" id="user-menu" style="display: none">
+        <button class="user-profile-btn">
+          <img src="https://ui-avatars.com/api/?name=Kullanici&background=0099D2&color=fff" alt="User" class="nav-user-img" />
+          <span class="nav-user-name">Hesabım</span>
+          <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="satici-paneli.html" class="dropdown-item"><i class="fa-solid fa-gauge"></i> Panelim</a></li>
+          <li><a href="profile.html" class="dropdown-item"><i class="fa-solid fa-user-pen"></i> Profilim</a></li>
+          <!-- <li><a href="orders.html" class="dropdown-item"><i class="fa-solid fa-box"></i> Siparişlerim</a></li>
+          <li><a href="mesajlarim.html" class="dropdown-item"><i class="fa-regular fa-envelope"></i> Mesajlarım</a></li> -->
+          <hr class="dropdown-divider" />
+          <li><button class="dropdown-item text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button></li>
+        </ul>
+      </div>
+
+      <button class="menu-toggle" aria-label="Menüyü Aç"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+
+  <div class="mobile-menu-overlay"></div>
+  <div class="mobile-menu">
+    <div class="mobile-menu-header">
+        <h3>Menü</h3>
+        <button class="menu-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <ul class="mobile-links">
+        </ul>
+  </div>
+</nav>

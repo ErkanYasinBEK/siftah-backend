@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siftah - Vitrinleri Keşfet</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <link rel="stylesheet" href="nav-footer.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8f9fa;
+      }
+      .product-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1),
+          0 10px 20px -6px rgba(0, 0, 0, 0.05);
+      }
+
+      .custom-checkbox:checked {
+        background-color: #0f172a;
+        border-color: #0f172a;
+      }
+
+      /* --- SATICI ROZETİ (Responsive Ayarlı) --- */
+      .seller-badge {
+        position: absolute;
+        bottom: 8px; /* Mobilde biraz daha aşağıda */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.98);
+        padding: 4px 10px; /* Mobilde daha sıkı padding */
+        border-radius: 99px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 5;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        transition: transform 0.2s, width 0.2s;
+        max-width: 92%;
+        overflow: hidden;
+      }
+
+      /* Masaüstünde biraz daha geniş */
+      @media (min-width: 768px) {
+        .seller-badge {
+          bottom: 12px;
+          padding: 6px 12px;
+        }
+      }
+
+      .product-card:hover .seller-badge {
+        transform: translateX(-50%) scale(1.05);
+      }
+
+      .seller-badge img,
+      .seller-badge div {
+        width: 18px; /* Mobilde küçük */
+        height: 18px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #eee;
+        flex-shrink: 0;
+      }
+
+      @media (min-width: 768px) {
+        .seller-badge img,
+        .seller-badge div {
+          width: 22px;
+          height: 22px;
+        }
+      }
+
+      .seller-badge span {
+        font-size: 0.65rem; /* Mobilde küçük font */
+        font-weight: 700;
+        color: #1f2937;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+
+      @media (min-width: 768px) {
+        .seller-badge span {
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div id="navbar"></div>
+    <div id="toast-container"></div>
+
+    <div class="bg-white border-b border-gray-100">
+      <div class="container mx-auto px-4 py-8 md:py-10 max-w-7xl">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+          <div class="mt-16">
+            <span
+              class="text-blue-600 font-semibold text-xs md:text-sm tracking-wider uppercase mb-1 block"
+              >Premium Pazar Yeri</span
+            >
+            <h1
+              class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight"
+            >
+              Vitrinleri Keşfet
+            </h1>
+            <p class="text-gray-500 mt-2 text-sm md:text-lg">
+              Özenle seçilmiş binlerce ürün ve güvenilir satıcılar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-6 md:py-10 max-w-7xl">
+      <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
+        <aside class="w-full lg:w-1/4 flex-shrink-0">
+          <div class="sticky top-24 space-y-4 md:space-y-6">
+            <div
+              class="bg-white p-1 rounded-2xl shadow-sm border border-gray-100 relative group transition-all duration-300 focus-within:shadow-md focus-within:border-slate-300"
+            >
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-slate-800 transition-colors"
+              ></i>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Ürün ara..."
+                class="w-full pl-12 pr-4 py-3 md:py-4 rounded-xl border-none bg-transparent text-sm font-medium text-gray-700 placeholder-gray-400 focus:ring-0"
+              />
+            </div>
+
+            <div
+              class="bg-white p-5 md:p-6 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] border border-gray-100"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-lg text-gray-900">Filtreler</h3>
+                <button
+                  id="clear-filters"
+                  class="text-xs font-semibold text-red-500 hover:text-red-700 transition cursor-pointer"
+                >
+                  Temizle
+                </button>
+              </div>
+
+              <div class="border-b border-gray-100 pb-6 mb-6">
+                <h4
+                  class="font-semibold text-gray-800 mb-4 text-xs uppercase tracking-wider text-slate-500"
+                >
+                  Kategoriler
+                </h4>
+                <div class="space-y-3" id="category-container">
+                  <p class="text-sm text-gray-400">Yükleniyor...</p>
+                </div>
+              </div>
+
+              <div class="border-b border-gray-100 pb-6 mb-6">
+                <h4
+                  class="font-semibold text-gray-800 mb-4 text-xs uppercase tracking-wider text-slate-500"
+                >
+                  Fiyat Aralığı
+                </h4>
+                <div class="flex items-center gap-3">
+                  <div class="relative w-full">
+                    <span
+                      class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+                      >₺</span
+                    >
+                    <input
+                      type="number"
+                      id="min-price"
+                      placeholder="Min"
+                      class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition"
+                    />
+                  </div>
+                  <span class="text-gray-400">-</span>
+                  <div class="relative w-full">
+                    <span
+                      class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+                      >₺</span
+                    >
+                    <input
+                      type="number"
+                      id="max-price"
+                      placeholder="Max"
+                      class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  class="font-semibold text-gray-800 mb-4 text-xs uppercase tracking-wider text-slate-500"
+                >
+                  Özellikler
+                </h4>
+                <div class="space-y-4">
+                  <label
+                    class="flex items-center justify-between cursor-pointer group"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition"
+                      >
+                        <i class="fa-solid fa-box-open text-xs"></i>
+                      </div>
+                      <span class="text-sm font-medium text-gray-700"
+                        >Sadece Stoktakiler</span
+                      >
+                    </div>
+                    <input
+                      type="checkbox"
+                      id="filter-stock"
+                      class="custom-checkbox w-5 h-5 rounded border-gray-300 text-slate-900 focus:ring-slate-900 transition"
+                    />
+                  </label>
+                  <label
+                    class="flex items-center justify-between cursor-pointer group"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-100 transition"
+                      >
+                        <i class="fa-solid fa-percent text-xs"></i>
+                      </div>
+                      <span class="text-sm font-medium text-gray-700"
+                        >İndirimli Ürünler</span
+                      >
+                    </div>
+                    <input
+                      type="checkbox"
+                      id="filter-discount"
+                      class="custom-checkbox w-5 h-5 rounded border-gray-300 text-slate-900 focus:ring-slate-900 transition"
+                    />
+                  </label>
+                  <label
+                    class="flex items-center justify-between cursor-pointer group"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition"
+                      >
+                        <i class="fa-solid fa-shield-halved text-xs"></i>
+                      </div>
+                      <span class="text-sm font-medium text-gray-700"
+                        >Onaylı Satıcılar</span
+                      >
+                    </div>
+                    <input
+                      type="checkbox"
+                      id="filter-verified"
+                      class="custom-checkbox w-5 h-5 rounded border-gray-300 text-slate-900 focus:ring-slate-900 transition"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-900 rounded-2xl p-6 text-white text-center shadow-lg overflow-hidden relative mt-6 border border-slate-700"
+            >
+              <div
+                class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"
+              ></div>
+              <i class="fa-solid fa-gem text-3xl mb-3 text-yellow-400"></i>
+              <h4 class="font-bold text-lg mb-1">Premium Üyelik</h4>
+              <p class="text-slate-300 text-xs mb-4 leading-relaxed">
+                Sınırsız listeleme ve özel vitrin ayrıcalıkları için hemen geçiş
+                yapın.
+              </p>
+              <a
+                href="premium-uyelik.html"
+                class="bg-white text-slate-900 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-100 transition w-full block text-center decoration-0 shadow-md"
+                >Detayları Gör</a
+              >
+            </div>
+          </div>
+        </aside>
+
+        <main class="w-full lg:w-3/4">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-center mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm"
+          >
+            <p class="text-gray-500 text-sm font-medium">
+              <span id="product-count" class="text-gray-900 font-bold">0</span>
+              ürün listeleniyor
+            </p>
+            <div class="flex items-center gap-3 mt-3 sm:mt-0 w-full sm:w-auto">
+              <label
+                for="sort-select"
+                class="text-sm text-gray-500 whitespace-nowrap"
+                >Sırala:</label
+              >
+              <select
+                id="sort-select"
+                class="w-full sm:w-48 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:border-slate-900 cursor-pointer"
+              >
+                <option value="random">Önerilen (Rasgele)</option>
+                <option value="price-asc">Fiyat: Artan</option>
+                <option value="price-desc">Fiyat: Azalan</option>
+                <option value="newest">En Yeni Eklenenler</option>
+              </select>
+            </div>
+          </div>
+
+          <div
+            id="product-grid"
+            class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
+          >
+            <div class="animate-pulse bg-white rounded-3xl h-48 md:h-96"></div>
+            <div class="animate-pulse bg-white rounded-3xl h-48 md:h-96"></div>
+            <div class="animate-pulse bg-white rounded-3xl h-48 md:h-96"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <footer id="footer"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+      let allProductsData = [];
+      let userFavoriteIds = new Set();
+
+      function getToken() {
+        return localStorage.getItem("token");
+      }
+
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null") return null;
+        let cleanPath = dbPath.replace(/\\/g, "/");
+        if (cleanPath.startsWith("http")) return cleanPath;
+        const uploadsIndex = cleanPath.toLowerCase().indexOf("uploads/");
+        if (uploadsIndex !== -1) {
+          cleanPath = cleanPath.substring(uploadsIndex);
+        } else {
+          if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
+          if (!cleanPath.startsWith("uploads"))
+            cleanPath = "uploads/" + cleanPath;
+        }
+        if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      // --- TOAST BİLDİRİM SİSTEMİ (DÜZELTİLDİ) ---
+      /* --- YENİ NESİL ANİMASYONLU BİLDİRİM (TOAST) --- */
+      function showToast(type, message) {
+        // 1. Container Kontrolü (Yoksa oluştur, varsa stilini garantiye al)
+        let container = document.getElementById("toast-container");
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "toast-container";
+            document.body.appendChild(container);
+        }
+        
+        // Container'ın sağ üstte ve üst üste dizilecek şekilde durmasını sağla
+        container.style.cssText = `
+            position: fixed; 
+            top: 25px; 
+            right: 25px; 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px;
+            pointer-events: none; /* Arkadaki butonlara tıklanabilsin */
+        `;
+
+        // 2. Bildirim Kutusunu Oluştur
+        const toast = document.createElement("div");
+        toast.style.pointerEvents = "auto"; // Bildirimin kendisine tıklanabilsin
+
+        // Renk ve İkon Ayarları
+        const isSuccess = type === "success";
+        const bgColor = isSuccess ? "#10b981" : "#ef4444"; // Emerald Yeşil / Kırmızı
+        const iconClass = isSuccess ? "fa-circle-check" : "fa-circle-exclamation";
+        const titleText = isSuccess ? "Başarılı" : "Hata";
+
+        // 3. CSS Stilleri (Başlangıçta sağda gizli)
+        toast.style.cssText = `
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            color: #1f2937;
+            padding: 16px 22px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12), 0 5px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 320px;
+            border-left: 5px solid ${bgColor};
+            font-family: 'Plus Jakarta Sans', sans-serif;            
+            /* ANİMASYON BAŞLANGIÇ DURUMU (Sağda ve görünmez) */
+            transform: translateX(150%);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Yaylanma efekti */
+        `;
+
+        // 4. İçerik
+        toast.innerHTML = `
+            <i class="fa-solid ${iconClass}" style="color:${bgColor}; font-size: 1.6rem;"></i>
+            <div>
+                <strong style="display:block; font-size:1rem; margin-bottom:3px; color:#111;">${titleText}</strong>
+                <span style="font-size:0.9rem; color:#555; line-height:1.4;">${message}</span>
+            </div>
+        `;
+
+        // 5. DOM'a Ekle
+        container.appendChild(toast);
+
+        // 6. Animasyonu Tetikle (Giriş)
+        // Tarayıcının elementi çizmesini bekleyip sonra sınıfı ekliyoruz
+        requestAnimationFrame(() => {
+            // Reflow tetiklemek için (bazı tarayıcılarda gerekir)
+            toast.offsetHeight; 
+            toast.style.transform = "translateX(0)";
+            toast.style.opacity = "1";
+        });
+
+        // 7. Çıkış Animasyonu ve Silme
+        setTimeout(() => {
+            // Çıkış animasyonunu başlat
+            toast.style.transform = "translateX(150%)";
+            toast.style.opacity = "0";
+
+            // Animasyon bitince (0.5sn sonra) element tamamen silinsin
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 500); // transition süresiyle aynı olmalı
+        }, 3500); // Ekranda kalma süresi (3.5 saniye)
+      }
+
+      function createToastContainer() {
+        const div = document.createElement("div");
+        div.id = "toast-container";
+        div.style.cssText =
+          "position: fixed; top: 20px; right: 20px; z-index: 9999;";
+        document.body.appendChild(div);
+        return div;
+      }
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const grid = document.getElementById("product-grid");
+
+        const token = getToken();
+        if (token) {
+          try {
+            const favRes = await fetch(
+              `${API_BASE_URL}/api/favorites/my-favorites`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (favRes.ok) {
+              const myFavs = await favRes.json();
+              myFavs.forEach((f) => {
+                if (f.productId) userFavoriteIds.add(f.productId);
+                else if (f.Product && f.Product.id)
+                  userFavoriteIds.add(f.Product.id);
+              });
+            }
+          } catch (e) {
+            console.log("Favoriler çekilemedi", e);
+          }
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products`);
+          if (!response.ok) throw new Error("Veri alınamadı");
+          const data = await response.json();
+          allProductsData = shuffleArray(data);
+          renderCategories(allProductsData);
+          renderProducts(allProductsData);
+        } catch (error) {
+          console.error(error);
+          grid.innerHTML =
+            '<div class="col-span-full text-center py-20"><i class="fa-solid fa-triangle-exclamation text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">Ürünler yüklenirken bir hata oluştu.</p></div>';
+        }
+
+        // --- FILTER LISTENERS ---
+        const searchInput = document.getElementById("search-input");
+        const minPriceInput = document.getElementById("min-price");
+        const maxPriceInput = document.getElementById("max-price");
+        const sortSelect = document.getElementById("sort-select");
+        const clearBtn = document.getElementById("clear-filters");
+        const filterStock = document.getElementById("filter-stock");
+        const filterDiscount = document.getElementById("filter-discount");
+        const filterVerified = document.getElementById("filter-verified");
+
+        window.filterAndRender = function () {
+          let filtered = [...allProductsData];
+          const searchTerm = searchInput.value.toLowerCase().trim();
+          if (searchTerm) {
+            filtered = filtered.filter(
+              (p) =>
+                p.title.toLowerCase().includes(searchTerm) ||
+                (p.description &&
+                  p.description.toLowerCase().includes(searchTerm))
+            );
+          }
+          const selectedCats = Array.from(
+            document.querySelectorAll(".category-filter:checked")
+          ).map((cb) => cb.value.toLowerCase());
+          if (selectedCats.length > 0) {
+            filtered = filtered.filter(
+              (p) =>
+                p.category &&
+                selectedCats.some((cat) => p.category.toLowerCase() === cat)
+            );
+          }
+          const min = parseFloat(minPriceInput.value) || 0;
+          const max = parseFloat(maxPriceInput.value) || Infinity;
+          filtered = filtered.filter((p) => p.price >= min && p.price <= max);
+          if (filterStock.checked)
+            filtered = filtered.filter((p) => p.stock > 0);
+          if (filterDiscount.checked)
+            filtered = filtered.filter(
+              (p) => p.discountPrice && p.discountPrice > 0
+            );
+          if (filterVerified.checked)
+            filtered = filtered.filter((p) => p.User && p.User.isApproved);
+
+          const sortVal = sortSelect.value;
+          if (sortVal === "price-asc")
+            filtered.sort((a, b) => a.price - b.price);
+          else if (sortVal === "price-desc")
+            filtered.sort((a, b) => b.price - a.price);
+          else if (sortVal === "newest")
+            filtered.sort(
+              (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+          renderProducts(filtered);
+        };
+
+        searchInput.addEventListener("input", window.filterAndRender);
+        minPriceInput.addEventListener("input", window.filterAndRender);
+        maxPriceInput.addEventListener("input", window.filterAndRender);
+        sortSelect.addEventListener("change", window.filterAndRender);
+        filterStock.addEventListener("change", window.filterAndRender);
+        filterDiscount.addEventListener("change", window.filterAndRender);
+        filterVerified.addEventListener("change", window.filterAndRender);
+
+        clearBtn.addEventListener("click", () => {
+          searchInput.value = "";
+          document
+            .querySelectorAll(".category-filter")
+            .forEach((cb) => (cb.checked = false));
+          minPriceInput.value = "";
+          maxPriceInput.value = "";
+          sortSelect.value = "random";
+          filterStock.checked = false;
+          filterDiscount.checked = false;
+          filterVerified.checked = false;
+          allProductsData = shuffleArray(allProductsData);
+          renderProducts(allProductsData);
+        });
+      });
+
+      function renderCategories(products) {
+        const container = document.getElementById("category-container");
+        container.innerHTML = "";
+        const categories = new Set();
+        products.forEach((p) => {
+          if (p.category) {
+            const formatted =
+              p.category.charAt(0).toUpperCase() +
+              p.category.slice(1).toLowerCase();
+            categories.add(formatted);
+          }
+        });
+        const sortedCats = Array.from(categories).sort();
+        if (sortedCats.length === 0) {
+          container.innerHTML =
+            '<p class="text-sm text-gray-400">Kategori bulunamadı.</p>';
+          return;
+        }
+        sortedCats.forEach((cat) => {
+          const html = `<label class="flex items-center space-x-3 cursor-pointer group"><input type="checkbox" value="${cat}" class="category-filter custom-checkbox w-5 h-5 rounded border-gray-300 text-slate-900 focus:ring-slate-900 transition"><span class="text-gray-600 group-hover:text-gray-900 transition text-sm font-medium">${cat}</span></label>`;
+          container.insertAdjacentHTML("beforeend", html);
+        });
+        document
+          .querySelectorAll(".category-filter")
+          .forEach((box) =>
+            box.addEventListener("change", window.filterAndRender)
+          );
+      }
+
+      async function toggleCardFavorite(event, productId) {
+        event.stopPropagation();
+        const token = getToken();
+        if (!token) {
+          showToast("error", "Favorilere eklemek için giriş yapmalısınız.");
+          return;
+        }
+        const btn = event.currentTarget;
+        const icon = btn.querySelector("i");
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/favorites/toggle`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ productId: productId }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            if (data.action === "added") {
+              icon.classList.replace("fa-regular", "fa-solid");
+              icon.classList.replace("text-gray-400", "text-red-500");
+              icon.style.color = "#e11d48";
+              btn.classList.add("text-red-500");
+              btn.classList.remove("text-gray-400");
+              userFavoriteIds.add(productId);
+              showToast("success", "Ürün favorilere eklendi ❤️");
+            } else {
+              icon.classList.replace("fa-solid", "fa-regular");
+              icon.style.color = "";
+              btn.classList.remove("text-red-500");
+              btn.classList.add("text-gray-400");
+              userFavoriteIds.delete(productId);
+              showToast("success", "Favorilerden çıkarıldı 💔");
+            }
+          } else {
+            showToast("error", data.message || "Hata.");
+          }
+        } catch (error) {
+          showToast("error", "Bağlantı hatası.");
+        }
+      }
+
+      function renderProducts(products) {
+        const grid = document.getElementById("product-grid");
+        const countLabel = document.getElementById("product-count");
+        grid.innerHTML = "";
+        countLabel.textContent = products.length;
+
+        if (products.length === 0) {
+          grid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-20 text-center"><div class="bg-gray-100 p-6 rounded-full mb-4"><i class="fa-solid fa-box-open text-4xl text-gray-400"></i></div><h3 class="text-lg font-bold text-gray-900">Ürün Bulunamadı</h3><p class="text-gray-500 mt-2">Seçtiğiniz kriterlere uygun ürün yok. Filtreleri temizlemeyi deneyin.</p></div>`;
+          return;
+        }
+
+        products.forEach((product) => {
+          let productImg = "https://via.placeholder.com/400x400?text=Resim+Yok";
+
+          if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+            productImg = fixImageUrl(product.images[0]);
+          } 
+          else if (product.image) {
+            productImg = fixImageUrl(product.image);
+          }
+
+          const seller = product.User || {};
+          const sellerName =
+            seller.brandName || seller.name || "Siftah Satıcısı";
+          const sellerLogoUrl = fixImageUrl(seller.logoUrl);
+
+          let sellerBadgeHtml = "";
+          if (sellerLogoUrl) {
+            sellerBadgeHtml = `<div class="seller-badge"><img src="${sellerLogoUrl}" alt="${sellerName}"><span>${sellerName}</span></div>`;
+          } else {
+            const initial = sellerName.charAt(0).toUpperCase();
+            sellerBadgeHtml = `<div class="seller-badge"><div class="w-5 h-5 md:w-6 md:h-6 bg-slate-800 rounded-full flex items-center justify-center text-[10px] md:text-xs text-white font-bold">${initial}</div><span>${sellerName}</span></div>`;
+          }
+
+          const isFav = userFavoriteIds.has(product.id);
+          const heartClass = isFav
+            ? "fa-solid fa-heart"
+            : "fa-regular fa-heart";
+          const btnColorClass = isFav ? "text-red-500" : "text-gray-400";
+          const iconStyle = isFav ? "color: #e11d48;" : "";
+          const html = `
+                <div class="bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 border border-gray-100 product-card relative group h-full flex flex-col">
+                    <button onclick="toggleCardFavorite(event, ${product.id})" 
+                            class="absolute top-4 right-4 md:top-6 md:right-6 z-10 w-8 h-8 md:w-9 md:h-9 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition duration-200 ${btnColorClass}">
+                        <i class="${heartClass}" style="${iconStyle} font-size: 1rem md:font-size: 1.1rem;"></i>
+                    </button>
+                    
+                    <div class="relative bg-gray-100 rounded-xl md:rounded-2xl overflow-hidden h-48 md:h-72 w-full mb-3 md:mb-4 cursor-pointer flex-shrink-0" onclick="window.location.href='urun-detay.html?id=${
+                      product.id
+                    }'">
+                        <img src="${productImg}" alt="${
+            product.title
+          }" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-in-out">
+                        ${sellerBadgeHtml}
+                    </div>
+
+                    <div class="flex-grow space-y-1 md:space-y-2">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-sm md:text-lg text-gray-900 line-clamp-1 leading-tight" title="${
+                              product.title
+                            }">${product.title}</h3>
+                        </div>
+                        <p class="text-gray-400 text-[10px] md:text-xs font-medium bg-gray-50 inline-block px-2 py-1 rounded-md uppercase tracking-wide border border-gray-100">${
+                          product.category || "Genel"
+                        }</p>
+                        
+                        <p class="text-gray-500 text-sm line-clamp-2 leading-relaxed h-10 hidden sm:block">${
+                          product.description || ""
+                        }</p>
+                    </div>
+
+                    <div class="pt-3 md:pt-4 mt-2 border-t border-gray-50 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            ${
+                              product.discountPrice
+                                ? `<span class="text-[10px] md:text-xs text-gray-400 line-through">${product.price}₺</span>`
+                                : ""
+                            }
+                            <span class="text-base md:text-xl font-bold text-slate-900">${
+                              product.discountPrice || product.price
+                            }₺</span>
+                        </div>
+                        <button onclick="window.location.href='urun-detay.html?id=${
+                          product.id
+                        }'" class="bg-slate-900 text-white px-3 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm hover:bg-slate-800 transition shadow-lg shadow-slate-200">İncele</button>
+                    </div>
+                </div>
+            `;
+          grid.insertAdjacentHTML("beforeend", html);
+        });
+      }
+    </script>
+  </body>
+</html>

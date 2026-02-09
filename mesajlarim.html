@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Mesajlarım | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="nav-footer.css" />
+    <link rel="stylesheet" href="messages.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <div id="toast-container"></div>
+
+    <div class="chat-layout">
+      <aside class="chat-sidebar" id="chatSidebar">
+        <div class="sidebar-header">
+          <h2>Mesajlar</h2>
+          <!-- <button class="new-chat-btn" title="Yeni Mesaj">
+            <i class="fa-regular fa-pen-to-square"></i>
+          </button> -->
+        </div>
+
+        <div class="search-wrapper">
+          <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              id="conversationSearch"
+              placeholder="Sohbetlerde ara..."
+            />
+          </div>
+        </div>
+
+        <div class="chat-list" id="chatListContainer">
+          <div class="loading-state">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <p>Sohbetler yükleniyor...</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="chat-window" id="chatWindow">
+        <div id="noChatSelected" class="no-chat-selected">
+          <div class="empty-state-img">
+            <img
+              src="/images/navbar/logo.png"
+              alt="Chat"
+              style="opacity: 0.5; width: 60px"
+            />
+          </div>
+          <h3>Hoş Geldiniz 👋</h3>
+          <p>
+            Mesajlaşmaya başlamak için soldan bir sohbet seçin veya ürün
+            sayfasından teklif verin.
+          </p>
+        </div>
+
+        <div
+          id="activeChatContainer"
+          style="display: none; height: 100%; flex-direction: column"
+        >
+          <div class="chat-header">
+            <div class="header-left">
+              <button class="back-btn" onclick="backToList()">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+
+              <div class="header-user">
+                <img
+                  id="headerUserImg"
+                  src="https://via.placeholder.com/40"
+                  alt="Avatar"
+                />
+                <div class="header-info">
+                  <h4 id="headerUserName">...</h4>
+                  <span class="status-text">Çevrimiçi</span>
+                </div>
+              </div>
+            </div>
+            <div class="header-actions">
+              <button
+                title="Profili Gör"
+                id="viewProfileBtn"
+                class="action-btn"
+              >
+                <i class="fa-solid fa-store"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="messages-area" id="messagesArea"></div>
+
+          <div class="chat-input-area">
+            <button class="attach-btn" title="Dosya Ekle">
+              <i class="fa-solid fa-paperclip"></i>
+            </button>
+            <input
+              type="text"
+              id="messageInput"
+              placeholder="Bir mesaj yazın..."
+              onkeypress="handleEnterKey(event)"
+              autocomplete="off"
+            />
+            <button class="send-btn" onclick="sendMessage()">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="customConfirmModal" class="confirm-overlay">
+      <div class="confirm-box">
+        <div class="confirm-icon">
+          <i class="fa-regular fa-trash-can"></i>
+        </div>
+        <h3>Sohbeti Sil?</h3>
+        <p>
+          Bu sohbeti ve tüm mesaj geçmişini silmek üzeresiniz. Bu işlem geri
+          alınamaz.
+        </p>
+        <div class="confirm-actions">
+          <button class="btn-cancel" onclick="closeConfirmModal()">
+            Vazgeç
+          </button>
+          <button class="btn-confirm-delete" id="btnConfirmYes">
+            Evet, Sil
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="buyerSafetyModal" class="modal-overlay">
+  <div class="siftah-modal-content">
+    
+    <div class="modal-icon-circle">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+
+    <h3>Güvenli Alışveriş Uyarısı</h3>
+    
+    <div class="modal-body-text">
+      <p class="main-warning">Bu kullanıcıyla ilk kez konuşuyorsunuz.</p>
+      <ul>
+        <li>Siftah, ödeme ve kargo süreçlerine <strong>müdahil değildir.</strong></li>
+        <li>Tanımadığınız kişilere <strong>IBAN ile Kapora</strong> göndermeyin.</li>
+        <li>Mümkünse <strong>"Kapıda Ödeme"</strong> veya <strong>"Elden Teslim"</strong> tercih edin.</li>
+      </ul>
+      <p class="danger-note">
+        *Olası dolandırıcılık durumlarında sorumluluk bize ait değildir. Keyifli Alışverişler.
+      </p>
+    </div>
+
+    <div class="confirm-actions">
+      <button class="btn-modal-cancel" onclick="document.getElementById('buyerSafetyModal').style.display='none'">Vazgeç</button>
+      <button class="btn-modal-confirm" onclick="confirmSafetyAndSend()">Okudum,<br>Onaylıyorum</button>
+    </div>
+
+  </div>
+</div>
+
+    <div id="footer"></div>
+
+    <script src="script.js"></script>
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+      let currentChatUserId = null;
+      let isFirstMessageInChat = true;
+      let confirmCallback = null;
+      const myToken = localStorage.getItem("token");
+
+      function timeAgo(dateString) {
+        if (!dateString) return "Uzun süre önce";
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + " yıl önce";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + " ay önce";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + " gün önce";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + " saat önce";
+        interval = seconds / 60;
+        if (interval > 5) return Math.floor(interval) + " dakika önce";
+
+        return "Çevrimiçi 🟢";
+      }
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+
+        let icon = "fa-circle-check";
+        if (type === "error") icon = "fa-circle-exclamation";
+        if (type === "info") icon = "fa-circle-info";
+
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        toast.innerHTML = `
+            <i class="fa-solid ${icon} fa-lg toast-icon"></i>
+            <div class="toast-content">
+                <span class="toast-title">${title}</span>
+                <span class="toast-msg">${message}</span>
+            </div>
+        `;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.style.transform = "translateX(0)";
+          toast.style.opacity = "1";
+        });
+
+        setTimeout(() => {
+          toast.style.transform = "translateX(120%)";
+          toast.style.opacity = "0";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      function openConfirmModal(callback) {
+        const modal = document.getElementById("customConfirmModal");
+        modal.style.display = "flex";
+        confirmCallback = callback;
+      }
+
+      function closeConfirmModal() {
+        const modal = document.getElementById("customConfirmModal");
+        modal.style.display = "none";
+        confirmCallback = null;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnYes = document.getElementById("btnConfirmYes");
+        if (btnYes) {
+          btnYes.onclick = async () => {
+            if (confirmCallback) await confirmCallback();
+            closeConfirmModal();
+          };
+        }
+      });
+
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null") return null;
+        let cleanPath = dbPath.replace(/\\/g, "/");
+        if (cleanPath.startsWith("http")) return cleanPath;
+        if (cleanPath.includes("uploads/")) {
+          cleanPath = cleanPath.substring(cleanPath.indexOf("uploads/"));
+        } else if (cleanPath.startsWith("/")) {
+          cleanPath = cleanPath.substring(1);
+        }
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      function getMyId() {
+        if (!myToken) return null;
+        try {
+          const base64Url = myToken.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            window
+              .atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join(""),
+          );
+          return JSON.parse(jsonPayload).id;
+        } catch (e) {
+          return null;
+        }
+      }
+      const myId = getMyId();
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!myToken) {
+          showToast(
+            "error",
+            "Giriş Gerekli",
+            "Mesajları görmek için lütfen giriş yapın.",
+          );
+          setTimeout(() => (window.location.href = "giris.html"), 2000);
+          return;
+        }
+
+        await loadConversations();
+
+        pollInterval = setInterval(() => {
+            loadConversations(true); 
+        }, 20000);
+
+        const params = new URLSearchParams(window.location.search);
+        const chatUserId = params.get("chatUserId") || params.get("sellerId");
+
+        if (chatUserId && chatUserId !== "undefined") {
+          await openChat(chatUserId);
+        }
+      });
+
+      async function loadConversations() {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/messages/conversations`,
+            {
+              headers: { Authorization: "Bearer " + myToken },
+            },
+          );
+
+          if (!response.ok) throw new Error("Liste alınamadı");
+
+          const conversations = await response.json();
+          const listContainer = document.getElementById("chatListContainer");
+
+          listContainer.innerHTML = "";
+
+          if (conversations.length === 0) {
+            if(!isSilent) {
+                listContainer.innerHTML = `
+                    <div class="empty-state-sidebar">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        <p>Henüz sohbet geçmişiniz yok.</p>
+                    </div>`;
+            }
+            return;
+          }
+          listContainer.innerHTML = "";
+
+          conversations.forEach((conv) => {
+            const otherUser = conv.user;
+            const name =
+              otherUser.brandName ||
+              otherUser.name + " " + (otherUser.surname || "");
+
+            let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              name,
+            )}&background=f1f5f9&color=0f172a&bold=true`;
+            if (otherUser.logoUrl || otherUser.profileImage) {
+              const fixed = fixImageUrl(
+                otherUser.logoUrl || otherUser.profileImage,
+              );
+              if (fixed) avatarUrl = fixed;
+            }
+
+            const rawDate = conv.lastMessageDate || conv.createdAt || conv.time;
+            let timeStr = "";
+            if (rawDate) {
+              const dateObj = new Date(rawDate);
+              if (!isNaN(dateObj.getTime())) {
+                const today = new Date();
+                if (dateObj.toDateString() === today.toDateString()) {
+                  timeStr = dateObj.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+                } else {
+                  timeStr = dateObj.toLocaleDateString("tr-TR", {
+                    day: "numeric",
+                    month: "short",
+                  });
+                }
+              }
+            }
+
+            const activeClass =
+              currentChatUserId == otherUser.id ? "active" : "";
+            const isMe = conv.lastMessageSenderId === myId;
+            const prefix = isMe
+              ? '<i class="fa-solid fa-reply" style="font-size:0.7rem; margin-right:3px;"></i> '
+              : "";
+
+            let unreadBadgeHtml = "";
+            let unreadClass = "";
+
+            if (conv.unreadCount > 0) {
+                unreadBadgeHtml = `<div class="unread-badge">${conv.unreadCount}</div>`;
+                unreadClass = "unread"; 
+            }
+
+            const item = `
+                <div id="chat-item-${otherUser.id}" class="chat-item ${activeClass} ${unreadClass}" onclick="openChat('${otherUser.id}')">
+                    <img src="${avatarUrl}" alt="Avatar">
+                    <div class="chat-info">
+                        <div class="chat-top">
+                            <span class="chat-name">${name}</span>
+                            <span class="chat-time">${timeStr}</span>
+                        </div>
+                        <div class="chat-bottom-row">
+                            <p class="chat-preview">${prefix}${conv.lastMessage}</p>
+                            ${unreadBadgeHtml}
+                        </div>
+                    </div>
+                    <button class="delete-chat-btn" title="Sohbeti Sil" onclick="deleteConversation(event, '${otherUser.id}')">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            listContainer.innerHTML += item;
+          });
+        } catch (error) {
+          if(!isSilent) console.error("Liste yükleme hatası:", error);
+        }
+      }
+
+      function deleteConversation(event, targetUserId) {
+        event.stopPropagation(); 
+        
+        openConfirmModal(async () => {
+          const btnYes = document.getElementById("btnConfirmYes");
+          const originalText = btnYes.innerText;
+          btnYes.innerText = "Siliniyor...";
+          btnYes.disabled = true;
+
+          try {
+            const response = await fetch(
+              `${API_BASE_URL}/api/messages/conversation/${targetUserId}`,
+              {
+                method: "DELETE",
+                headers: { Authorization: "Bearer " + myToken },
+              },
+            );
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (err) {
+                data = { message: "Sunucu hatası veya yanıt yok." };
+            }
+
+            if (response.ok) {
+              showToast("success", "Başarılı", "Sohbet kalıcı olarak silindi.");
+              
+              if (currentChatUserId == targetUserId) {
+                document.getElementById("activeChatContainer").style.display = "none";
+                document.getElementById("noChatSelected").style.display = "flex";
+                currentChatUserId = null;
+                
+                const win = document.getElementById("chatWindow");
+                if (win.classList.contains("open")) {
+                    win.classList.remove("open");
+                }
+              }
+
+              await loadConversations();
+              
+            } else {
+              console.error("Silme Hatası:", data);
+              showToast("error", "Hata", data.message || "Sohbet silinemedi.");
+            }
+          } catch (error) {
+            console.error("Network Hatası:", error);
+            showToast("error", "Bağlantı Hatası", "Sunucuya ulaşılamadı.");
+          } finally {
+            btnYes.innerText = originalText;
+            btnYes.disabled = false;
+          }
+        });
+      }
+
+      async function openChat(userId) {
+        currentChatUserId = userId;
+
+        const win = document.getElementById("chatWindow");
+        if (window.innerWidth <= 768) {
+          win.classList.add("open");
+        }
+
+        document.querySelectorAll(".chat-item").forEach((el) => el.classList.remove("active"));
+
+        const activeItem = document.getElementById(`chat-item-${userId}`);
+        if (activeItem) {
+            activeItem.classList.remove("unread"); 
+            const badge = activeItem.querySelector(".unread-badge");
+            if (badge) badge.remove();
+        }
+
+        fetch(`${API_BASE_URL}/api/messages/mark-read/${userId}`, {
+            method: "PUT",
+            headers: { Authorization: "Bearer " + myToken }
+        }).then(() => {
+        }).catch(err => console.error("Okundu bilgisi gönderilemedi", err));
+
+
+        document.getElementById("noChatSelected").style.display = "none";
+        const activeChatContainer = document.getElementById("activeChatContainer");
+        activeChatContainer.style.display = "flex";
+
+        document.getElementById("headerUserName").textContent = "Yükleniyor...";
+        document.querySelector(".status-text").textContent = "...";
+        document.getElementById("messagesArea").innerHTML =
+          '<div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+
+        try {
+        const userRes = await fetch(`${API_BASE_URL}/api/users/${userId}`);
+        if (userRes.ok) {
+            const userData = await userRes.json();
+            const displayName = userData.brandName || userData.name + " " + (userData.surname || "");
+
+            const headerNameEl = document.getElementById("headerUserName");
+            if (userData.role && userData.role.toLowerCase() === 'admin') {
+                headerNameEl.innerHTML = `Siftah Destek <i class="fa-solid fa-shield-halved" style="color:#e63946; margin-left:5px;"></i>`;
+                headerNameEl.style.color = "#e63946";
+            } else {
+                headerNameEl.textContent = displayName;
+                headerNameEl.style.color = ""; 
+            }
+
+            const statusEl = document.querySelector(".status-text");
+            if (userData.lastActiveAt) {
+                const statusText = timeAgo(userData.lastActiveAt);
+                if (statusText.includes("Çevrimiçi")) {
+                    statusEl.innerHTML = `<span style="color:#22c55e;">● Çevrimiçi</span>`;
+                } else {
+                    statusEl.textContent = statusText + " aktifti";
+                    statusEl.style.color = "#64748b";
+                }
+            } else {
+                statusEl.textContent = "Görülmedi";
+            }
+
+            let headerImgSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random&color=fff`;
+            if (userData.logoUrl || userData.profileImage) {
+                const fixed = fixImageUrl(userData.logoUrl || userData.profileImage);
+                if (fixed) headerImgSrc = fixed;
+            }
+            document.getElementById("headerUserImg").src = headerImgSrc;
+
+            document.getElementById("viewProfileBtn").onclick = () => {
+                window.location.href = `urun-detay.html?id=${userData.id}`;
+            };
+        }
+
+        const msgRes = await fetch(`${API_BASE_URL}/api/messages/conversation/${userId}`, {
+            headers: { Authorization: "Bearer " + myToken },
+        });
+
+        if (msgRes.ok) {
+            const messages = await msgRes.json();
+            const haveISentMessage = messages.some(msg => Number(msg.senderId) === Number(myId));
+            
+            if (!haveISentMessage && messages.length === 0) {
+                isFirstMessageInChat = true; 
+            } else if (!haveISentMessage && messages.length > 0) {
+                 isFirstMessageInChat = true;
+            } else {
+                isFirstMessageInChat = false; 
+            }
+
+            renderMessages(messages);
+          }
+        } catch (error) {
+            console.error("Chat açma hatası:", error);
+            showToast("error", "Hata", "Sohbet yüklenemedi.");
+        }
+      }
+
+      function renderMessages(messages) {
+        const msgArea = document.getElementById("messagesArea");
+        msgArea.innerHTML = "";
+
+        if (messages.length === 0) {
+          msgArea.innerHTML = `
+            <div class="empty-chat-placeholder">
+                <div class="placeholder-icon"><i class="fa-regular fa-handshake"></i></div>
+                <p>Sohbeti başlatın! 👋<br>Güvenli alışveriş için site içi konuşun.</p>
+            </div>
+          `;
+          return;
+        }
+
+        let lastDate = null;
+
+        messages.forEach((msg) => {
+          const isMe = Number(msg.senderId) === Number(myId);
+            
+          const readClass = (isMe && msg.isRead) ? "read" : "";
+              
+          const bubbleClass = isMe ? "sent" : "received";
+          const dateObj = new Date(msg.createdAt);
+
+          const dateStr = dateObj.toLocaleDateString("tr-TR");
+          if (dateStr !== lastDate) {
+            msgArea.innerHTML += `<div class="date-divider"><span>${dateStr}</span></div>`;
+            lastDate = dateStr;
+          }
+
+          const time = dateObj.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          const bubble = `
+                <div class="message-row ${bubbleClass}">
+                    <div class="message-bubble">
+                        <p>${msg.content}</p>
+                        <span class="msg-time">
+                            ${time} 
+                            <i class="fa-solid fa-check-double ${readClass}" style="display:${
+                                isMe ? "inline" : "none"
+                            }; margin-left:3px; color:white;" ></i>
+                        </span>
+                    </div>
+                </div>
+            `;
+          msgArea.innerHTML += bubble;
+        });
+
+        msgArea.scrollTop = msgArea.scrollHeight;
+      }
+
+      async function sendMessage(forceSend = false) {
+        const input = document.getElementById("messageInput");
+        const content = input.value.trim();
+
+        if (!content || !currentChatUserId) return;
+
+        if (isFirstMessageInChat && !forceSend) {
+          document.getElementById("buyerSafetyModal").style.display = "flex";
+          return; 
+        }
+
+        try {
+          const msgArea = document.getElementById("messagesArea");
+          if (msgArea.querySelector(".empty-chat-placeholder")) {
+            msgArea.innerHTML = "";
+          }
+
+          const time = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          msgArea.innerHTML += `
+                <div class="message-row sent">
+                    <div class="message-bubble" style="opacity:0.7;">
+                        <p>${content}</p>
+                        <span class="msg-time">${time} <i class="fa-regular fa-clock"></i></span>
+                    </div>
+                </div>
+            `;
+          msgArea.scrollTop = msgArea.scrollHeight;
+          input.value = "";
+
+          isFirstMessageInChat = false;
+
+          const res = await fetch(`${API_BASE_URL}/api/messages/send`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + myToken,
+            },
+            body: JSON.stringify({
+              receiverId: currentChatUserId,
+              content: content,
+            }),
+          });
+
+          if (!res.ok) throw new Error("Gönderim hatası");
+          loadConversations();
+        } catch (error) {
+          console.error(error);
+          showToast("error", "Gönderilemedi", "Mesajınız iletilemedi.");
+        }
+      }
+
+      function confirmSafetyAndSend() {
+         document.getElementById("buyerSafetyModal").style.display = "none";
+         sendMessage(true);
+      }
+
+      function handleEnterKey(e) {
+        if (e.key === "Enter") sendMessage();
+      }
+
+      function backToList() {
+        const win = document.getElementById("chatWindow");
+        win.classList.remove("open");
+        document.getElementById("messageInput").blur();
+      }
+
+      document
+        .getElementById("conversationSearch")
+        .addEventListener("input", (e) => {
+          const val = e.target.value.toLowerCase();
+          const items = document.querySelectorAll(".chat-item");
+          items.forEach((item) => {
+            const name = item
+              .querySelector(".chat-name")
+              .textContent.toLowerCase();
+            if (name.includes(val)) item.style.display = "flex";
+            else item.style.display = "none";
+          });
+        });
+    </script>
+  </body>
+</html>

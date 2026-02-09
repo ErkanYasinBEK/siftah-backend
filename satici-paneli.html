@@ -1,0 +1,3167 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Satıcı Paneli | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .admin-user-text {
+        color: #e63946 !important;
+        font-weight: 800 !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .fa-shield-halved {
+        color: #e63946;
+        font-size: 0.9em;
+      }
+    </style>
+    <link rel="stylesheet" href="seller-dashboard.css" />
+  </head>
+  <body>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="toast-container"></div>
+    <div id="customConfirmModal" class="confirm-modal-overlay">
+      <div class="confirm-modal-card">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="confirm-title" id="confirmTitle">Emin misiniz?</h3>
+        <p class="confirm-desc" id="confirmDesc">Bu işlemi geri alamazsınız.</p>
+        <div class="confirm-actions">
+          <button class="btn-confirm-cancel" onclick="closeConfirmModal()">
+            Vazgeç
+          </button>
+          <button class="btn-confirm-yes" id="btnConfirmYes">
+            Evet, Onaylıyorum
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="/images/navbar/logo.png" alt="Siftah" />
+          <h2>Satıcı Paneli</h2>
+        </div>
+        <nav class="sidebar-menu">
+          <a
+            href="#"
+            class="menu-item active"
+            onclick="switchTab('dashboard', this)"
+          >
+            <i class="fa-solid fa-gauge-high"></i> Genel Bakış
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('products-list', this)"
+          >
+            <i class="fa-solid fa-box-open"></i> Ürünlerim
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('my-stories', this)">
+            <i class="fa-solid fa-feather-pointed"></i> Hikayelerim
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('messages', this)">
+            <i class="fa-solid fa-comments"></i> Mesajlar
+          </a>
+          <!-- <a href="#" class="menu-item" onclick="switchTab('orders', this)">
+            <i class="fa-solid fa-truck-fast"></i> Sipariş Yönetimi
+          </a> -->
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('add-product', this)"
+          >
+            <i class="fa-solid fa-plus"></i> Ürün Ekle
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('settings', this)">
+            <i class="fa-solid fa-gear"></i> Mağaza Ayarları
+          </a>
+
+          <a
+            href="#"
+            id="viewShopBtn"
+            target="_blank"
+            class="menu-item"
+            style="color: #0070f3; font-weight: bold"
+          >
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Mağazamı Gör
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <button onclick="logout()" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="mobile-menu-btn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </div>
+          <h1 id="pageTitle">Genel Bakış</h1>
+          <div class="user-info">
+            <span class="user-name" id="sellerName">...</span>
+            <div class="avatar">S</div>
+          </div>
+        </header>
+
+        <div id="dashboard" class="tab-content active">
+          <div class="dashboard-cards">
+            <div class="card stat-card">
+              <div class="card-icon-bg"><i class="fa-solid fa-box"></i></div>
+              <h3>Toplam Ürün</h3>
+              <p class="stat-number" id="totalProductCount">0</p>
+            </div>
+
+            <div class="card stat-card">
+              <div class="card-icon-bg"><i class="fa-solid fa-eye"></i></div>
+              <h3>Görüntülenme</h3>
+              <p class="stat-number" id="totalViewCount">0</p>
+            </div>
+
+            <div class="card stat-card">
+              <div class="card-icon-bg">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <h3>Toplam Satış</h3>
+              <p class="stat-number">0 ₺</p>
+              <small style="color: #64748b; font-size: 0.8rem">Bu ay</small>
+            </div>
+          </div>
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Vitrinim</h2>
+            </div>
+            <div class="manage-grid" id="dashboardGrid">
+              <p>Yükleniyor...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="products-list" class="tab-content">
+          <div class="content-section">
+            <div
+              id="rejectedSection"
+              style="display: none; margin-bottom: 30px"
+            >
+              <div class="alert-box-premium">
+                <div class="alert-header">
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                  <h3>Düzeltme Gereken Ürünler</h3>
+                </div>
+                <p>
+                  Aşağıdaki ürünler Admin tarafından incelendi ve bazı eksikler
+                  tespit edildi. Lütfen notları okuyup düzenleyin.
+                </p>
+              </div>
+              <div class="manage-grid" id="rejectedGrid"></div>
+              <div
+                class="divider"
+                style="margin: 30px 0; border-top: 1px solid #eee"
+              ></div>
+            </div>
+            <div class="section-header">
+              <h2>Mağaza Vitrini</h2>
+              <p style="color: #666">
+                Yayındaki ve inceleme aşamasındaki tüm ürünleriniz.
+              </p>
+            </div>
+
+            <div class="manage-grid" id="manageGrid">
+              <p>Yükleniyor...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages" class="tab-content">
+          <div
+            class="content-section"
+            style="
+              padding: 0;
+              border: none;
+              background: transparent;
+              box-shadow: none;
+            "
+          >
+            <div class="ios-chat-layout">
+              <div class="ios-sidebar">
+                <div class="ios-header">
+                  <h3>Mesajlar</h3>
+                  <div class="ios-search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                      type="text"
+                      placeholder="Ara"
+                      id="chatSearchInput"
+                      onkeyup="filterChatList()"
+                    />
+                  </div>
+                </div>
+
+                <div class="ios-chat-list" id="dashChatList">
+                  <p style="text-align: center; padding: 20px; color: #999">
+                    Yükleniyor...
+                  </p>
+                </div>
+              </div>
+
+              <div class="ios-chat-window">
+                <div id="dashNoChat" class="ios-empty-state">
+                  <i class="fa-regular fa-comments"></i>
+                  <h3>Sohbet Başlatın</h3>
+                  <p>Sol taraftan bir kişi seçerek mesajlaşmaya başlayın.</p>
+                </div>
+
+                <div
+                  id="dashActiveChat"
+                  class="ios-active-chat"
+                  style="display: none"
+                >
+                  <div class="ios-chat-topbar">
+                    <button class="ios-back-btn" onclick="closeMobileChat()">
+                      <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div class="ios-user-profile">
+                      <img id="dashHeaderImg" src="" alt="" />
+                      <div class="ios-user-details">
+                        <h4 id="dashHeaderName">Kullanıcı Adı</h4>
+                        <span class="ios-status-text"
+                          >Detayları gör
+                          <i
+                            class="fa-solid fa-chevron-right"
+                            style="font-size: 0.7rem"
+                          ></i
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ios-messages-area" id="dashMessagesArea"></div>
+
+                  <div class="ios-input-area">
+                    <button class="ios-attach-btn">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <div class="ios-input-wrapper">
+                      <input
+                        type="text"
+                        id="dashChatInput"
+                        placeholder="iMessage"
+                        onkeypress="handleDashEnter(event)"
+                      />
+                      <button class="ios-send-btn" onclick="sendDashMessage()">
+                        <i class="fa-solid fa-arrow-up"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="add-product" class="tab-content">
+          <div class="content-section" style="max-width: 700px; margin: 0 auto">
+            <div class="section-header"><h2>Yeni Ürün Ekle</h2></div>
+            <form id="addProductForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Ürün Başlığı</label>
+                  <input
+                    type="text"
+                    name="title"
+                    placeholder="Örn: Deri Cüzdan"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Fiyat (TL)</label>
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Stok Adedi</label>
+                  <input
+                    type="number"
+                    name="stock"
+                    placeholder="Örn: 50"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Kategori</label>
+                  <select name="category" required class="form-control">
+                    <option value="" disabled selected>
+                      Bir kategori seçin...
+                    </option>
+                    <optgroup label="Giyim & Moda">
+                      <option value="giyim_kadin">Kadın Giyim</option>
+                      <option value="giyim_erkek">Erkek Giyim</option>
+                      <option value="giyim_cocuk">Çocuk & Bebek Giyim</option>
+                      <option value="ayakkabi">Ayakkabı</option>
+                      <option value="canta">Çanta & Cüzdan</option>
+                      <option value="aksesuar">Saat & Aksesuar</option>
+                    </optgroup>
+                    <optgroup label="Kozmetik & Kişisel Bakım">
+                      <option value="parfum">Parfüm & Deodorant</option>
+                      <option value="makyaj">Makyaj</option>
+                      <option value="cilt_bakim">Cilt & Saç Bakımı</option>
+                      <option value="kozmetik">Genel Kozmetik</option>
+                    </optgroup>
+                    <option value="diger">Diğer</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Ürün Görselleri (Maks. 5 Adet)</label>
+                  <div class="image-upload-grid">
+                    <div class="image-upload-slot" onclick="triggerFile(0)">
+                      <input
+                        type="file"
+                        class="product-file-input"
+                        id="file-0"
+                        accept="image/*"
+                        onchange="previewSlotImage(event, 0)"
+                        hidden
+                      />
+                      <img id="preview-0" class="slot-preview" src="" />
+                      <div class="slot-placeholder">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Ana Resim</span>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn-remove-img"
+                        onclick="removeSlotImage(event, 0)"
+                        style="display: none"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+
+                    <div class="image-upload-slot" onclick="triggerFile(1)">
+                      <input
+                        type="file"
+                        class="product-file-input"
+                        id="file-1"
+                        accept="image/*"
+                        onchange="previewSlotImage(event, 1)"
+                        hidden
+                      />
+                      <img id="preview-1" class="slot-preview" src="" />
+                      <div class="slot-placeholder">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn-remove-img"
+                        onclick="removeSlotImage(event, 1)"
+                        style="display: none"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+
+                    <div class="image-upload-slot" onclick="triggerFile(2)">
+                      <input
+                        type="file"
+                        class="product-file-input"
+                        id="file-2"
+                        accept="image/*"
+                        onchange="previewSlotImage(event, 2)"
+                        hidden
+                      />
+                      <img id="preview-2" class="slot-preview" src="" />
+                      <div class="slot-placeholder">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn-remove-img"
+                        onclick="removeSlotImage(event, 2)"
+                        style="display: none"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+
+                    <div class="image-upload-slot" onclick="triggerFile(3)">
+                      <input
+                        type="file"
+                        class="product-file-input"
+                        id="file-3"
+                        accept="image/*"
+                        onchange="previewSlotImage(event, 3)"
+                        hidden
+                      />
+                      <img id="preview-3" class="slot-preview" src="" />
+                      <div class="slot-placeholder">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn-remove-img"
+                        onclick="removeSlotImage(event, 3)"
+                        style="display: none"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+
+                    <div class="image-upload-slot" onclick="triggerFile(4)">
+                      <input
+                        type="file"
+                        class="product-file-input"
+                        id="file-4"
+                        accept="image/*"
+                        onchange="previewSlotImage(event, 4)"
+                        hidden
+                      />
+                      <img id="preview-4" class="slot-preview" src="" />
+                      <div class="slot-placeholder">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn-remove-img"
+                        onclick="removeSlotImage(event, 4)"
+                        style="display: none"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Açıklama</label>
+                <textarea
+                  name="description"
+                  id="descInput"
+                  rows="4"
+                  maxlength="300"
+                  placeholder="Ürünün detaylarını yazın..."
+                  required
+                  oninput="updateCount(this)"
+                ></textarea>
+                <div class="char-count">
+                  <span id="currentCount">0</span>/300
+                </div>
+              </div>
+              <button type="submit" class="btn-submit">Yayınla</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="settings" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Kimlik, Marka ve Görünüm Ayarları</h2>
+              <p style="color: #666; font-size: 0.9rem">
+                Bu alandaki tüm değişiklikler tek seferde
+                <strong>Admin Onayı</strong>'na sunulur.
+              </p>
+            </div>
+
+            <div id="pendingAlert" class="pending-alert" style="display: none">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <div>
+                <strong>Değişiklik Talebiniz İnceleniyor</strong>
+                <p style="margin: 0; font-size: 0.9rem">
+                  Marka veya kimlik bilgilerinizde yaptığınız değişiklikler
+                  yönetici onayından sonra yayınlanacaktır. Bu süreçte yeni
+                  değişiklik yapamazsınız.
+                </p>
+              </div>
+            </div>
+
+            <form id="fullSettingsForm">
+              <div class="identity-grid">
+                <div class="form-group-box">
+                  <h4
+                    style="
+                      margin-bottom: 15px;
+                      border-bottom: 1px solid #eee;
+                      padding-bottom: 5px;
+                    "
+                  >
+                    Satıcı Bilgileri
+                  </h4>
+                  <div class="form-group">
+                    <label>Adınız</label>
+                    <input type="text" name="name" id="inputName" required />
+                  </div>
+                  <div class="form-group">
+                    <label>Soyadınız</label>
+                    <input
+                      type="text"
+                      name="surname"
+                      id="inputSurname"
+                      required
+                    />
+                  </div>
+                  <label>Profil Resmi</label>
+                  <div class="form-group" style="display: flex; gap: 20px">
+                    <div
+                      class="image-upload-wrapper"
+                      onclick="document.getElementById('profileUpload').click()"
+                    >
+                      <i class="fa-solid fa-user-pen" style="color: #ccc"></i>
+                      <p style="font-size: 0.8rem; margin: 5px 0">Değiştir</p>
+                      <input
+                        type="file"
+                        name="profileImage"
+                        id="profileUpload"
+                        hidden
+                        onchange="previewImage(event, 'previewProfileBox')"
+                      />
+                    </div>
+                    <div
+                      id="previewProfileBox"
+                      class="preview-box"
+                      style="margin-top: 10px; width: 50%"
+                    >
+                      <img
+                        src=""
+                        id="imgProfilePreview"
+                        style="
+                          width: 80px;
+                          height: 80px;
+                          border-radius: 50%;
+                          object-fit: cover;
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group-box">
+                  <h4
+                    style="
+                      margin-bottom: 15px;
+                      border-bottom: 1px solid #eee;
+                      padding-bottom: 5px;
+                    "
+                  >
+                    Marka Bilgileri
+                  </h4>
+                  <div class="form-group">
+                    <label>Marka / Mağaza Adı</label>
+                    <input
+                      type="text"
+                      name="brandName"
+                      id="inputBrandName"
+                      required
+                    />
+                  </div>
+                  <label>Mağaza Logosu</label>
+                  <div class="form-group" style="display: flex; gap: 20px">
+                    <div
+                      class="image-upload-wrapper"
+                      onclick="document.getElementById('logoUpload').click()"
+                    >
+                      <i
+                        class="fa-solid fa-cloud-arrow-up"
+                        style="color: #ccc"
+                      ></i>
+                      <p style="font-size: 0.8rem; margin: 5px 0">Logo Seç</p>
+                      <input
+                        type="file"
+                        name="logo"
+                        id="logoUpload"
+                        hidden
+                        onchange="previewImage(event, 'previewLogoBox')"
+                      />
+                    </div>
+                    <div
+                      id="previewLogoBox"
+                      class="preview-box"
+                      style="margin-top: 10px"
+                    >
+                      <img
+                        src=""
+                        id="imgLogoPreview"
+                        style="width: 100%; height: 80px; object-fit: contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="
+                  margin-top: 30px;
+                  border-top: 1px solid #eee;
+                  padding-top: 20px;
+                "
+              >
+                <div class="form-group">
+                  <label>Kapak Fotoğrafı</label>
+                  <div class="cover-preview" id="coverPreview">
+                    <span>Resim Önizleme</span>
+                  </div>
+                  <input
+                    type="file"
+                    name="coverImage"
+                    accept="image/*"
+                    onchange="previewCover(event)"
+                  />
+                </div>
+
+                <div class="form-group-box" style="margin-top: 20px">
+                  <h4
+                    style="
+                      margin-bottom: 15px;
+                      border-bottom: 1px solid #eee;
+                      padding-bottom: 5px;
+                    "
+                  >
+                    Sosyal Medya & Bağlantılar
+                  </h4>
+                  <div class="form-row-split">
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-brands fa-instagram"
+                          style="color: #e1306c; font-size: 1.2rem"
+                        ></i>
+                        Instagram
+                      </label>
+                      <input
+                        type="text"
+                        name="instagram"
+                        id="inputInstagram"
+                        placeholder="@kullaniciadi"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-solid fa-globe"
+                          style="color: #333; font-size: 1.2rem"
+                        ></i>
+                        Web Sitesi
+                      </label>
+                      <input
+                        type="text"
+                        name="website"
+                        id="inputWebsite"
+                        placeholder="www.ornek.com"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-row-split">
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-brands fa-twitter"
+                          style="color: #1da1f2; font-size: 1.2rem"
+                        ></i>
+                        Twitter / X
+                      </label>
+                      <input
+                        type="text"
+                        name="twitter"
+                        id="inputTwitter"
+                        placeholder="@kullaniciadi"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-brands fa-facebook"
+                          style="color: #1877f2; font-size: 1.2rem"
+                        ></i>
+                        Facebook
+                      </label>
+                      <input
+                        type="text"
+                        name="facebook"
+                        id="inputFacebook"
+                        placeholder="kullaniciadi"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-row-split">
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-brands fa-youtube"
+                          style="color: #ff0000; font-size: 1.2rem"
+                        ></i>
+                        YouTube
+                      </label>
+                      <input
+                        type="text"
+                        name="youtube"
+                        id="inputYoutube"
+                        placeholder="Kanal Linki"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label
+                        style="display: flex; align-items: center; gap: 8px"
+                      >
+                        <i
+                          class="fa-brands fa-linkedin"
+                          style="color: #0077b5; font-size: 1.2rem"
+                        ></i>
+                        LinkedIn
+                      </label>
+                      <input
+                        type="text"
+                        name="linkedin"
+                        id="inputLinkedin"
+                        placeholder="Profil Linki"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px">
+                  <label class="form-label">
+                    <i class="fa-solid fa-image"></i> Hikaye / Atölye Görseli
+                  </label>
+                  <div
+                    id="storyImageBox"
+                    class="image-upload-box"
+                    onclick="document.getElementById('storyImageInput').click()"
+                  >
+                    <img
+                      id="storyPreview"
+                      src="https://placehold.co/600x400?text=Görsel+Seç"
+                      alt="Önizleme"
+                      style="
+                        width: 100%;
+                        height: 300px;
+                        object-fit: contain;
+                        border-radius: 8px;
+                      "
+                    />
+                    <div class="upload-overlay">
+                      <i class="fa-solid fa-camera"></i> Değiştir
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    id="storyImageInput"
+                    name="storyImage"
+                    accept="image/*"
+                    style="display: none"
+                    onchange="openBrandStoryCropModal(event)"
+                  />
+                  <small class="form-hint"
+                    >Müşterilerinize çalışma ortamınızı gösteren yatay bir
+                    fotoğraf.</small
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>Siftah Notu (Motto)</label>
+                  <input
+                    type="text"
+                    name="siftahNote"
+                    id="siftahNote"
+                    placeholder="Örn: Doğadan ilham alan tasarımlar..."
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Öne Çıkan Ürün</label>
+                  <select name="featuredProductId" id="featuredProductSelect">
+                    <option value="">Yükleniyor...</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                id="btnSettingsSubmit"
+                class="btn-submit"
+                style="margin-top: 20px"
+              >
+                Değişiklik Talebi Oluştur
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div id="orders" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <div>
+                <h2>Siparişler & Kargo</h2>
+                <p style="color: #666; font-size: 0.9rem">
+                  Anlaştığınız müşteriler için buradan sipariş oluşturup
+                  takibini yapın.
+                </p>
+              </div>
+              <button
+                class="btn-submit"
+                onclick="openCreateOrderModal()"
+                style="width: auto; padding: 10px 20px"
+              >
+                <i class="fa-solid fa-plus"></i> Yeni Sipariş Oluştur
+              </button>
+            </div>
+
+            <div class="orders-list-container" id="ordersListContainer">
+              <p style="text-align: center; color: #999; padding: 20px">
+                Siparişler yükleniyor...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="my-stories" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Marka Hikayeleri</h2>
+              <p style="color: #666">
+                Müşterilerine ilham ver, markanın yolculuğunu anlat.
+              </p>
+            </div>
+
+            <form
+              id="addStoryForm"
+              class="story-form"
+              style="
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid #eee;
+              "
+            >
+              <div class="form-group">
+                <label>Hikaye Başlığı</label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Örn: Siftah'a Nasıl Başladık?"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Hikaye İçeriği</label>
+                <textarea
+                  name="content"
+                  rows="6"
+                  placeholder="Hikayeni buraya yaz..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Kapak Görseli</label>
+                <div
+                  class="image-upload-wrapper"
+                  onclick="document.getElementById('storyImageInput').click()"
+                  style="height: 120px"
+                >
+                  <i
+                    class="fa-solid fa-image"
+                    style="font-size: 2rem; color: #ccc"
+                  ></i>
+                  <p style="margin-top: 5px; font-size: 0.8rem">Görsel Seç</p>
+                  <input
+                    type="file"
+                    id="storyImageInput"
+                    name="storyImage"
+                    accept="image/*"
+                    style="display: none"
+                    onchange="openBrandStoryCropModal(event)"
+                  />
+                </div>
+                <div
+                  id="previewStoryBox"
+                  class="preview-box"
+                  style="margin-top: 10px"
+                >
+                  <img
+                    src=""
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      object-fit: cover;
+                      border-radius: 8px;
+                    "
+                  />
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-paper-plane"></i> Hikayeyi Paylaş
+              </button>
+            </form>
+
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem">
+              Paylaşılan Hikayeler
+            </h3>
+            <div id="storiesList" class="manage-grid">
+              <p style="color: #999">Yükleniyor...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="editModal" class="modal-overlay">
+      <div class="modal-content">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 style="margin: 0">Ürünü Düzenle</h3>
+          <button
+            onclick="closeEditModal()"
+            style="
+              background: none;
+              border: none;
+              cursor: pointer;
+              font-size: 1.2rem;
+            "
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form
+          id="editProductForm"
+          onsubmit="
+            event.preventDefault();
+            return false;
+          "
+        >
+          <input type="hidden" id="editId" />
+
+          <div class="form-group">
+            <label>Başlık</label>
+            <input type="text" id="editTitle" required />
+          </div>
+
+          <div class="form-group">
+            <label>Ürün Görselleri (Değiştirmek için üzerine tıklayın)</label>
+            <p style="font-size: 0.8rem; color: #666; margin-bottom: 8px">
+              Not: Bir kutuya yeni resim yüklerseniz, o sıradaki eski resim
+              güncellenir.
+            </p>
+
+            <div class="image-upload-grid">
+              <div class="image-upload-slot" onclick="triggerEditFile(0)">
+                <input
+                  type="file"
+                  class="edit-file-input"
+                  id="edit-file-0"
+                  accept="image/*"
+                  onchange="previewEditSlotImage(event, 0)"
+                  hidden
+                />
+                <img id="edit-preview-0" class="slot-preview" src="" />
+                <div class="slot-placeholder">
+                  <i class="fa-solid fa-camera"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn-remove-img"
+                  onclick="removeEditSlotImage(event, 0)"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="image-upload-slot" onclick="triggerEditFile(1)">
+                <input
+                  type="file"
+                  class="edit-file-input"
+                  id="edit-file-1"
+                  accept="image/*"
+                  onchange="previewEditSlotImage(event, 1)"
+                  hidden
+                />
+                <img id="edit-preview-1" class="slot-preview" src="" />
+                <div class="slot-placeholder">
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn-remove-img"
+                  onclick="removeEditSlotImage(event, 1)"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="image-upload-slot" onclick="triggerEditFile(2)">
+                <input
+                  type="file"
+                  class="edit-file-input"
+                  id="edit-file-2"
+                  accept="image/*"
+                  onchange="previewEditSlotImage(event, 2)"
+                  hidden
+                />
+                <img id="edit-preview-2" class="slot-preview" src="" />
+                <div class="slot-placeholder">
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn-remove-img"
+                  onclick="removeEditSlotImage(event, 2)"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="image-upload-slot" onclick="triggerEditFile(3)">
+                <input
+                  type="file"
+                  class="edit-file-input"
+                  id="edit-file-3"
+                  accept="image/*"
+                  onchange="previewEditSlotImage(event, 3)"
+                  hidden
+                />
+                <img id="edit-preview-3" class="slot-preview" src="" />
+                <div class="slot-placeholder">
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn-remove-img"
+                  onclick="removeEditSlotImage(event, 3)"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="image-upload-slot" onclick="triggerEditFile(4)">
+                <input
+                  type="file"
+                  class="edit-file-input"
+                  id="edit-file-4"
+                  accept="image/*"
+                  onchange="previewEditSlotImage(event, 4)"
+                  hidden
+                />
+                <img id="edit-preview-4" class="slot-preview" src="" />
+                <div class="slot-placeholder">
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn-remove-img"
+                  onclick="removeEditSlotImage(event, 4)"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Normal Fiyat</label>
+              <input type="number" id="editPrice" required />
+            </div>
+            <div class="form-group">
+              <label style="color: #e67e22">İndirimli Fiyat (Opsiyonel)</label>
+              <input
+                type="number"
+                id="editDiscount"
+                placeholder="Boş bırakılabilir"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Açıklama</label>
+            <textarea id="editDesc" rows="7" maxlength="700"></textarea>
+          </div>
+          <button
+            type="button"
+            class="btn-submit"
+            style="margin-top: 10px"
+            onclick="handleUpdateProduct()"
+          >
+            Güncelle
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="cropModal" class="modal-overlay" style="z-index: 10000">
+      <div
+        class="modal-content"
+        style="width: 90%; max-width: 500px; padding: 20px"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+          "
+        >
+          <h3 style="margin: 0">Fotoğrafı Ayarla</h3>
+          <button
+            onclick="closeCropModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.2rem;
+              cursor: pointer;
+            "
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div
+          style="
+            height: 500px;
+            width: 100%;
+            background: #333;
+            overflow: hidden;
+            border-radius: 8px;
+          "
+        >
+          <img
+            id="imageToCrop"
+            src=""
+            style="max-width: 100%; display: block"
+          />
+        </div>
+
+        <div
+          style="
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+          "
+        >
+          <button onclick="closeCropModal()" class="btn-confirm-cancel">
+            Vazgeç
+          </button>
+          <button
+            onclick="saveCroppedImage()"
+            class="btn-submit"
+            style="width: auto; padding: 0 25px"
+          >
+            Kırp ve Kaydet
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="createOrderModal" class="modal-overlay">
+      <div class="modal-content" style="max-width: 500px; overflow: visible">
+        <div
+          class="modal-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 style="margin: 0">Sipariş Detayları</h3>
+          <button
+            onclick="closeModal('createOrderModal')"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.2rem;
+              cursor: pointer;
+            "
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="createOrderForm" onsubmit="handleCreateOrder(event)">
+          <div class="form-group" style="position: relative">
+            <label>Müşteri</label>
+            <div class="searchable-select">
+              <input
+                type="text"
+                id="buyerSearchInput"
+                class="searchable-input"
+                placeholder="Müşteri ara..."
+                oninput="filterDropdown('buyer')"
+                onfocus="filterDropdown('buyer')"
+                autocomplete="off"
+              />
+              <input type="hidden" id="selectedBuyerId" />
+              <div id="buyerDropdownList" class="dropdown-list"></div>
+            </div>
+          </div>
+
+          <div class="form-group" style="position: relative">
+            <label>Ürün</label>
+            <div class="searchable-select">
+              <input
+                type="text"
+                id="productSearchInput"
+                class="searchable-input"
+                placeholder="Ürün ara..."
+                oninput="filterDropdown('product')"
+                onfocus="filterDropdown('product')"
+                autocomplete="off"
+              />
+              <input type="hidden" id="selectedProductId" />
+              <div id="productDropdownList" class="dropdown-list"></div>
+            </div>
+          </div>
+
+          <div class="form-row-split">
+            <div class="form-col">
+              <label>Birim Fiyat (TL)</label>
+              <input
+                type="number"
+                id="orderPrice"
+                class="premium-input"
+                placeholder="0.00"
+                step="0.01"
+                oninput="calculateTotal()"
+              />
+            </div>
+            <div class="form-col">
+              <label>Adet</label>
+              <input
+                type="number"
+                id="orderQuantity"
+                class="premium-input"
+                value="1"
+                min="1"
+                oninput="calculateTotal()"
+              />
+            </div>
+          </div>
+
+          <div class="total-price-box">
+            <span class="total-price-label">TOPLAM TUTAR</span>
+            <span class="total-price-value" id="liveTotalDisplay">0,00 ₺</span>
+          </div>
+
+          <div class="form-group" style="margin-top: 15px">
+            <label>Satıcı Notu</label>
+            <textarea
+              id="orderNote"
+              rows="2"
+              placeholder="Örn: Hediye paketi..."
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              "
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-submit"
+            style="margin-top: 10px; width: 100%"
+          >
+            Siparişi Onayla
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="shippingModal" class="modal-overlay">
+      <div class="modal-content" style="max-width: 400px">
+        <div
+          class="modal-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+          "
+        >
+          <h3>Kargo Bilgisi Gir</h3>
+          <button
+            onclick="closeModal('shippingModal')"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.2rem;
+              cursor: pointer;
+            "
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <form id="shippingForm" onsubmit="handleUpdateShipping(event)">
+          <input type="hidden" id="shippingOrderId" />
+
+          <div class="form-group">
+            <label>Kargo Firması</label>
+            <select
+              id="shippingCompany"
+              class="form-control"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+              "
+            >
+              <option value="yurtici">Yurtiçi Kargo</option>
+              <option value="aras">Aras Kargo</option>
+              <option value="mng">MNG Kargo</option>
+              <option value="ptt">PTT Kargo</option>
+              <option value="surat">Sürat Kargo</option>
+              <option value="ups">UPS Kargo</option>
+              <option value="dhl">DHL</option>
+              <option value="diger">Diğer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Takip Numarası</label>
+            <input
+              type="text"
+              id="trackingNumber"
+              required
+              placeholder="Örn: 1234567890"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+              "
+            />
+          </div>
+
+          <button type="submit" class="btn-submit" style="margin-top: 10px">
+            Kargolandı Olarak İşaretle
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="sellerSafetyModal" class="modal-overlay">
+  <div class="siftah-modal-content">
+    
+    <div class="modal-icon-circle">
+      <i class="fa-solid fa-store"></i>
+    </div>
+
+    <h3>İlk Temas, İlk İzlenim! 🚀</h3>
+    
+    <div class="modal-body-text">
+      <span class="main-warning">Müşterinizle diyaloğu başlatıyorsunuz.</span>
+      <ul>
+        <li>💳 <strong>Platformda Kalın:</strong> Siftah dışındaki (IBAN, Kapora) işlemlerde güvencemiz devre dışı kalır.</li>
+        <li>🤝 <strong>Dürüst Esnaflık:</strong> Ürün durumu hakkında şeffaf olun. Yanıltıcı bilgi mağaza puanınızı düşürebilir.</li>
+        <li>💬 <strong>Profesyonel Dil:</strong> Saygılı ve çözüm odaklı iletişim, sadık müşteriler kazandırır.</li>
+      </ul>
+      <span class="pro-tip">
+        <i class="fa-solid fa-check-double"></i> İpucu: Güvenli ticaret, bol kazanç demektir.
+      </span>
+    </div>
+
+    <div class="confirm-actions">
+      <button class="btn-modal-cancel" onclick="document.getElementById('sellerSafetyModal').style.display='none'">Vazgeç</button>
+      <button class="btn-modal-confirm" onclick="confirmSafetyAndSend()">Anlaştık, Gönder</button>
+    </div>
+
+  </div>
+</div>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+      const API_URL = `${API_BASE_URL}/api`;
+      let brandStoryCroppedBlob = null;
+      let isFirstMessageInChat = false;
+
+      function fixImageUrl(dbPath) {
+        if (
+          !dbPath ||
+          dbPath === "undefined" ||
+          dbPath === "null" ||
+          dbPath === ""
+        ) {
+          return "https://placehold.co/300x300?text=Resim+Yok";
+        }
+
+        let cleanPath = String(dbPath).replace(/\\/g, "/");
+
+        if (cleanPath.startsWith("http")) return cleanPath;
+
+        if (cleanPath.includes("uploads/")) {
+          cleanPath = cleanPath.substring(cleanPath.indexOf("uploads/"));
+        } else if (cleanPath.startsWith("/")) {
+          cleanPath = cleanPath.substring(1);
+        }
+
+        return `${API_BASE_URL}/${cleanPath}?t=${Date.now()}`;
+      }
+
+      let cropper;
+      let finalCroppedBlob = null;
+
+      function openCropModal(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.getElementById("imageToCrop");
+            img.src = e.target.result;
+            document.getElementById("cropModal").style.display = "flex";
+            if (cropper) {
+              cropper.destroy();
+            }
+            cropper = new Cropper(img, {
+              aspectRatio: 16 / 9,
+              viewMode: 1,
+              autoCropArea: 1,
+            });
+            const saveBtn = document.querySelector("#cropModal .btn-submit");
+            const newBtn = saveBtn.cloneNode(true);
+            saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+            newBtn.addEventListener("click", saveCroppedImage);
+          };
+          reader.readAsDataURL(file);
+        }
+        event.target.value = "";
+      }
+
+      function closeCropModal() {
+        document.getElementById("cropModal").style.display = "none";
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+      }
+
+      // --- MARKA HİKAYESİ İÇİN KIRPMA MODALINI AÇ ---
+      function openBrandStoryCropModal(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.getElementById("imageToCrop");
+            img.src = e.target.result;
+            document.getElementById("cropModal").style.display = "flex";
+            if (cropper) {
+              cropper.destroy();
+            }
+            cropper = new Cropper(img, {
+              aspectRatio: 16 / 9,
+              viewMode: 1,
+              autoCropArea: 1,
+            });
+            const saveBtn = document.querySelector("#cropModal .btn-submit");
+            const newBtn = saveBtn.cloneNode(true);
+            saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+            newBtn.addEventListener("click", saveBrandStoryCroppedImage);
+          };
+          reader.readAsDataURL(file);
+        }
+        event.target.value = "";
+      }
+
+      function saveBrandStoryCroppedImage() {
+        if (!cropper) return;
+        const canvas = cropper.getCroppedCanvas({
+          width: 1200,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: "high",
+        });
+
+        canvas.toBlob(
+          (blob) => {
+            brandStoryCroppedBlob = blob;
+            const previewImg = document.getElementById("storyPreview");
+            previewImg.src = URL.createObjectURL(blob);
+            closeCropModal();
+            showToast("success", "Süper!", "Görsel kırpıldı ve ayarlandı.");
+          },
+          "image/jpeg",
+          0.9,
+        );
+      }
+
+      function saveCroppedImage() {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({
+          width: 800,
+        });
+
+        canvas.toBlob(
+          (blob) => {
+            finalCroppedBlob = blob; // Dosyayı değişkene at
+
+            const previewBox = document.getElementById("previewStoryBox");
+            const previewImg = previewBox.querySelector("img");
+            previewImg.src = URL.createObjectURL(blob);
+            previewBox.style.display = "block";
+
+            closeCropModal();
+            showToast("success", "Hazır", "Resim ayarlandı.");
+          },
+          "image/jpeg",
+          0.9,
+        );
+      }
+
+      // --- TARİH DÜZELTİCİ FONKSİYON ---
+      function formatSafeTime(dateInput) {
+        if (!dateInput) return "";
+
+        let dateStr = String(dateInput);
+        if (dateStr.indexOf("T") === -1 && dateStr.indexOf(" ") > 0) {
+          dateStr = dateStr.replace(" ", "T");
+        }
+
+        const date = new Date(dateStr);
+
+        if (isNaN(date.getTime())) {
+          return String(dateInput).substring(0, 5);
+        }
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+
+        return `${hours}:${minutes}`;
+      }
+
+      let dashCurrentChatId = null;
+      let dashMyId = null;
+      let confirmCallback = null;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "seller") {
+          window.location.href = "satici-girisi.html";
+          return;
+        }
+
+        dashMyId = user.id;
+        document.getElementById("sellerName").textContent = user.name;
+        document.querySelector(".avatar").textContent = user.name
+          .charAt(0)
+          .toUpperCase();
+
+        const viewBtn = document.getElementById("viewShopBtn");
+        if (viewBtn) viewBtn.href = `magaza-detay.html?sellerId=${user.id}`;
+
+        loadProfileData();
+      });
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        let icon = "fa-circle-check";
+        if (type === "error") icon = "fa-circle-xmark";
+        if (type === "warning") icon = "fa-triangle-exclamation";
+
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        toast.innerHTML = `
+                  <i class="fa-solid ${icon}" style="font-size:1.5rem;"></i>
+                  <div class="toast-content">
+                      <span class="toast-title">${title}</span>
+                      <span class="toast-msg">${message}</span>
+                  </div>
+                `;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.animation = "fadeOut 0.5s ease forwards";
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+
+      function openConfirmModal(title, desc, callback) {
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmDesc").textContent = desc;
+        document.getElementById("customConfirmModal").style.display = "flex";
+        confirmCallback = callback;
+      }
+
+      function closeConfirmModal() {
+        document.getElementById("customConfirmModal").style.display = "none";
+        confirmCallback = null;
+      }
+
+      document.getElementById("btnConfirmYes").addEventListener("click", () => {
+        if (confirmCallback) confirmCallback();
+        closeConfirmModal();
+      });
+
+      /* --- TAB DEĞİŞTİRME --- */
+      function switchTab(tabId, element) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
+        document
+          .querySelectorAll(".menu-item")
+          .forEach((i) => i.classList.remove("active"));
+        element.classList.add("active");
+
+        const titles = {
+          dashboard: "Genel Bakış",
+          "products-list": "Ürünlerim",
+          "my-stories": "Hikayelerim",
+          messages: "Mesajlar",
+          "add-product": "Ürün Ekle",
+          settings: "Mağaza Ayarları",
+        };
+        document.getElementById("pageTitle").textContent = titles[tabId];
+        if (tabId === "messages") loadDashConversations();
+        if (tabId === "my-stories") loadMyStories();
+        if (tabId === "orders") loadOrders();
+
+        if (window.innerWidth <= 900) {
+          const sidebar = document.querySelector(".sidebar");
+          if (sidebar.classList.contains("mobile-active")) {
+            toggleSidebar();
+          }
+        }
+      }
+
+      async function loadProfileData() {
+        try {
+          const res = await fetch(`${API_URL}/users/me`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+
+          const data = await res.json();
+
+          const displayName = data.brandName || data.name || "Satıcı";
+
+          if (document.getElementById("sellerName")) {
+            document.getElementById("sellerName").textContent = displayName;
+          }
+
+          if (document.querySelector(".avatar")) {
+            const firstChar = displayName
+              ? displayName.charAt(0).toUpperCase()
+              : "S";
+            document.querySelector(".avatar").textContent = firstChar;
+          }
+
+          if (document.getElementById("totalProductCount")) {
+            document.getElementById("totalProductCount").textContent =
+              data.Products ? data.Products.length : 0;
+          }
+
+          const totalViews = data.Products
+            ? data.Products.reduce(
+                (acc, curr) => acc + (curr.viewCount || 0),
+                0,
+              )
+            : 0;
+          if (document.getElementById("totalViewCount")) {
+            document.getElementById("totalViewCount").textContent = totalViews;
+          }
+
+          // --- BEKLEYEN VERİ MANTIĞI ---
+          const isPending = data.isUpdatePending;
+
+          // Yardımcı fonksiyon: Eğer bekleyen veri varsa onu, yoksa normali döndür
+          const getVal = (pendingKey, normalKey) => {
+            // data[pendingKey] bazen "null" string olarak gelebilir, kontrol edelim
+            if (
+              isPending &&
+              data[pendingKey] &&
+              data[pendingKey] !== "null" &&
+              data[pendingKey] !== ""
+            ) {
+              return data[pendingKey];
+            }
+            return data[normalKey] || "";
+          };
+
+          // 1. Kimlik Bilgileri
+          if (document.getElementById("inputName"))
+            document.getElementById("inputName").value = getVal(
+              "pendingName",
+              "name",
+            );
+
+          if (document.getElementById("inputSurname"))
+            document.getElementById("inputSurname").value = getVal(
+              "pendingSurname",
+              "surname",
+            );
+
+          if (document.getElementById("inputBrandName"))
+            document.getElementById("inputBrandName").value = getVal(
+              "pendingBrandName",
+              "brandName",
+            );
+
+          // 2. Sosyal Medya (Burayı güncelledik, hepsi getVal kullanıyor)
+          if (document.getElementById("inputInstagram"))
+            document.getElementById("inputInstagram").value = getVal(
+              "pendingInstagram",
+              "instagram",
+            );
+
+          if (document.getElementById("inputWebsite"))
+            document.getElementById("inputWebsite").value = getVal(
+              "pendingWebsite",
+              "website",
+            );
+
+          if (document.getElementById("inputTwitter"))
+            document.getElementById("inputTwitter").value = getVal(
+              "pendingTwitter",
+              "twitter",
+            );
+
+          if (document.getElementById("inputFacebook"))
+            document.getElementById("inputFacebook").value = getVal(
+              "pendingFacebook",
+              "facebook",
+            );
+
+          if (document.getElementById("inputYoutube"))
+            document.getElementById("inputYoutube").value = getVal(
+              "pendingYoutube",
+              "youtube",
+            );
+
+          if (document.getElementById("inputLinkedin"))
+            document.getElementById("inputLinkedin").value = getVal(
+              "pendingLinkedin",
+              "linkedin",
+            );
+
+          // 3. Motto
+          if (document.getElementById("siftahNote")) {
+            document.getElementById("siftahNote").value = getVal(
+              "pendingSiftahNote",
+              "siftahNote",
+            );
+          }
+
+          // 4. Görseller (Kapak, Logo, Profil)
+          const activeProfileImg =
+            isPending && data.pendingProfileImage
+              ? data.pendingProfileImage
+              : data.profileImage;
+          if (
+            activeProfileImg &&
+            document.getElementById("previewProfileBox")
+          ) {
+            document.getElementById("imgProfilePreview").src =
+              fixImageUrl(activeProfileImg);
+            document.getElementById("previewProfileBox").style.display =
+              "block";
+            if (isPending && data.pendingProfileImage) {
+              document.getElementById("imgProfilePreview").style.border =
+                "3px solid #f59e0b";
+            }
+          }
+
+          const activeLogo =
+            isPending && data.pendingLogoUrl
+              ? data.pendingLogoUrl
+              : data.logoUrl;
+          if (activeLogo && document.getElementById("previewLogoBox")) {
+            document.getElementById("imgLogoPreview").src =
+              fixImageUrl(activeLogo);
+            document.getElementById("previewLogoBox").style.display = "block";
+            if (isPending && data.pendingLogoUrl) {
+              document.getElementById("imgLogoPreview").style.border =
+                "3px solid #f59e0b";
+            }
+          }
+
+          const activeCover =
+            isPending && data.pendingCoverImage
+              ? data.pendingCoverImage
+              : data.coverImage;
+          if (activeCover && document.getElementById("coverPreview")) {
+            document.getElementById("coverPreview").style.backgroundImage =
+              `url('${fixImageUrl(activeCover)}')`;
+            document.getElementById("coverPreview").innerHTML = "";
+            if (isPending && data.pendingCoverImage) {
+              document.getElementById("coverPreview").style.border =
+                "3px solid #f59e0b";
+            }
+          }
+
+          const activeStoryImg =
+            isPending && data.pendingStoryImage
+              ? data.pendingStoryImage
+              : data.storyImage;
+          if (activeStoryImg && document.getElementById("storyImageBox")) {
+            // Story görseli için önizleme logic'i eklenebilir veya input style değiştirilebilir
+            // Şimdilik sadece border kontrolü
+            if (isPending && data.pendingStoryImage) {
+              document.getElementById("storyImageBox").style.border =
+                "3px solid #f59e0b";
+            }
+          }
+
+          // 5. Form Kilitleme Mantığı
+          const pendingAlert = document.getElementById("pendingAlert");
+          const fullForm = document.getElementById("fullSettingsForm");
+          const btnSubmit = document.getElementById("btnSettingsSubmit");
+
+          if (data.isUpdatePending) {
+            if (pendingAlert) {
+              pendingAlert.style.display = "flex";
+              pendingAlert.innerHTML = `
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <div>
+                        <strong>Değişiklikleriniz Onay Bekliyor</strong>
+                        <p style="margin: 0; font-size: 0.9rem">
+                           Şu anda yaptığınız değişiklikler Admin onayındadır. Formlardaki veriler 
+                           <span style="color:#f59e0b; font-weight:bold;">bekleyen talebinizi</span> göstermektedir.
+                        </p>
+                    </div>
+                `;
+            }
+            if (fullForm)
+              fullForm
+                .querySelectorAll("input, select, textarea, button")
+                .forEach((i) => (i.disabled = true));
+            if (btnSubmit) {
+              btnSubmit.innerHTML =
+                "<i class='fa-solid fa-lock'></i> İnceleme Bekliyor";
+              btnSubmit.style.backgroundColor = "#9ca3af";
+            }
+          } else {
+            if (pendingAlert) pendingAlert.style.display = "none";
+            if (fullForm)
+              fullForm
+                .querySelectorAll("input, select, textarea, button")
+                .forEach((i) => (i.disabled = false));
+            if (btnSubmit) {
+              btnSubmit.innerText = "Değişiklik Talebi Oluştur";
+              btnSubmit.style.backgroundColor = "";
+            }
+          }
+
+          populateProductGrids(data);
+        } catch (err) {
+          console.error("Profil yükleme hatası:", err);
+        }
+      }
+
+      document
+        .getElementById("addStoryForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!finalCroppedBlob) {
+            showToast(
+              "warning",
+              "Eksik",
+              "Lütfen bir kapak fotoğrafı seçip ayarlayın.",
+            );
+            return;
+          }
+
+          const btn = e.target.querySelector(".btn-submit");
+          btn.disabled = true;
+          btn.innerHTML = "Paylaşılıyor...";
+
+          const formData = new FormData(e.target);
+
+          formData.set("coverImage", finalCroppedBlob, "story-cover.jpg");
+
+          try {
+            const res = await fetch(`${API_URL}/stories/add`, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+              body: formData,
+            });
+
+            if (res.ok) {
+              showToast("success", "Harika!", "Hikayen başarıyla paylaşıldı.");
+              e.target.reset();
+              document.getElementById("previewStoryBox").style.display = "none";
+              finalCroppedBlob = null;
+              loadMyStories(); // Listeyi yenile
+            } else {
+              showToast("error", "Hata", "Hikaye paylaşılamadı.");
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("error", "Hata", "Sunucu hatası.");
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML =
+              '<i class="fa-solid fa-paper-plane"></i> Hikayeyi Paylaş';
+          }
+        });
+
+      // 2. Hikayeleri Listeleme
+      async function loadMyStories() {
+        const list = document.getElementById("storiesList");
+        // Backend'de "sadece benim hikayelerim" endpoint'i yoksa şimdilik public olandan filtreleriz
+        // Veya en doğrusu yeni bir endpoint ekleriz.
+        // Şimdilik public'i çekip filtreleyelim (Geçici Çözüm):
+        try {
+          const res = await fetch(`${API_URL}/stories/public`);
+          const allStories = await res.json();
+
+          // Sadece benimkileri filtrele
+          const myStories = allStories.filter((s) => s.sellerId === dashMyId);
+
+          list.innerHTML = "";
+          if (myStories.length === 0) {
+            list.innerHTML =
+              '<p style="grid-column:1/-1; color:#999; text-align:center;">Henüz hiç hikaye paylaşmadın.</p>';
+            return;
+          }
+
+          myStories.forEach((s) => {
+            const img = fixImageUrl(s.coverImage);
+            const html = `
+                          <div class="manage-card">
+                              <img src="${img}" class="manage-img" style="height: 140px;">
+                              <div class="manage-body">
+                                  <h4 class="manage-title" style="font-size:1rem;">${s.title}</h4>
+                                  <p style="font-size:0.8rem; color:#666; margin-bottom:10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${s.content}</p>
+                                  <div class="manage-actions">
+                                      <button class="btn-action btn-delete" style="width:100%;" onclick="deleteStory(${s.id})"><i class="fa-solid fa-trash"></i> Sil</button>
+                                  </div>
+                              </div>
+                          </div>
+                        `;
+            list.innerHTML += html;
+          });
+        } catch (e) {
+          console.log("Hikaye yükleme hatası", e);
+        }
+      }
+
+      // 3. Hikaye Silme (Backend Rotasını Ekleyeceğiz)
+      async function deleteStory(id) {
+        if (!confirm("Bu hikayeyi silmek istediğine emin misin?")) return;
+        try {
+          // NOT: Backend'de delete rotası henüz yok, onu da eklemeliyiz.
+          // Şimdilik console'a yazalım.
+          console.log("Silinecek ID:", id);
+          alert("Silme özelliği yakında eklenecek.");
+        } catch (e) {}
+      }
+
+      function populateProductGrids(data) {
+        const gridNormal = document.getElementById("manageGrid");
+        const gridRejected = document.getElementById("rejectedGrid");
+        const rejectedSection = document.getElementById("rejectedSection");
+        const gridDashboard = document.getElementById("dashboardGrid");
+        const select = document.getElementById("featuredProductSelect");
+
+        // Temizlik
+        if (select) select.innerHTML = '<option value="">Seçiniz...</option>';
+        if (gridNormal) gridNormal.innerHTML = "";
+        if (gridRejected) gridRejected.innerHTML = "";
+        if (gridDashboard) gridDashboard.innerHTML = "";
+
+        if (!data.Products || data.Products.length === 0) {
+          const msg =
+            '<p style="grid-column:1/-1; text-align:center; color:#999;">Henüz ürün yok.</p>';
+          if (gridNormal) gridNormal.innerHTML = msg;
+          if (gridDashboard) gridDashboard.innerHTML = msg;
+          if (rejectedSection) rejectedSection.style.display = "none";
+          return;
+        }
+
+        const sortedProducts = data.Products.sort((a, b) => b.id - a.id);
+        let rejectedCount = 0;
+
+        sortedProducts.forEach((prod) => {
+          // Select kutusu (Sadece onaylılar)
+          if (select && prod.isApproved) {
+            const opt = document.createElement("option");
+            opt.value = prod.id;
+            opt.textContent = prod.title;
+            if (prod.id === data.featuredProductId) opt.selected = true;
+            select.appendChild(opt);
+          }
+
+          // --- RESİM SEÇİMİ (YENİ KISIM) ---
+          let imgUrl = "https://placehold.co/300x300?text=Resim+Yok"; // Varsayılan
+
+          if (
+            prod.images &&
+            Array.isArray(prod.images) &&
+            prod.images.length > 0
+          ) {
+            // Yeni sistem: Dizi varsa ilkini al
+            imgUrl = fixImageUrl(prod.images[0]);
+          } else if (prod.image) {
+            // Eski sistem: String varsa onu al
+            imgUrl = fixImageUrl(prod.image);
+          }
+          // ---------------------------------
+
+          let priceDisplay = `<span class="price-new">${prod.price}₺</span>`;
+          if (prod.discountPrice)
+            priceDisplay = `<span class="price-old">${prod.price}₺</span> <span class="price-new">${prod.discountPrice}₺</span>`;
+
+          const safeProd = JSON.stringify(prod)
+            .replace(/'/g, "&#39;")
+            .replace(/"/g, "&quot;");
+
+          let statusLabel = "";
+          let cardClass = "manage-card";
+          let rejectionInfo = "";
+
+          // --- DURUM KONTROLÜ ---
+          if (prod.rejectionReason && !prod.isApproved) {
+            statusLabel =
+              '<span class="status-badge status-rejected"><i class="fa-solid fa-triangle-exclamation"></i> Düzeltme Gerekli</span>';
+            cardClass += " rejected-card";
+            rejectionInfo = `
+                <div class="rejection-box" style="margin-top:10px; padding:10px; background:#fff; border-left:4px solid #ef4444; font-size:0.85rem; color:#7f1d1d;">
+                    <div style="font-weight:700; color:#ef4444; margin-bottom:3px;">Admin Notu:</div>
+                    ${prod.rejectionReason}
+                </div>
+             `;
+            rejectedCount++;
+          } else if (prod.isApproved) {
+            statusLabel =
+              '<span class="status-badge status-active"><i class="fa-solid fa-check"></i> Yayında</span>';
+          } else {
+            statusLabel =
+              '<span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> İnceleniyor</span>';
+          }
+
+          const isShowcase = prod.isShowcase === true;
+          const showcaseClass = isShowcase ? "active" : "";
+          const showcaseText = isShowcase ? "Vitrinde" : "Vitrine Ekle";
+          const showcaseIcon = isShowcase
+            ? "fa-solid fa-star"
+            : "fa-regular fa-star";
+
+          const card = `
+              <div class="${cardClass}" style="position: relative;">
+                  ${statusLabel} 
+                  <div class="img-link">
+                      <img src="${imgUrl}" class="manage-img">
+                  </div>
+                  <div class="manage-body">
+                      <h4 class="manage-title">${prod.title}</h4>
+                      <div class="manage-price-row">${priceDisplay}</div>
+                      ${rejectionInfo}
+                      <div class="manage-actions">
+                          <button class="btn-action btn-showcase ${showcaseClass}" onclick="toggleShowcase(${prod.id})" title="${showcaseText}">
+                            <i class="${showcaseIcon}"></i> ${showcaseText}
+                          </button>
+                          <button class="btn-action btn-edit" onclick='openEditModal(${safeProd})'>
+                              <i class="fa-solid fa-pen"></i> Düzenle
+                          </button>
+                          <button class="btn-action btn-delete" onclick="deleteProduct(${prod.id})">
+                              <i class="fa-solid fa-trash"></i> Sil
+                          </button>
+                      </div>
+                  </div>
+              </div>`;
+
+          if (prod.rejectionReason && !prod.isApproved) {
+            if (gridRejected) gridRejected.innerHTML += card;
+          } else {
+            if (gridNormal) gridNormal.innerHTML += card;
+          }
+
+          if (gridDashboard) gridDashboard.innerHTML += card;
+        });
+
+        if (rejectedSection) {
+          rejectedSection.style.display = rejectedCount > 0 ? "block" : "none";
+        }
+      }
+
+      async function loadDashConversations() {
+        try {
+          const res = await fetch(`${API_URL}/messages/conversations`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          const conversations = await res.json();
+          const listContainer = document.getElementById("dashChatList");
+          listContainer.innerHTML = "";
+
+          if (conversations.length === 0) {
+            listContainer.innerHTML =
+              '<div style="text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-inbox" style="font-size:2rem; margin-bottom:10px;"></i><p>Henüz mesajınız yok.</p></div>';
+            return;
+          }
+
+          conversations.forEach((conv) => {
+            const otherUser = conv.user;
+
+            let displayName = otherUser.brandName || otherUser.name;
+            let nameClass = "";
+            let verifiedIcon = "";
+
+            if (otherUser.role && otherUser.role.toLowerCase() === "admin") {
+              displayName = "Siftah Destek";
+              nameClass = "admin-user-text";
+              verifiedIcon = '<i class="fa-solid fa-shield-halved"></i>';
+            }
+
+            const avatar = fixImageUrl(
+              otherUser.logoUrl || otherUser.profileImage,
+            );
+            const rawDate = conv.lastMessageDate || conv.createdAt || conv.time; // Backend yapına göre değişebilir
+            const time = formatSafeTime(rawDate);
+            const activeClass =
+              dashCurrentChatId == otherUser.id ? "active" : "";
+
+            let unreadBadge = "";
+            let unreadClass = "";
+            if (conv.unreadCount > 0) {
+                unreadBadge = `<span class="ios-unread-badge">${conv.unreadCount}</span>`;
+                unreadClass = "unread"; 
+            }
+
+            const html = `
+                <div class="ios-chat-item ${activeClass} ${unreadClass}" onclick="openDashChat('${otherUser.id}')">
+                    <img src="${avatar}" alt="Avatar">
+                    <div class="ios-item-info">
+                        <div class="ios-item-header">
+                            <span class="ios-item-name ${nameClass}">
+                                ${displayName} ${verifiedIcon}
+                            </span>
+                            <span class="ios-item-time">${time}</span>
+                        </div>
+                        <div class="ios-item-bottom" style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="ios-item-last-msg" style="flex:1;">${conv.lastMessage}</div>
+                            ${unreadBadge}
+                        </div>
+                    </div>
+                </div>
+            `;
+            listContainer.innerHTML += html;
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function openDashChat(userId) {
+        dashCurrentChatId = userId;
+
+        fetch(`${API_URL}/messages/mark-read/${userId}`, {
+            method: "PUT",
+            headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+        }).then(() => {
+        }).catch(err => console.error("Okundu hatası:", err));
+
+        document.getElementById("dashNoChat").style.display = "none";
+        document.getElementById("dashActiveChat").style.display = "flex";
+        document.getElementById("dashMessagesArea").innerHTML =
+          '<p style="text-align:center; padding:20px; color:#ccc;">Yükleniyor...</p>';
+
+        loadDashConversations();
+
+        if (window.innerWidth <= 900) {
+          document
+            .querySelector(".ios-chat-window")
+            .classList.add("show-mobile");
+        }
+
+        try {
+          const userRes = await fetch(`${API_URL}/users/${userId}`);
+          const userData = await userRes.json();
+
+          const headerNameEl = document.getElementById("dashHeaderName");
+
+          headerNameEl.classList.remove("admin-user-text");
+          headerNameEl.innerHTML = "";
+
+          if (userData.role && userData.role.toLowerCase() === "admin") {
+            headerNameEl.classList.add("admin-user-text");
+            headerNameEl.innerHTML = `Siftah Destek <i class="fa-solid fa-shield-halved" style="margin-left:5px;"></i>`;
+          } else {
+            headerNameEl.textContent = userData.brandName || userData.name;
+          }
+
+          document.getElementById("dashHeaderImg").src = fixImageUrl(
+            userData.logoUrl || userData.profileImage,
+          );
+
+          const msgRes = await fetch(
+            `${API_URL}/messages/conversation/${userId}`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            },
+          );
+          const messages = await msgRes.json();
+
+          const haveISentMessage = messages.some(msg => Number(msg.senderId) === Number(dashMyId));
+
+          if (!haveISentMessage) {
+             isFirstMessageInChat = true; 
+          } else {
+             isFirstMessageInChat = false; 
+          }
+          renderDashMessages(messages);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function renderDashMessages(messages) {
+        const area = document.getElementById("dashMessagesArea");
+        area.innerHTML = "";
+
+        messages.forEach((msg) => {
+          const isMe = Number(msg.senderId) === Number(dashMyId);
+          const cls = isMe ? "sent" : "received";
+          const time = formatSafeTime(msg.createdAt);
+
+          const readClass = (isMe && msg.isRead) ? "read" : "";
+          
+          const tickIcon = isMe 
+            ? `<i class="fa-solid fa-check-double ${readClass}"></i>` 
+            : "";
+
+          area.innerHTML += `
+            <div class="ios-msg ${cls}">
+                ${msg.content}
+                <span class="ios-msg-time">
+                    ${time}
+                    ${tickIcon} 
+                </span>
+            </div>
+          `;
+        });
+
+        area.scrollTop = area.scrollHeight;
+      }
+
+      async function sendDashMessage(forceSend = false) {
+        const input = document.getElementById("dashChatInput");
+        const content = input.value.trim();
+
+        if (!content || !dashCurrentChatId) return;
+
+        if (isFirstMessageInChat && !forceSend) {
+            document.getElementById("sellerSafetyModal").style.display = "flex"; 
+            return; 
+        }
+
+        const area = document.getElementById("dashMessagesArea");
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const time = `${hours}:${minutes}`;
+
+        area.innerHTML += `
+            <div class="ios-msg sent">
+                ${content}
+                <span class="ios-msg-time">${time}</span>
+            </div>
+        `;
+        area.scrollTop = area.scrollHeight;
+        input.value = "";
+
+        isFirstMessageInChat = false;
+
+        try {
+          await fetch(`${API_URL}/messages/send`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              receiverId: dashCurrentChatId,
+              content: content,
+            }),
+          });
+
+          loadDashConversations();
+        } catch (e) {
+          console.error(e);
+          showToast("error", "Hata", "Mesaj gönderilemedi");
+        }
+      }
+
+      function closeMobileChat() {
+        const chatWindow = document.querySelector(".ios-chat-window");
+        if (chatWindow) {
+          chatWindow.classList.remove("show-mobile");
+        }
+        const activeItem = document.querySelector(".ios-chat-item.active");
+        if (activeItem) {
+          activeItem.classList.remove("active");
+        }
+        dashCurrentChatId = null;
+      }
+
+      function confirmSafetyAndSend() {
+          document.getElementById("sellerSafetyModal").style.display = "none";
+          sendDashMessage(true); 
+      }
+
+      function handleDashEnter(e) {
+        if (e.key === "Enter") sendDashMessage();
+      }
+
+      function previewImage(event, targetId) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const box = document.getElementById(targetId);
+            const img = box.querySelector("img");
+            img.src = e.target.result;
+            box.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      function previewCover(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const el = document.getElementById("coverPreview");
+            el.style.backgroundImage = `url('${e.target.result}')`;
+            el.innerHTML = "";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function triggerEditFile(index) {
+        document.getElementById(`edit-file-${index}`).click();
+      }
+
+      function previewEditSlotImage(event, index) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.getElementById(`edit-preview-${index}`);
+            const placeholder = document.querySelector(
+              `#editProductForm .image-upload-slot:nth-child(${index + 1}) .slot-placeholder`,
+            );
+            const removeBtn = document.querySelector(
+              `#editProductForm .image-upload-slot:nth-child(${index + 1}) .btn-remove-img`,
+            );
+
+            img.src = e.target.result;
+            img.style.display = "block";
+            placeholder.style.display = "none";
+            removeBtn.style.display = "flex";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function removeEditSlotImage(event, index) {
+        event.stopPropagation();
+        document.getElementById(`edit-file-${index}`).value = ""; // Dosyayı sil
+        const img = document.getElementById(`edit-preview-${index}`);
+        const placeholder = document.querySelector(
+          `#editProductForm .image-upload-slot:nth-child(${index + 1}) .slot-placeholder`,
+        );
+        const removeBtn = document.querySelector(
+          `#editProductForm .image-upload-slot:nth-child(${index + 1}) .btn-remove-img`,
+        );
+
+        img.src = "";
+        img.style.display = "none";
+        placeholder.style.display = "block";
+        removeBtn.style.display = "none";
+      }
+
+      /* --- MODAL VE DİĞER İŞLEMLER --- */
+      function openEditModal(product) {
+        if (typeof product === "string") product = JSON.parse(product);
+        document.getElementById("editModal").style.display = "flex";
+
+        const modalContent = document.querySelector(
+          "#editModal .modal-content",
+        );
+        let alertBox = document.getElementById("editModalAlert");
+
+        // Eğer uyarı kutusu yoksa oluştur
+        if (!alertBox) {
+          alertBox = document.createElement("div");
+          alertBox.id = "editModalAlert";
+          alertBox.className = "modal-alert-box";
+          const header = modalContent.querySelector("div");
+          header.parentNode.insertBefore(alertBox, header.nextSibling);
+        }
+
+        if (product.rejectionReason && !product.isApproved) {
+          alertBox.style.display = "flex";
+          alertBox.innerHTML = `
+                <i class="fa-solid fa-circle-exclamation" style="font-size:1.2rem; margin-top:2px;"></i>
+                <div>
+                    <strong>Düzeltme Gerekiyor</strong>
+                    <p style="margin:5px 0 0; font-size:0.9rem;">${product.rejectionReason}</p>
+                </div>
+            `;
+        } else {
+          alertBox.style.display = "none";
+        }
+
+        document.getElementById("editId").value = product.id;
+        document.getElementById("editTitle").value = product.title;
+        document.getElementById("editPrice").value = product.price;
+        document.getElementById("editDiscount").value =
+          product.discountPrice || "";
+        document.getElementById("editDesc").value = product.description;
+
+        let imgs = [];
+        if (
+          product.images &&
+          Array.isArray(product.images) &&
+          product.images.length > 0
+        ) {
+          imgs = product.images;
+        } else if (product.image) {
+          imgs = [product.image];
+        }
+
+        for (let i = 0; i < 5; i++) {
+          const input = document.getElementById(`edit-file-${i}`);
+          const img = document.getElementById(`edit-preview-${i}`);
+          const placeholder = document.querySelector(
+            `#editProductForm .image-upload-slot:nth-child(${i + 1}) .slot-placeholder`,
+          );
+          const removeBtn = document.querySelector(
+            `#editProductForm .image-upload-slot:nth-child(${i + 1}) .btn-remove-img`,
+          );
+
+          if (input) input.value = "";
+
+          if (imgs[i]) {
+            if (img) {
+              img.src = fixImageUrl(imgs[i]);
+              img.style.display = "block";
+            }
+            if (placeholder) placeholder.style.display = "none";
+            if (removeBtn) removeBtn.style.display = "none";
+          } else {
+            if (img) {
+              img.src = "";
+              img.style.display = "none";
+            }
+            if (placeholder) placeholder.style.display = "block";
+            if (removeBtn) removeBtn.style.display = "none";
+          }
+        }
+      }
+
+      function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+        document.getElementById("editProductForm").reset();
+      }
+      window.onclick = function (event) {
+        const editModal = document.getElementById("editModal");
+        if (event.target == editModal) closeEditModal();
+      };
+
+      function updateCount(textarea) {
+        document.getElementById("currentCount").textContent =
+          textarea.value.length;
+      }
+      function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+      }
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.querySelector(".sidebar-overlay");
+        sidebar.classList.toggle("mobile-active");
+        overlay.classList.toggle("active");
+      }
+
+      function closeMobileChat() {
+        const chatWindow = document.querySelector(".ios-chat-window");
+        if (chatWindow) {
+          chatWindow.classList.remove("show-mobile");
+        }
+
+        const activeItem = document.querySelector(".ios-chat-item.active");
+        if (activeItem) {
+          activeItem.classList.remove("active");
+        }
+
+        dashCurrentChatId = null;
+      }
+
+      function deleteProduct(id) {
+        openConfirmModal(
+          "Ürünü Sil",
+          "Bu ürünü vitrinden kaldırmak istediğine emin misin? Bu işlem geri alınamaz.",
+          async () => {
+            try {
+              const res = await fetch(`${API_URL}/products/${id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              });
+              if (res.ok) {
+                showToast("success", "Silindi", "Ürün başarıyla kaldırıldı.");
+                loadProfileData();
+              } else {
+                showToast("error", "Hata", "Silme işlemi başarısız.");
+              }
+            } catch (err) {
+              showToast("error", "Hata", "Sunucu hatası.");
+            }
+          },
+        );
+      }
+
+      async function handleUpdateProduct() {
+        const id = document.getElementById("editId").value;
+        const btn = document.querySelector("#editProductForm .btn-submit");
+        const title = document.getElementById("editTitle").value;
+        const price = document.getElementById("editPrice").value;
+
+        if (!title || !price) {
+          showToast(
+            "warning",
+            "Eksik Bilgi",
+            "Lütfen başlık ve fiyat alanlarını doldurun.",
+          );
+          return;
+        }
+        btn.innerText = "Yükleniyor...";
+        btn.disabled = true;
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("price", price);
+        formData.append(
+          "discountPrice",
+          document.getElementById("editDiscount").value,
+        );
+        formData.append(
+          "description",
+          document.getElementById("editDesc").value,
+        );
+
+        const inputs = document.querySelectorAll(".edit-file-input");
+        inputs.forEach((input) => {
+          if (input.files[0]) {
+            formData.append("images", input.files[0]);
+          }
+        });
+
+        try {
+          const res = await fetch(`${API_URL}/products/${id}`, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: formData,
+          });
+
+          if (res.ok) {
+            closeEditModal();
+            await loadProfileData();
+            showToast(
+              "success",
+              "Güncellendi",
+              "Ürün bilgileri başarıyla güncellendi.",
+            );
+          } else {
+            const err = await res.json();
+            showToast("error", "Hata", err.message || "Güncelleme başarısız.");
+          }
+        } catch (err) {
+          showToast("error", "Hata", "Bağlantı sorunu.");
+        } finally {
+          btn.innerText = "Güncelle";
+          btn.disabled = false;
+        }
+      }
+
+      function triggerFile(index) {
+        document.getElementById(`file-${index}`).click();
+      }
+
+      function previewSlotImage(event, index) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.getElementById(`preview-${index}`);
+            const placeholder = document.querySelector(
+              `.image-upload-slot:nth-child(${index + 1}) .slot-placeholder`,
+            );
+            const removeBtn = document.querySelector(
+              `.image-upload-slot:nth-child(${index + 1}) .btn-remove-img`,
+            );
+
+            img.src = e.target.result;
+            img.style.display = "block";
+            placeholder.style.display = "none";
+            removeBtn.style.display = "flex";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function removeSlotImage(event, index) {
+        event.stopPropagation();
+        const input = document.getElementById(`file-${index}`);
+        const img = document.getElementById(`preview-${index}`);
+        const placeholder = document.querySelector(
+          `.image-upload-slot:nth-child(${index + 1}) .slot-placeholder`,
+        );
+        const removeBtn = document.querySelector(
+          `.image-upload-slot:nth-child(${index + 1}) .btn-remove-img`,
+        );
+
+        input.value = "";
+        img.src = "";
+        img.style.display = "none";
+        placeholder.style.display = "block";
+        removeBtn.style.display = "none";
+      }
+
+      document
+        .getElementById("addProductForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = e.target.querySelector(".btn-submit");
+          btn.disabled = true;
+          btn.innerText = "Yükleniyor...";
+          const formData = new FormData(e.target);
+
+          const inputs = document.querySelectorAll(".product-file-input");
+          let hasImage = false;
+
+          inputs.forEach((input) => {
+            if (input.files[0]) {
+              formData.append("images", input.files[0]);
+              hasImage = true;
+            }
+          });
+
+          if (!hasImage) {
+            showToast(
+              "warning",
+              "Eksik",
+              "En az bir ürün görseli yüklemelisiniz.",
+            );
+            btn.disabled = false;
+            btn.innerText = "Yayınla";
+            return;
+          }
+
+          try {
+            const res = await fetch(`${API_URL}/products/add`, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+              body: formData,
+            });
+            if (res.ok) {
+              showToast(
+                "success",
+                "Ürün Eklendi",
+                "Ürün vitrine başarıyla eklendi.",
+              );
+              e.target.reset();
+              document.getElementById("previewBoxAdd").style.display = "none";
+              switchTab(
+                "products-list",
+                document.querySelector(".menu-item:nth-child(2)"),
+              );
+              loadProfileData();
+            } else {
+              showToast("error", "Başarısız", "Ürün eklenirken hata oluştu.");
+            }
+          } catch (err) {
+            showToast("error", "Hata", "Sunucu hatası.");
+          } finally {
+            btn.disabled = false;
+            btn.innerText = "Yayınla";
+          }
+        });
+
+      const fullSettingsForm = document.getElementById("fullSettingsForm");
+      if (fullSettingsForm) {
+        fullSettingsForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          openConfirmModal(
+            "Değişiklikler Onaya Gönderilsin mi?",
+            "Yaptığınız tüm değişiklikler (Kimlik, Marka ve Görünüm) Admin onayına sunulacak ve onaylanana kadar tekrar güncelleme yapamayacaksınız.",
+            async () => {
+              const btn = document.getElementById("btnSettingsSubmit");
+              btn.disabled = true;
+              btn.innerText = "Talep İletiliyor...";
+
+              const formData = new FormData(e.target);
+
+              if (brandStoryCroppedBlob) {
+                formData.delete("storyImage");
+                formData.append(
+                  "storyImage",
+                  brandStoryCroppedBlob,
+                  "story-final.jpg",
+                );
+              }
+
+              try {
+                const res = await fetch(`${API_URL}/users/update-identity`, {
+                  method: "PUT",
+                  headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
+                  body: formData,
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                  showToast(
+                    "success",
+                    "Talep Alındı",
+                    "Tüm değişiklikler Admin onayına başarıyla gönderildi.",
+                  );
+                  brandStoryCroppedBlob = null;
+                  loadProfileData();
+                } else {
+                  showToast(
+                    "error",
+                    "Hata",
+                    data.message || "Güncelleme yapılamadı.",
+                  );
+                  btn.disabled = false;
+                  btn.innerText = "Değişiklik Talebi Oluştur";
+                }
+              } catch (err) {
+                console.error(err);
+                showToast("error", "Hata", "Sunucu hatası oluştu.");
+                btn.disabled = false;
+                btn.innerText = "Değişiklik Talebi Oluştur";
+              }
+            },
+          );
+        });
+      }
+
+      let cachedBuyers = [];
+      let cachedProducts = [];
+
+      async function loadOrders() {
+        const container = document.getElementById("ordersListContainer");
+        container.innerHTML =
+          '<p style="text-align: center; color: #999; padding: 20px;">Yükleniyor...</p>';
+
+        try {
+          const res = await fetch(`${API_URL}/orders/seller`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          const orders = await res.json();
+
+          container.innerHTML = "";
+
+          if (orders.length === 0) {
+            container.innerHTML = `
+                            <div style="text-align:center; padding:40px; color:#999; border:2px dashed #eee; border-radius:12px;">
+                                <i class="fa-solid fa-box-open" style="font-size:2rem; margin-bottom:10px;"></i>
+                                <p>Henüz bir sipariş oluşturmadınız.</p>
+                            </div>`;
+            return;
+          }
+
+          orders.forEach((order) => {
+            let statusBadge = "";
+            let actionBtn = "";
+
+            // Durum ve Buton Ayarları
+            if (order.status === "pending") {
+              statusBadge =
+                '<span style="background:#fff3cd; color:#856404; padding:4px 8px; border-radius:4px; font-size:0.8rem;">🟠 Hazırlanıyor</span>';
+              actionBtn = `<button onclick="openShippingModal(${order.id})" class="btn-action" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-truck"></i> Kargo Gir</button>`;
+            } else if (order.status === "shipped") {
+              statusBadge =
+                '<span style="background:#cce5ff; color:#004085; padding:4px 8px; border-radius:4px; font-size:0.8rem;">🔵 Kargoda</span>';
+              // DÜZENLEME BUTONU
+              actionBtn = `<button onclick="openShippingModal(${order.id}, '${order.trackingCompany}', '${order.trackingNumber}')" class="btn-action" style="background:#f8f9fa; color:#6c757d; border:1px solid #ddd; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.9rem;"><i class="fa-solid fa-pen"></i> Düzenle</button>`;
+            } else if (order.status === "completed") {
+              statusBadge =
+                '<span style="background:#d4edda; color:#155724; padding:4px 8px; border-radius:4px; font-size:0.8rem;">🟢 Teslim Edildi</span>';
+              actionBtn = `<span style="font-size:0.9rem; color:#28a745;"><i class="fa-solid fa-check"></i> Tamamlandı</span>`;
+            }
+
+            const productImg = order.Product
+              ? fixImageUrl(order.Product.image)
+              : "https://via.placeholder.com/50";
+            const totalPrice = (
+              parseFloat(order.price) * order.quantity
+            ).toLocaleString("tr-TR", { minimumFractionDigits: 2 });
+
+            const html = `
+                            <div style="background:white; border:1px solid #eee; border-radius:12px; padding:15px; margin-bottom:15px; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <img src="${productImg}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid #f0f0f0;">
+                                <div style="flex:1; min-width:200px;">
+                                    <h4 style="margin:0; font-size:1rem;">${
+                                      order.Product
+                                        ? order.Product.title
+                                        : "Silinmiş Ürün"
+                                    }</h4>
+                                    <p style="margin:5px 0 0; color:#666; font-size:0.9rem;">
+                                        Müşteri: <strong>${
+                                          order.Buyer
+                                            ? order.Buyer.name +
+                                              " " +
+                                              (order.Buyer.surname || "")
+                                            : "Bilinmiyor"
+                                        }</strong>
+                                    </p>
+                                    <p style="margin:2px 0 0; color:#999; font-size:0.8rem;">
+                                        Sipariş No: #${order.id} | 
+                                        <span style="color:#0099d2; font-weight:600;">${totalPrice} ₺</span> (${
+                                          order.quantity
+                                        } Adet)
+                                    </p>
+                                </div>
+                                <div style="text-align:right; min-width:120px;">
+                                    <div style="margin-bottom:8px;">${statusBadge}</div>
+                                    ${
+                                      order.trackingNumber
+                                        ? `<div style="font-size:0.8rem; color:#666;">${order.trackingCompany}: <strong>${order.trackingNumber}</strong></div>`
+                                        : ""
+                                    }
+                                </div>
+                                <div style="margin-left:auto;">${actionBtn}</div>
+                            </div>
+                        `;
+            container.innerHTML += html;
+          });
+        } catch (error) {
+          console.error(error);
+          container.innerHTML =
+            '<p style="color:red; text-align:center;">Hata oluştu.</p>';
+        }
+      }
+
+      /* --- GELİŞMİŞ SİPARİŞ OLUŞTURMA (AUTOCOMPLETE) --- */
+
+      // 1. Modalı Aç ve Verileri Hafızaya Al
+      async function openCreateOrderModal() {
+        document.getElementById("createOrderModal").style.display = "flex";
+
+        // Formu Temizle
+        document.getElementById("buyerSearchInput").value = "";
+        document.getElementById("selectedBuyerId").value = "";
+        document.getElementById("productSearchInput").value = "";
+        document.getElementById("selectedProductId").value = "";
+        document.getElementById("orderPrice").value = "";
+        document.getElementById("orderQuantity").value = "1";
+        document.getElementById("liveTotalDisplay").innerText = "0,00 ₺";
+        document.getElementById("orderNote").value = "";
+
+        // A. Müşterileri Getir
+        try {
+          const chatRes = await fetch(`${API_URL}/messages/conversations`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          const conversations = await chatRes.json();
+          cachedBuyers = conversations.map((c) => ({
+            id: c.user.id,
+            name: (
+              c.user.brandName || c.user.name + " " + (c.user.surname || "")
+            ).trim(),
+            image: c.user.logoUrl || c.user.profileImage,
+          }));
+        } catch (e) {
+          console.error("Müşteri hatası", e);
+        }
+
+        // B. Ürünleri Getir
+        try {
+          const prodRes = await fetch(`${API_URL}/users/me`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          const data = await prodRes.json();
+          if (data.Products) {
+            cachedProducts = data.Products.map((p) => ({
+              id: p.id,
+              title: p.title,
+              price: p.price,
+              image: p.image,
+            }));
+          }
+        } catch (e) {
+          console.error("Ürün hatası", e);
+        }
+      }
+
+      // 2. Filtreleme ve Listeyi Gösterme Fonksiyonu
+      function filterDropdown(type) {
+        let inputVal, listEl, dataArray;
+        if (type === "buyer") {
+          inputVal = document
+            .getElementById("buyerSearchInput")
+            .value.toLowerCase();
+          listEl = document.getElementById("buyerDropdownList");
+          dataArray = cachedBuyers;
+        } else {
+          inputVal = document
+            .getElementById("productSearchInput")
+            .value.toLowerCase();
+          listEl = document.getElementById("productDropdownList");
+          dataArray = cachedProducts;
+        }
+
+        listEl.innerHTML = "";
+        const filtered = dataArray.filter((item) => {
+          const text = (item.name || item.title).toLowerCase();
+          return text.includes(inputVal);
+        });
+
+        if (filtered.length === 0) {
+          listEl.innerHTML =
+            '<div class="dropdown-item" style="cursor:default; color:#999;">Sonuç bulunamadı</div>';
+        } else {
+          filtered.forEach((item) => {
+            const imgUrl =
+              fixImageUrl(item.image) || "https://via.placeholder.com/30";
+            const mainText = item.name || item.title;
+
+            const div = document.createElement("div");
+            div.className = "dropdown-item";
+            // Ürün seçiliyorsa fiyatı da gönder, değilse 0
+            const pPrice = item.price || 0;
+            div.onclick = () => selectOption(type, item.id, mainText, pPrice);
+            div.innerHTML = `<img src="${imgUrl}"><span>${mainText}</span>`;
+            listEl.appendChild(div);
+          });
+        }
+        listEl.classList.add("show");
+      }
+
+      // 3. Seçim Yapma
+      function selectOption(type, id, name, price = 0) {
+        if (type === "buyer") {
+          document.getElementById("buyerSearchInput").value = name;
+          document.getElementById("selectedBuyerId").value = id;
+          document.getElementById("buyerDropdownList").classList.remove("show");
+        } else {
+          document.getElementById("productSearchInput").value = name;
+          document.getElementById("selectedProductId").value = id;
+
+          // Fiyatı otomatik yaz
+          document.getElementById("orderPrice").value = price;
+          calculateTotal(); // Toplamı güncelle
+
+          document
+            .getElementById("productDropdownList")
+            .classList.remove("show");
+        }
+      }
+
+      function calculateTotal() {
+        const price =
+          parseFloat(document.getElementById("orderPrice").value) || 0;
+        const qty =
+          parseInt(document.getElementById("orderQuantity").value) || 1;
+        const total = price * qty;
+        document.getElementById("liveTotalDisplay").textContent =
+          total.toLocaleString("tr-TR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) + " ₺";
+      }
+
+      // Dışarı tıklayınca listeyi kapat
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".searchable-select")) {
+          document
+            .querySelectorAll(".dropdown-list")
+            .forEach((el) => el.classList.remove("show"));
+        }
+      });
+
+      async function handleCreateOrder(e) {
+        e.preventDefault();
+        const buyerId = document.getElementById("selectedBuyerId").value;
+        const productId = document.getElementById("selectedProductId").value;
+        const note = document.getElementById("orderNote").value;
+        const price = document.getElementById("orderPrice").value;
+        const quantity = document.getElementById("orderQuantity").value;
+
+        if (!buyerId || !productId) {
+          showToast("warning", "Eksik Seçim", "Lütfen müşteri ve ürün seçin.");
+          return;
+        }
+
+        const btn = e.target.querySelector(".btn-submit");
+        btn.disabled = true;
+        btn.innerText = "İşleniyor...";
+
+        try {
+          const res = await fetch(`${API_URL}/orders/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              buyerId,
+              productId,
+              buyerNote: note,
+              price,
+              quantity,
+            }),
+          });
+
+          if (res.ok) {
+            showToast("success", "Siftah!", "Sipariş oluşturuldu.");
+            closeModal("createOrderModal");
+            loadOrders();
+          } else {
+            const err = await res.json();
+            showToast("error", "Hata", err.message || "Hata oluştu.");
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+          btn.disabled = false;
+          btn.innerText = "Siparişi Onayla";
+        }
+      }
+
+      async function toggleShowcase(id) {
+        try {
+          const res = await fetch(`${API_URL}/products/${id}/showcase`, {
+            method: "PUT",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            showToast("success", "Güncellendi", data.message);
+            loadProfileData();
+          } else {
+            showToast("warning", "Uyarı", data.message);
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("error", "Hata", "Bağlantı sorunu oluştu.");
+        }
+      }
+
+      function openShippingModal(
+        orderId,
+        currentCompany = "",
+        currentTracking = "",
+      ) {
+        document.getElementById("shippingOrderId").value = orderId;
+        document.getElementById("shippingCompany").value =
+          currentCompany || "Yurtiçi Kargo";
+        document.getElementById("trackingNumber").value = currentTracking || "";
+        document.getElementById("shippingModal").style.display = "flex";
+      }
+
+      // 5. Kargo Bilgisini Kaydet
+      async function handleUpdateShipping(e) {
+        e.preventDefault();
+        const orderId = document.getElementById("shippingOrderId").value;
+        const company = document.getElementById("shippingCompany").value;
+        const tracking = document.getElementById("trackingNumber").value;
+
+        try {
+          const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              status: "shipped",
+              trackingCompany: company,
+              trackingNumber: tracking,
+            }),
+          });
+
+          if (res.ok) {
+            showToast(
+              "success",
+              "Güncellendi",
+              "Sipariş kargo bilgisi kaydedildi.",
+            );
+            closeModal("shippingModal");
+            loadOrders();
+          } else {
+            showToast("error", "Hata", "Güncelleme başarısız.");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+    </script>
+  </body>
+</html>

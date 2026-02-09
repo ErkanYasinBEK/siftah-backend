@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siftah Premium - Prestij ve Güç</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <link rel="stylesheet" href="nav-footer.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      /* Gold Gradient Text - Daha parlak */
+      .text-gradient-gold {
+        background: linear-gradient(
+          135deg,
+          #fcd34d 0%,
+          #d97706 50%,
+          #b45309 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0px 2px 10px rgba(251, 191, 36, 0.3);
+      }
+
+      /* Premium Card Glow */
+      .premium-card:hover {
+        box-shadow: 0 30px 60px -15px rgba(234, 179, 8, 0.3);
+        transform: translateY(-8px);
+        border-color: #fbbf24;
+      }
+
+      /* Check List Icon */
+      .check-icon {
+        color: #10b981;
+        background: #ecfdf5;
+        border-radius: 50%;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+
+      .gold-check-icon {
+        color: #d97706;
+        background: #fffbeb;
+        border-radius: 50%;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div id="navbar"></div>
+    <div id="toast-container"></div>
+
+    <section
+      class="relative bg-slate-950 text-white overflow-hidden pt-24 pb-28 lg:pt-36 lg:pb-48"
+    >
+      <div
+        class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-yellow-500 rounded-full mix-blend-screen filter blur-[100px] opacity-10 animate-pulse"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-indigo-600 rounded-full mix-blend-screen filter blur-[100px] opacity-10"
+      ></div>
+
+      <div class="container mx-auto px-4 relative z-10 text-center">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm mb-8"
+        >
+          <i class="fa-solid fa-crown text-yellow-400"></i>
+          <span class="text-sm font-medium text-slate-200"
+            >Siftah'ın En Prestijli Satıcıları Arasına Katılın</span
+          >
+        </div>
+
+        <h1
+          class="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight"
+        >
+          Standart Olma,<br />
+          <span class="text-gradient-gold">Efsane Ol.</span>
+        </h1>
+
+        <p
+          class="text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+        >
+          Herkes satış yapar, ama sadece Premium üyeler vitrinde parlar. <br />
+          Gold Rozet, üst sıra garantisi ve sınırsız listeleme ile rakiplerine
+          fark at.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a
+            href="#pricing"
+            class="px-8 py-4 bg-yellow-500 text-slate-900 rounded-xl font-bold text-lg hover:bg-yellow-400 transition shadow-[0_0_20px_rgba(234,179,8,0.4)]"
+          >
+            Ayrıcalıkları Keşfet
+          </a>
+          <a
+            href="urunler.html"
+            class="px-8 py-4 bg-white/5 border border-white/10 text-white rounded-xl font-bold text-lg hover:bg-white/10 transition backdrop-blur-sm"
+          >
+            Vitrine Dön
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 lg:py-32 bg-white relative">
+      <div class="container mx-auto px-4 max-w-7xl">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+            Sıradan Satıcı Olmaktan Sıkılmadın mı?
+          </h2>
+          <p class="text-gray-500 max-w-xl mx-auto">
+            Siftah'ta komisyon zaten yok. Biz sana sadece satış aracı değil,
+            <span class="font-bold text-slate-900">marka prestiji</span>
+            satıyoruz.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition duration-300 group"
+          >
+            <div
+              class="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600 mb-6 group-hover:scale-110 transition shadow-inner"
+            >
+              <i class="fa-solid fa-medal text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-3">Gold Rozet 🏆</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Mavi tik güvenilirliktir, Gold Rozet ise liderliktir. Profilinde
+              ve ürünlerinde altın rengi rozetle parılda.
+            </p>
+          </div>
+
+          <div
+            class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition duration-300 group"
+          >
+            <div
+              class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 transition shadow-inner"
+            >
+              <i class="fa-solid fa-store text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-3">
+              Vitrin Hakimiyeti
+            </h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Ürünlerin ana sayfadaki "Öne Çıkanlar" vitrininde ve kategori
+              aramalarında en üst sıralarda listelenir.
+            </p>
+          </div>
+
+          <div
+            class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition duration-300 group"
+          >
+            <div
+              class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition shadow-inner"
+            >
+              <i class="fa-solid fa-infinity text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-3">
+              Sınırsız Özgürlük
+            </h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Ürün yükleme limitine takılma. Dükkanını binlerce ürünle doldur,
+              sınırları kaldır.
+            </p>
+          </div>
+
+          <div
+            class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition duration-300 group"
+          >
+            <div
+              class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 mb-6 group-hover:scale-110 transition shadow-inner"
+            >
+              <i class="fa-solid fa-chart-line text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-3">
+              Detaylı İstatistik
+            </h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Kim baktı? Kaç kişi favoriledi? Müşterilerinin davranışlarını
+              görerek satış stratejini belirle.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-20 bg-gray-50 border-t border-gray-200">
+      <div class="container mx-auto px-4 max-w-5xl">
+        <div class="text-center mb-12">
+          <span
+            class="text-yellow-600 font-bold tracking-wider uppercase text-xs bg-yellow-100 px-3 py-1 rounded-full"
+            >Yatırımını Yap</span
+          >
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-4">
+            Hangi Seviyede Oynamak İstersin?
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div
+            class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 relative hover:border-slate-300 transition"
+          >
+            <h3 class="text-xl font-bold text-slate-900">Profesyonel Paket</h3>
+            <p class="text-gray-500 text-sm mt-2">
+              İşini büyütmek isteyenler için ideal.
+            </p>
+
+            <div class="my-6">
+              <span class="text-4xl font-bold text-slate-900">199₺</span>
+              <span class="text-gray-400">/ay</span>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li
+                class="flex items-center gap-3 text-sm text-gray-700 font-medium"
+              >
+                <i class="fa-solid fa-check check-icon"></i>
+                <span class="text-yellow-600 font-bold"
+                  >Gold Rozet (Prestij)</span
+                >
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-600">
+                <i class="fa-solid fa-check check-icon"></i> Sınırsız Ürün
+                Yükleme
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-600">
+                <i class="fa-solid fa-check check-icon"></i> Vitrin Önceliği
+                (Standart)
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-600">
+                <i class="fa-solid fa-check check-icon"></i> Gelişmiş
+                İstatistikler
+              </li>
+              <li
+                class="flex items-center gap-3 text-sm text-gray-400 line-through decoration-gray-300"
+              >
+                <i class="fa-solid fa-xmark text-gray-300 ml-1"></i> Anasayfa
+                Büyük Banner
+              </li>
+            </ul>
+
+            <button
+              onclick="selectPlan('monthly')"
+              class="w-full py-3 rounded-xl border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition"
+            >
+              Aylık Başla
+            </button>
+          </div>
+
+          <div
+            class="bg-slate-900 p-8 rounded-3xl shadow-2xl border-2 border-yellow-500 relative transform md:-translate-y-4 premium-card"
+          >
+            <div
+              class="absolute top-0 right-0 bg-yellow-500 text-slate-900 text-xs font-extrabold px-4 py-1.5 rounded-bl-xl rounded-tr-xl tracking-wide"
+            >
+              EN ÇOK SATAN
+            </div>
+
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              Elite Paket <i class="fa-solid fa-crown text-yellow-400"></i>
+            </h3>
+            <p class="text-slate-400 text-sm mt-2">
+              Pazar yerinin hakimi olmak isteyenler için.
+            </p>
+
+            <div class="my-6">
+              <span class="text-4xl font-bold text-white">1890₺</span>
+              <span class="text-slate-400">/yıl</span>
+              <div
+                class="text-yellow-400 text-xs mt-2 font-bold bg-yellow-400/10 inline-block px-2 py-1 rounded"
+              >
+                2 Ay Bedava Geliyor!
+              </div>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li
+                class="flex items-center gap-3 text-sm text-white font-semibold"
+              >
+                <i class="fa-solid fa-check gold-check-icon"></i> Gold Rozet +
+                "Elite" Etiketi
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-200">
+                <i class="fa-solid fa-check gold-check-icon"></i> Sınırsız Ürün
+                Yükleme
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-200">
+                <i class="fa-solid fa-check gold-check-icon"></i>
+                <span class="text-yellow-400 font-bold"
+                  >Aramalarda En Üst Sıra</span
+                >
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-200">
+                <i class="fa-solid fa-check gold-check-icon"></i> Ana Sayfa
+                "Yıldızlar" Vitrini
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-200">
+                <i class="fa-solid fa-check gold-check-icon"></i> 7/24 VIP
+                Müşteri Temsilcisi
+              </li>
+            </ul>
+
+            <button
+              onclick="selectPlan('yearly')"
+              class="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 font-bold hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition transform hover:scale-[1.02]"
+            >
+              Elite Ol ve Kazan
+            </button>
+            <p class="text-center text-xs text-slate-500 mt-4">
+              30 gün içinde beğenmezseniz paranız iade.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white border-t border-gray-100">
+      <div class="container mx-auto px-4 text-center">
+        <p class="text-slate-500 mb-6 text-sm">
+          Türkiye'nin en hızlı büyüyen pazar yerinde binlerce mutlu satıcı.
+        </p>
+        <div
+          class="flex flex-wrap justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500"
+        >
+          <i class="fa-brands fa-stripe text-4xl text-slate-800"></i>
+          <i class="fa-brands fa-aws text-4xl text-slate-800"></i>
+          <i class="fa-brands fa-google-pay text-4xl text-slate-800"></i>
+          <i class="fa-brands fa-cc-mastercard text-4xl text-slate-800"></i>
+          <i class="fa-brands fa-cc-visa text-4xl text-slate-800"></i>
+        </div>
+      </div>
+    </section>
+
+    <footer id="footer"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+      // --- TOAST BİLDİRİM FONKSİYONU ---
+      function showToast(type, title, message) {
+        const container =
+          document.getElementById("toast-container") || createToastContainer();
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        let icon = type === "success" ? "fa-crown" : "fa-info-circle";
+        let color = type === "success" ? "#ca8a04" : "#0ea5e9"; // Gold veya Mavi
+
+        toast.style.cssText = `
+                background: white; border-left: 5px solid ${color}; padding: 15px 20px; 
+                margin-bottom: 10px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+                display: flex; align-items: center; gap: 12px; min-width: 320px; animation: fadeIn 0.4s;
+                position: fixed; top: 20px; right: 20px; z-index: 9999;
+            `;
+
+        toast.innerHTML = `
+                <div class="bg-yellow-100 p-2 rounded-full text-yellow-700">
+                    <i class="fa-solid ${icon} text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-gray-900">${title}</h4>
+                    <p class="text-xs text-gray-500">${message}</p>
+                </div>
+            `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateX(100%)";
+          toast.style.transition = "all 0.3s ease";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      function createToastContainer() {
+        return document.body;
+      }
+
+      // --- PLAN SEÇME FONKSİYONU ---
+      function selectPlan(planType) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          showToast(
+            "info",
+            "Giriş Yapın",
+            "Bu ayrıcalıklara sahip olmak için önce giriş yapmalısınız."
+          );
+          setTimeout(() => (window.location.href = "login.html"), 2000);
+          return;
+        }
+
+        const planName =
+          planType === "monthly" ? "Profesyonel Paket" : "Elite Paket";
+        showToast(
+          "success",
+          "Mükemmel Karar!",
+          `${planName} seçildi. Sizi ödeme ekranına alıyoruz...`
+        );
+
+        // Backend entegrasyonu olsaydı: /api/payment/create-session
+        // Şimdilik sadece görsel:
+        console.log(`Plan seçildi: ${planType}`);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Satıcı Ol | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="seller-register.css" />
+
+  </head>
+  <body>
+    <div id="successModal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>Başvurunuz Alındı! 🎉</h2>
+        <p>
+          Profiliniz hızla incelenecek ve onaylandığında sizi bilgilendireceğiz.
+          Siftah ailesine hoş geldiniz!
+        </p>
+        <button
+          class="btn-modal"
+          onclick="window.location.href='satici-girisi.html'"
+        >
+          Giriş Yap
+        </button>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="register-wrapper">
+      
+      <div class="register-visual">
+        <div class="visual-content">
+          <a href="/" class="logo-link">
+            <span class="logo-text">siftah</span>
+          </a>
+          <h2>Vitrinini Aç,<br />Hikayeni Paylaş.</h2>
+          <p>Binlerce alıcıya komisyonsuz ulaşmanın en şık yolu.</p>
+          <div class="visual-footer">
+            <span>© 2025 Siftah Inc.</span>
+          </div>
+        </div>
+        <img
+          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
+          alt="Mağaza"
+          class="bg-image"
+        />
+        <div class="overlay"></div>
+      </div>
+
+      <div class="register-form-container">
+        <div class="mobile-header">
+          <a href="/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> Anasayfa</a>
+          <span class="mobile-logo">siftah</span>
+          <div class="spacer" style="width: 80px;"></div> 
+        </div>
+        
+        <div class="form-header">
+          <h1>Satıcı Başvurusu</h1>
+          <p>Hesabınızı oluşturun ve vitrinizi hazırlamaya başlayın.</p>
+        </div>
+
+        <div class="steps-indicator">
+          <div class="step active" id="step1-indicator">
+            <div class="circle">1</div>
+            <span>Üyelik</span>
+          </div>
+          <div class="line"></div>
+          <div class="step" id="step2-indicator">
+            <div class="circle">2</div>
+            <span>Marka</span>
+          </div>
+        </div>
+
+        <form id="sellerForm">
+          <div class="form-step active" id="step1">
+            <div class="input-row">
+              <div class="input-group">
+                <label>Adınız</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Örn: Ahmet"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label>Soyadınız</label>
+                <input
+                  type="text"
+                  name="surname"
+                  placeholder="Örn: Yılmaz"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>E-posta Adresi</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="ornek@sirket.com"
+                required
+              />
+            </div>
+
+            <div class="input-row">
+              <div class="input-group">
+                <label>Şifre</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label>Şifre (Tekrar)</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Cep Telefonu</label>
+              <input
+                type="tel"
+                name="phone"
+                placeholder="05XX XXX XX XX"
+                maxlength="11"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <label>T.C. Kimlik No</label>
+              <input
+                type="text"
+                name="tc_no"
+                placeholder="11 haneli T.C. Kimlik No"
+                maxlength="11"
+                required
+              />
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                onclick="nextStep()"
+              >
+                Devam Et
+              </button>
+            </div>
+            <p class="login-redirect">
+              Zaten hesabın var mı? <a href="satici-girisi.html">Giriş Yap</a>
+            </p>
+          </div>
+
+          <div class="form-step" id="step2">
+            <div class="input-group">
+              <label>Marka / Mağaza Adı</label>
+              <input
+                type="text"
+                name="brandName"
+                placeholder="Örn: Mina's Touch"
+                required
+              />
+            </div>
+
+            <div class="input-row">
+              <div class="input-group">
+                <label>Kategori</label>
+                <select name="category" required>
+                  <option value="" disabled selected>
+                    Markanızın ana kategorisini seçin
+                  </option>
+                  <optgroup label="Moda & Giyim">
+                    <option value="giyim_kadin">Kadın Giyim</option>
+                    <option value="giyim_erkek">Erkek Giyim</option>
+                    <option value="giyim_cocuk">Çocuk & Bebek Giyim</option>
+                    <option value="ayakkabi">Ayakkabı & Çanta</option>
+                    <option value="aksesuar">Aksesuar & Takı</option>
+                    <option value="ic_giyim">İç Giyim & Pijama</option>
+                  </optgroup>
+                  <optgroup label="Güzellik & Bakım">
+                    <option value="kozmetik">Kozmetik & Makyaj</option>
+                    <option value="parfum">Parfüm & Deodorant</option>
+                    <option value="cilt_bakim">Cilt & Vücut Bakımı</option>
+                    <option value="sac_bakim">Saç Bakımı</option>
+                  </optgroup>
+                  <optgroup label="Ev & Yaşam">
+                    <option value="ev_tekstili">Ev Tekstili</option>
+                    <option value="mobilya">Mobilya & Dekorasyon</option>
+                    <option value="mutfak">Mutfak Gereçleri</option>
+                    <option value="aydinlatma">Aydınlatma</option>
+                    <option value="yapi_market">Yapı Market & Bahçe</option>
+                  </optgroup>
+                  <optgroup label="Elektronik">
+                    <option value="telefon">Telefon & Aksesuarları</option>
+                    <option value="bilgisayar">Bilgisayar & Tablet</option>
+                    <option value="ev_elektronigi">Ev Elektroniği</option>
+                    <option value="kisisel_bakim_elektronigi">
+                      Kişisel Bakım Aletleri
+                    </option>
+                  </optgroup>
+                  <optgroup label="Hobi & Eğlence">
+                    <option value="spor">Spor & Outdoor</option>
+                    <option value="kitap">Kitap & Kırtasiye</option>
+                    <option value="oyuncak">Oyuncak & Hobi</option>
+                    <option value="petshop">Pet Shop</option>
+                    <option value="sanat">Sanat & Koleksiyon</option>
+                  </optgroup>
+                  <optgroup label="Diğer">
+                    <option value="market">Süpermarket & Gıda</option>
+                    <option value="otomotiv">Otomotiv & Aksesuar</option>
+                    <option value="diger">Diğer</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Tecrübe</label>
+                <select name="experience" required>
+                  <option value="" disabled selected>Seçiniz</option>
+                  <option value="yeni">Yeni Başlıyorum</option>
+                  <option value="orta">1-3 Yıl</option>
+                  <option value="uzman">3+ Yıl (Profesyonel)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>IBAN Numarası</label>
+              <div class="iban-wrapper">
+                <span class="prefix">TR</span>
+                <input
+                  type="text"
+                  name="iban"
+                  placeholder="XX 0000 0000 0000 0000 0000 00"
+                  maxlength="24"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div class="input-group">
+                <label>Mağaza Logosu</label>
+                <div class="file-upload-box">
+                  <input
+                    type="file"
+                    id="logoUpload"
+                    name="logo"
+                    accept="image/*"
+                    hidden
+                    onchange="previewImage(event, 'logoPreview', 'logoLabel')"
+                  />
+                  <label for="logoUpload" class="upload-label" id="logoLabel">
+                    <div class="icon">
+                      <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <span id="uploadText">Logo Seçin</span>
+                  </label>
+                  <img
+                    id="logoPreview"
+                    class="preview-img hidden"
+                    style="width: 100%; height: 100px; object-fit: contain"
+                  />
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>Satıcı Profil Resmi</label>
+                <div class="file-upload-box">
+                  <input
+                    type="file"
+                    id="profileUpload"
+                    name="profileImage"
+                    accept="image/*"
+                    hidden
+                    onchange="previewImage(event, 'profilePreview', 'profileLabel')"
+                  />
+                  <label
+                    for="profileUpload"
+                    class="upload-label"
+                    id="profileLabel"
+                  >
+                    <div class="icon">
+                      <i class="fa-solid fa-user-circle"></i>
+                    </div>
+                    <span id="uploadText">Profil Seçin</span>
+                  </label>
+                  <img
+                    id="profilePreview"
+                    class="preview-img hidden"
+                    style="
+                      width: 100%;
+                      height: 100px;
+                      object-fit: cover;
+                      border-radius: 10px;
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions dual-btn">
+              <button
+                type="button"
+                class="btn btn-outline"
+                onclick="prevStep()"
+              >
+                Geri Dön
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Kaydı Tamamla
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // --- 1. GLOBAL UI (TOAST) ---
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        let icon = "fa-circle-check";
+        if (type === "error") icon = "fa-circle-exclamation";
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i><div class="toast-content"><span class="toast-title">${title}</span><span class="toast-msg">${message}</span></div>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.animation = "fadeOut 0.5s ease forwards";
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+
+      // --- 2. YARDIMCI FONKSİYONLAR ---
+      function enforceNumericInput(event) {
+        this.value = this.value.replace(/\D/g, "");
+      }
+      const phoneInput = document.querySelector('input[name="phone"]');
+      const tcInput = document.querySelector('input[name="tc_no"]');
+      const ibanInput = document.querySelector('input[name="iban"]');
+      if (phoneInput) phoneInput.addEventListener("input", enforceNumericInput);
+      if (tcInput) tcInput.addEventListener("input", enforceNumericInput);
+      if (ibanInput)
+        ibanInput.addEventListener("input", function () {
+          this.value = this.value.replace(/[^0-9]/g, "");
+        });
+
+      // Ortak Resim Önizleme
+      function previewImage(event, imgId, labelId) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById(imgId);
+            img.src = e.target.result;
+            img.classList.remove("hidden");
+            document.getElementById(labelId).style.display = "none";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // --- 3. ADIM GEÇİŞLERİ ---
+      function nextStep() {
+        const step1Div = document.getElementById("step1");
+        const inputs = step1Div.querySelectorAll("input");
+        const pass1 = step1Div.querySelector('input[name="password"]');
+        const pass2 = step1Div.querySelector('input[name="confirmPassword"]');
+        let isValid = true;
+        inputs.forEach((input) => {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            isValid = false;
+          }
+        });
+
+        if (isValid) {
+          const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+          if (!strongRegex.test(pass1.value)) {
+            showToast(
+              "error",
+              "Zayıf Şifre",
+              "Şifre en az 8 karakter, büyük/küçük harf ve rakam içermeli."
+            );
+            isValid = false;
+          } else if (pass1.value !== pass2.value) {
+            showToast("error", "Hata", "Şifreler uyuşmuyor!");
+            isValid = false;
+          }
+        }
+
+        if (isValid) {
+          document.getElementById("step1").classList.remove("active");
+          document.getElementById("step2").classList.add("active");
+          document.getElementById("step1-indicator").classList.add("completed");
+          document.getElementById("step1-indicator").classList.remove("active");
+          document.getElementById("step2-indicator").classList.add("active");
+        }
+      }
+
+      function prevStep() {
+        document.getElementById("step2").classList.remove("active");
+        document.getElementById("step1").classList.add("active");
+        document.getElementById("step2-indicator").classList.remove("active");
+        document
+          .getElementById("step1-indicator")
+          .classList.remove("completed");
+        document.getElementById("step1-indicator").classList.add("active");
+      }
+
+      // --- 4. BACKEND'E GÖNDERME (FORMDATA + MODAL) ---
+      const form = document.getElementById("sellerForm");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = "İşleniyor...";
+
+        // !!! KRİTİK NOKTA: JSON değil FormData kullanıyoruz !!!
+        const formData = new FormData();
+
+        // Metin Verilerini Ekle
+        formData.append("name", form.name.value);
+        formData.append("surname", form.surname.value);
+        formData.append("email", form.email.value);
+        formData.append("password", form.password.value);
+        formData.append("phone", form.phone.value);
+        formData.append("tc_no", form.tc_no.value);
+        formData.append("brandName", form.brandName.value);
+        formData.append("category", form.category.value);
+        formData.append("experience", form.experience.value);
+        formData.append("iban", form.iban.value);
+        formData.append("role", "seller");
+
+        // Dosyaları Ekle (Varsa)
+        const logoInput = document.getElementById("logoUpload");
+        if (logoInput.files[0]) formData.append("logo", logoInput.files[0]);
+
+        const profileInput = document.getElementById("profileUpload");
+        if (profileInput.files[0])
+          formData.append("profileImage", profileInput.files[0]);
+
+        try {
+          // !!! DİKKAT: headers KISMINI SİLDİK !!!
+          // Browser otomatik olarak multipart/form-data sınırlarını ayarlar.
+          const response = await fetch(
+            "http://localhost:5000/api/auth/register",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            const modal = document.getElementById("successModal");
+            modal.classList.add("active");
+          } else {
+            showToast(
+              "error",
+              "Kayıt Başarısız",
+              data.message || "Bir sorun oluştu."
+            );
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Kaydı Tamamla";
+          }
+        } catch (error) {
+          console.error("Sunucu Hatası:", error);
+          showToast("error", "Sunucu Hatası", "Bağlantı kurulamadı.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Kaydı Tamamla";
+        }
+      });
+    </script>
+  </body>
+</html>

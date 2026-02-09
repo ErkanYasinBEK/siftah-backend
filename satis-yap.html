@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siftah - Yolunu Seç</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="nav-footer.css">
+    <link rel="stylesheet" href="buyer-seller.css">
+</head>
+<body>
+
+    <div id="navbar"></div>
+
+    <main class="split-screen">
+        
+        <div class="split left">
+            <div class="content">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <h2>Alışveriş Yap</h2>
+                <p>Binlerce özgün vitrini keşfet, satıcılarla birebir görüş ve en iyi fiyatı yakala.</p>
+                <a href="kayit-ol.html" class="btn btn-left">Müşteri Ol</a>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+        <div class="split right">
+            <div class="content">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <h2>Vitrin Kirala</h2>
+                <p>Kendi mağazanı aç, ürünlerini sergile ve komisyonsuz satışın keyfini çıkar.</p>
+                <a href="satici-basvuru.html" class="btn btn-right">Satıcı Ol</a>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="script.js"></script> <script>
+        const left = document.querySelector('.left');
+        const right = document.querySelector('.right');
+        const container = document.querySelector('.split-screen');
+
+        left.addEventListener('mouseenter', () => container.classList.add('hover-left'));
+        left.addEventListener('mouseleave', () => container.classList.remove('hover-left'));
+
+        right.addEventListener('mouseenter', () => container.classList.add('hover-right'));
+        right.addEventListener('mouseleave', () => container.classList.remove('hover-right'));
+    </script>
+</body>
+</html>

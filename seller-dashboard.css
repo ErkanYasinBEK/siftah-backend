@@ -1,0 +1,2161 @@
+:root {
+  --primary: #0f172a; /* Çok koyu lacivert (Premium Siyah) */
+  --accent: #3b82f6; /* Modern Mavi */
+  --accent-hover: #2563eb;
+  --bg: #f8fafc; /* Soğuk, açık gri */
+  --sidebar-bg: #ffffff;
+  --border: #e2e8f0;
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --radius: 12px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased; /* Yazıları pürüzsüzleştirir */
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.dashboard-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+  width: 280px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  flex-shrink: 0;
+  z-index: 50;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 0 10px;
+}
+.sidebar-header img {
+  width: 32px;
+  height: 32px;
+}
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.sidebar-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text-sub);
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.menu-item i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.menu-item:hover {
+  background: #f1f5f9;
+  color: var(--text-main);
+}
+
+.menu-item.active {
+  background: #eff6ff;
+  color: var(--accent);
+  border-color: #dbeafe;
+  font-weight: 600;
+}
+.menu-item.active i {
+  color: var(--accent);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--danger);
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.logout-btn:hover {
+  background: #fef2f2;
+  border-color: #fee2e2;
+  transform: translateY(-2px);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+  flex: 1;
+  padding: 30px 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+#pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 50px; /* Tam oval */
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.user-info:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--primary) 0%, #334155 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* --- DASHBOARD CARDS --- */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: #cbd5e1;
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.card-icon-bg {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  font-size: 5rem;
+  color: #f1f5f9;
+  transform: rotate(-15deg);
+  z-index: 0;
+  pointer-events: none;
+}
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- CONTENT SECTIONS --- */
+.content-section {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 25px;
+}
+.section-header {
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.section-header h2 {
+  font-size: 1.25rem;
+  color: var(--primary);
+  margin-bottom: 5px;
+}
+.section-header p {
+  color: var(--text-sub);
+  font-size: 0.9rem;
+}
+
+/* --- FORMS --- */
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.form-group {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.btn-submit {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-md);
+}
+.btn-submit:hover {
+  background: #1e293b;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.btn-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* --- ÜRÜN YÖNETİM GRİDİ (YENİ EKLENDİ) --- */
+.manage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.manage-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.manage-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: #cbd5e1;
+}
+
+.img-link {
+  display: block;
+  width: 100%;
+  height: 200px; /* Biraz daha yüksek */
+  overflow: hidden;
+  position: relative;
+}
+.manage-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #f1f5f9;
+  transition: transform 0.5s ease;
+}
+.manage-card:hover .manage-img {
+  transform: scale(1.08);
+}
+
+.manage-body {
+  padding: 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.manage-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.manage-price-row {
+  margin-bottom: 12px;
+}
+.price-old {
+  text-decoration: line-through;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-right: 8px;
+}
+.price-new {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.manage-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-action {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-showcase {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+.btn-showcase:hover {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  background: #fffbeb;
+}
+.btn-showcase.active {
+  background: #fffbeb;
+  color: #f59e0b;
+  border-color: #fcd34d;
+}
+
+.btn-edit {
+  background: #eff6ff;
+  color: var(--accent);
+  border: 1px solid transparent;
+}
+.btn-edit:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-delete {
+  background: #fef2f2;
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+.btn-delete:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* --- RESİM YÜKLEME ALANI (Premium) --- */
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+.image-upload-slot {
+  aspect-ratio: 1/1;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.image-upload-slot:hover {
+  border-color: var(--accent);
+  background: #eff6ff;
+}
+.slot-placeholder {
+  color: #94a3b8;
+  text-align: center;
+}
+.slot-placeholder i {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 5px;
+}
+.slot-placeholder span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.image-upload-wrapper {
+  border: 2px dashed #ddd;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+  background: #fafafa;
+}
+.image-upload-wrapper:hover {
+  border-color: #000;
+  background: #fff;
+}
+.preview-box {
+  margin-top: 10px;
+  display: none;
+}
+.preview-box img {
+  max-width: 100%;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.cover-preview {
+  width: 100%;
+  height: 150px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  border: 2px dashed #ddd;
+}
+.char-count {
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+  margin-top: 5px;
+}
+
+/* --- TAB YAPISI --- */
+.tab-content {
+  display: none;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tab-content.active {
+  display: block;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- MODAL (POP-UP) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+}
+
+/* ========================================= */
+/* --- DASHBOARD İÇİ MESAJLAŞMA (YENİ) --- */
+/* ========================================= */
+.dashboard-chat-layout {
+  display: flex;
+  height: calc(100vh - 180px); /* İçeriğe sığacak şekilde yükseklik */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Sol Taraf (Liste) */
+.dash-chat-list {
+  width: 300px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: #fcfcfc;
+}
+.dash-list-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: #333;
+}
+.dash-list-items {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dash-chat-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dash-chat-item:hover {
+  background: #f0f2f5;
+}
+.dash-chat-item.active {
+  background: #eef2ff;
+  border-left: 3px solid #4f46e5;
+}
+.dash-chat-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+.dash-item-info {
+  overflow: hidden;
+}
+.dash-item-info h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 600;
+}
+.dash-item-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sağ Taraf (Pencere) */
+.dash-chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.dash-window-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 60px;
+}
+.dash-window-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dash-messages-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-input-area {
+  padding: 15px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  background: #fcfcfc;
+}
+.dash-input-area input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  outline: none;
+  background: #fff;
+}
+.dash-send-btn {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dash-send-btn:hover {
+  background: #4338ca;
+}
+
+/* Mesaj Balonları */
+.dash-msg {
+  max-width: 70%;
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  position: relative;
+  word-wrap: break-word;
+}
+.dash-msg.sent {
+  align-self: flex-end;
+  background: #4f46e5;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+.dash-msg.received {
+  align-self: flex-start;
+  background: #f3f4f6;
+  color: #333;
+  border-bottom-left-radius: 2px;
+}
+.dash-time {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  margin-top: 4px;
+  display: block;
+  text-align: right;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pending-alert {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease;
+}
+.pending-alert i {
+  font-size: 1.5rem;
+  color: #f59e0b;
+}
+
+.identity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Masaüstünde yan yana */
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+input:disabled,
+textarea:disabled,
+button:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* --- 1. TOAST BİLDİRİM SİSTEMİ --- */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.siftah-toast {
+  min-width: 300px;
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 5px solid #333;
+  animation: slideIn 0.3s ease forwards;
+  transform: translateX(100%);
+}
+
+/* Renk Varyasyonları */
+.siftah-toast.success {
+  border-left-color: #22c55e;
+}
+.siftah-toast.success i {
+  color: #22c55e;
+}
+
+.siftah-toast.error {
+  border-left-color: #ef4444;
+}
+.siftah-toast.error i {
+  color: #ef4444;
+}
+
+.siftah-toast.warning {
+  border-left-color: #f59e0b;
+}
+.siftah-toast.warning i {
+  color: #f59e0b;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+}
+.toast-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #111;
+}
+.toast-msg {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* --- 2. CUSTOM CONFIRM MODAL (ÖZEL ONAY PENCERESİ) --- */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100000;
+  display: none; /* Başlangıçta gizli */
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.confirm-modal-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.confirm-icon {
+  width: 60px;
+  height: 60px;
+  background: #fef3c7;
+  color: #d97706;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 20px;
+}
+
+.confirm-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+.confirm-desc {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-confirm-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-confirm-cancel:hover {
+  background: #e5e7eb;
+}
+
+.btn-confirm-yes {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-confirm-yes:hover {
+  background: #0099d2;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mobile-menu-btn,
+.dash-back-btn,
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .identity-grid {
+    grid-template-columns: 1fr; /* Mobilde alt alta */
+  }
+  .form-row {
+    flex-direction: column; /* Yan yana olan inputları alt alta al */
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-container {
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 2. SIDEBAR'I GİZLE (Mobilde soldan çıkacak) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 2000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 280px;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.mobile-active {
+    transform: translateX(0); /* Geri getir */
+  }
+
+  /* Sidebar açılınca arkadaki siyah perde */
+  .sidebar-overlay {
+    display: none; /* JS ile block yapılacak */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    backdrop-filter: blur(3px);
+  }
+  .sidebar-overlay.active {
+    display: block;
+    animation: fadeIn 0.3s;
+  }
+
+  /* 3. MENÜ BUTONU VE ÜST BAR */
+  .topbar {
+    gap: 15px;
+  }
+  .mobile-menu-btn {
+    display: block;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--primary);
+    padding: 5px;
+  }
+
+  /* 4. İÇERİK ALANI */
+  .main-content {
+    width: 100%;
+    padding: 20px 15px; /* Mobilde boşlukları daralt */
+  }
+
+  /* Kartlar mobilde tek sütun olmasın, sığarsa 2 olsun */
+  .dashboard-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+}
+#pageTitle {
+  font-size: 1rem;
+}
+/* 5. MOBİL CHAT DÜZENİ (WhatsApp Tarzı) */
+.dashboard-chat-layout {
+  position: relative;
+  height: calc(100vh - 160px); /* Ekran boyuna göre ayarla */
+}
+
+/* Liste her zaman tam genişlik */
+.dash-chat-list {
+  width: 100%;
+  border-right: none;
+}
+
+/* Sohbet Penceresi gizli, aktif olunca sağdan kayarak gelir */
+.dash-chat-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform: translateX(100%); /* Sağda bekler */
+  transition: transform 0.3s ease-in-out;
+  z-index: 10;
+}
+
+.dash-chat-window.show-mobile {
+  transform: translateX(0);
+}
+
+.dash-back-btn {
+  display: block;
+  margin-right: 15px;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.dash-window-header {
+  padding: 10px;
+}
+
+/* --- ARAMALI SEÇİM KUTUSU (AUTOCOMPLETE) CSS --- */
+.searchable-select {
+  position: relative;
+  width: 100%;
+}
+
+.searchable-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.searchable-input:focus {
+  border-color: #0099d2;
+  box-shadow: 0 0 0 3px rgba(0, 153, 210, 0.1);
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none; /* Başlangıçta gizli */
+  margin-top: 5px;
+}
+
+.dropdown-list.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.1s;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f9ff;
+  color: #0099d2;
+}
+
+.dropdown-item img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.dropdown-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item small {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+/* --- SİPARİŞ MODALI PREMIUM AYARLAR --- */
+.form-row-split {
+  display: flex;
+  gap: 15px;
+}
+
+.form-col {
+  flex: 1;
+}
+
+/* Fiyat ve Adet Inputları */
+.premium-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  background-color: #f8fafc;
+  transition: all 0.2s;
+}
+
+.premium-input:focus {
+  background-color: #fff;
+  border-color: #0099d2;
+  box-shadow: 0 0 0 3px rgba(0, 153, 210, 0.1);
+}
+
+/* Toplam Tutar Alanı */
+.total-price-box {
+  background: #f0f9ff;
+  border: 1px dashed #0099d2;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.total-price-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.total-price-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0099d2;
+}
+
+@media (max-width: 480px) {
+  .form-row-split {
+    gap: 10px;
+  }
+  .premium-input {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
+
+.status-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.status-active {
+  background: rgba(220, 252, 231, 0.9);
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.status-pending {
+  background: rgba(254, 249, 195, 0.9);
+  color: #a16207;
+  border: 1px solid #fde047;
+}
+.status-rejected {
+  background: rgba(254, 226, 226, 0.9);
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- REDDEDİLEN ÜRÜN STİLLERİ (YENİ) --- */
+
+/* Kartın kendisi kırmızımsı çerçeve alır */
+.manage-card.rejected {
+  border: 1px solid #fecaca; /* Kırmızı çerçeve */
+  background-color: #fff5f5; /* Hafif kırmızı arka plan */
+}
+
+/* Red Sebebi Kutusu (Kartın İçinde) */
+.rejection-box {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-left: 4px solid #ef4444;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #7f1d1d;
+}
+.rejection-title {
+  font-weight: 700;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-alert-box {
+  background-color: #fff5f5;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #991b1b;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* --- REDDEDİLENLER BÖLÜMÜ TASARIMI --- */
+
+.alert-box-premium {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-left: 5px solid #ef4444;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  color: #b91c1c;
+}
+
+.alert-header i {
+  font-size: 1.4rem;
+}
+.alert-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.alert-box-premium p {
+  margin: 0;
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  padding-left: 32px;
+}
+
+/* Reddedilen Kartın Çerçevesi */
+.manage-card.rejected-card {
+  border: 2px solid #fecaca;
+  background-color: #fff5f5;
+  position: relative;
+}
+
+/* Red Etiketi */
+.status-badge.status-rejected {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+}
+
+/* Kartın İçindeki Admin Notu */
+.admin-note-box {
+  background: #fff;
+  border: 1px dashed #ef4444;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.admin-note-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ef4444;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.admin-note-text {
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* --- ÇOKLU RESİM YÜKLEME CSS --- */
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.image-upload-slot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Kare */
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.image-upload-slot:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.slot-placeholder {
+  text-align: center;
+  color: #94a3b8;
+  pointer-events: none; /* Tıklamayı engelle, altındaki div alsın */
+}
+
+.slot-placeholder i {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.slot-placeholder span {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.slot-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* Başlangıçta gizli */
+}
+
+.btn-remove-img {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.btn-remove-img:hover {
+  background: #ef4444;
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .image-upload-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.btn-showcase {
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #9ca3af;
+  transition: all 0.2s;
+}
+.btn-showcase:hover {
+  background: #fef3c7;
+  color: #d97706;
+  border-color: #d97706;
+}
+.btn-showcase.active {
+  color: #f59e0b;
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+/* --- APPLE STYLE (iOS) CHAT CSS --- */
+
+/* Ana Kapsayıcı */
+.ios-chat-layout {
+  display: flex;
+  height: calc(100vh - 140px); /* Ekran boyuna göre ayarla */
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+/* --- SOL TARA (SIDEBAR) --- */
+.ios-sidebar {
+  width: 320px;
+  background: #fff;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.ios-header {
+  padding: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.ios-header h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 15px;
+}
+
+.ios-search-wrapper {
+  position: relative;
+}
+.ios-search-wrapper i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+.ios-search-wrapper input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.2s;
+}
+.ios-search-wrapper input:focus {
+  background: #e2e8f0;
+  box-shadow: none;
+}
+
+.ios-chat-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Kişi Listesi Elemanı */
+.ios-chat-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #f8fafc;
+  transition: background 0.2s;
+  position: relative;
+}
+.ios-chat-item:hover {
+  background: #f8fafc;
+}
+.ios-chat-item.active {
+  background: #eff6ff;
+}
+.ios-chat-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #007aff; /* Apple Mavisi */
+}
+
+.ios-chat-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 1px solid #eee;
+}
+
+.ios-item-info {
+  flex: 1;
+  min-width: 0; /* Text taşmasını engellemek için */
+}
+.ios-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.ios-item-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #111;
+}
+.ios-item-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+.ios-item-last-msg {
+  font-size: 0.85rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ios-chat-item.active .ios-item-name {
+  color: #007aff;
+}
+
+/* --- SAĞ TARAF (CHAT PENCERESİ) --- */
+.ios-chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  position: relative;
+}
+
+.ios-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+}
+.ios-empty-state i {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+.ios-empty-state h3 {
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.ios-active-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Üst Bar */
+.ios-chat-topbar {
+  padding: 10px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+.ios-back-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #007aff;
+  cursor: pointer;
+  display: none; /* Masaüstünde gizli */
+}
+.ios-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ios-user-profile img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ios-user-details h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #111;
+}
+.ios-status-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* Mesaj Alanı */
+.ios-messages-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Mesajlar arası boşluk */
+  background: #fff;
+}
+
+.admin-user-text {
+  color: #e63946 !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-badge-icon {
+  background-color: #e63946;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.ios-msg {
+  max-width: 70%;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.ios-msg.sent {
+  align-self: flex-end;
+  background: #007aff;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.ios-msg.received {
+  align-self: flex-start;
+  background: #e9e9eb;
+  color: #000;
+  border-bottom-left-radius: 4px;
+}
+
+.ios-msg-time {
+  font-size: 0.65rem;
+  margin-top: 4px;
+  opacity: 0.7;
+  text-align: right;
+  display: block;
+}
+.ios-msg.received .ios-msg-time {
+  text-align: left;
+  opacity: 0.5;
+}
+
+.ios-input-area {
+  padding: 15px 20px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fff;
+}
+.ios-attach-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.ios-attach-btn:hover {
+  color: #007aff;
+}
+
+.ios-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+.ios-input-wrapper input {
+  width: 100%;
+  padding: 10px 45px 10px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 25px; /* Hap şeklinde */
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.ios-input-wrapper input:focus {
+  border-color: #007aff;
+}
+
+.ios-send-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #007aff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+}
+.ios-send-btn:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.ios-unread-badge {
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  margin-left: 5px;
+}
+.ios-chat-item.unread .ios-item-last-msg {
+  color: #000;
+  font-weight: 600;
+}
+.fa-check-double {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  margin-left: 5px;
+  transition: color 0.3s ease;
+}
+.fa-check-double.read {
+  color: #3b82f6;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.siftah-modal-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 28px;
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  margin: 0;
+  border: none;
+}
+
+@keyframes slideUpModal {
+  from {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.siftah-modal-content h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.modal-icon-circle {
+  width: 72px;
+  height: 72px;
+  background-color: #fff7ed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+}
+.modal-icon-circle i {
+  font-size: 32px;
+  color: #f59e0b;
+}
+
+.modal-body-text {
+  text-align: left;
+  margin-bottom: 24px;
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #f3f4f6;
+}
+
+.main-warning {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1f2937;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.modal-body-text ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.modal-body-text li {
+  font-size: 0.88rem;
+  color: #4b5563;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  position: relative;
+  padding-left: 5px;
+}
+
+.modal-body-text li strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.pro-tip {
+  font-size: 0.8rem;
+  color: #059669;
+  font-weight: 700;
+  margin-top: 12px;
+  display: block;
+  text-align: center;
+  background: #ecfdf5;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+.confirm-actions button {
+  flex: 1;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-actions button:active {
+  transform: scale(0.96);
+}
+.btn-modal-cancel {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+.btn-modal-confirm {
+  background-color: #111827;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.btn-modal-confirm:hover {
+  background-color: #000;
+}
+
+@media (max-width: 900px) {
+  .ios-chat-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 500;
+    background: #fff;
+  }
+
+  .ios-chat-window.show-mobile {
+    transform: translateX(0);
+  }
+
+  .ios-chat-topbar {
+    position: relative;
+    width: 100%;
+    z-index: 501;
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  .ios-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    z-index: 502;
+    margin-right: 5px;
+    pointer-events: auto;
+  }
+  .ios-back-btn i {
+    pointer-events: none;
+    font-size: 1.2rem;
+  }
+}
+
+/* ================================================== */
+/* --- MOBİL İÇİN PREMIUM VİTRİN AYARI (2'Lİ GRİD) --- */
+/* ================================================== */
+@media (max-width: 600px) {
+  /* 1. Kapsayıcı ayarları: Kenar boşluklarını daralt */
+  .content-section {
+    padding: 15px !important; /* Mobilde çok geniş boşluğa gerek yok */
+    background: #f8fafc; /* Kutunun zeminini hafif gri yapıp öne çıkaralım */
+    border: none; /* Kenar çizgisini kaldırıp temizleyelim */
+    box-shadow: none; /* Gölgeyi kaldır, sadelik iyidir */
+  }
+
+  /* 2. Izgara Yapısı: Zorunlu 2 Sütun */
+  .manage-grid {
+    display: grid;
+    /* auto-fill yerine 2 adet eşit parça (1fr 1fr) yapıyoruz */
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important; /* Kartlar arası boşluğu sıkılaştır */
+  }
+
+  /* 3. Kart Tasarımı: Daha kompakt ve şık */
+  .manage-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Çok hafif gölge */
+    border: none; /* Çizgiyi kaldır */
+  }
+
+  /* 4. Resim Alanı: Yüksekliği dengele */
+  .img-link {
+    height: 140px !important; /* Mobilde kareye yakın olsun */
+  }
+
+  .manage-img {
+    border-radius: 12px 12px 0 0; /* Sadece üst köşeleri yuvarla */
+  }
+
+  /* 5. Kart İçeriği: Yazıları sıkıştır */
+  .manage-body {
+    padding: 10px !important;
+  }
+
+  .manage-title {
+    font-size: 0.85rem !important; /* Başlık fontunu biraz küçült */
+    margin-bottom: 4px;
+    white-space: nowrap; /* Başlık tek satır olsun */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Sığmazsa ... koysun */
+  }
+
+  /* Fiyatlar */
+  .manage-price-row {
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap; /* Fiyatlar sığmazsa alt alta insin */
+    align-items: baseline;
+    gap: 4px;
+  }
+  .price-new {
+    font-size: 1rem !important;
+  }
+  .price-old {
+    font-size: 0.75rem !important;
+  }
+
+  /* 6. Aksiyon Butonları: Mobilde sadece İKON göster, yazıyı gizle */
+  /* Bu sayede butonlar o dar alana sığar ve bozulmaz */
+  .manage-actions {
+    padding-top: 8px;
+    gap: 5px;
+  }
+
+  .btn-action {
+    padding: 6px 0 !important; /* Yan boşlukları sıfırla */
+    font-size: 0.9rem !important;
+    border-radius: 6px;
+  }
+
+  /* Butonların içindeki yazıları mobilde gizle, sadece ikon kalsın */
+  /* (NOT: HTML'de ikon ve yazı yanyana olduğu için font-size ile oynuyoruz) */
+  .btn-action {
+    font-size: 0 !important; /* Yazıyı yok et */
+  }
+  .btn-action i {
+    font-size: 1rem !important; /* İkonu geri getir */
+    margin: 0 !important;
+  }
+
+  /* Vitrin butonunu belirginleştir */
+  .btn-showcase.active i {
+    color: #f59e0b;
+  }
+
+  /* Status rozetlerini küçült */
+  .status-badge {
+    font-size: 0.6rem !important;
+    padding: 4px 8px !important;
+    top: 8px;
+    left: 8px;
+  }
+}

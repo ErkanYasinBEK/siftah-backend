@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Şifre Belirle | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="buyer-login.css" />
+  </head>
+  <body>
+    <div id="toast-container"></div>
+
+    <div class="login-wrapper">
+      <div class="login-visual">
+        <div class="visual-content">
+          <a href="/" class="logo-link"><span class="logo-text">siftah</span></a>
+          <div class="hero-text">
+            <h2>Yeni Başlangıç,<br />Güvenli Adımlar.</h2>
+            <p>Hesabını güvende tutmak için güçlü bir şifre belirle.</p>
+          </div>
+          <div class="visual-footer"><span>© 2025 Siftah Inc.</span></div>
+        </div>
+        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2070&auto=format&fit=crop" class="bg-image" />
+        <div class="overlay"></div>
+      </div>
+
+      <div class="login-form-container">
+        <div class="form-header">
+          <h1>Yeni Şifre Belirle 🔒</h1>
+          <p>Lütfen yeni şifrenizi girin.</p>
+        </div>
+
+        <form id="resetPasswordForm">
+          <div class="input-group">
+            <label>Yeni Şifre</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="password" placeholder="En az 8 karakter" required />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Yeni Şifre (Tekrar)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="confirmPassword" placeholder="Şifreyi onayla" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Şifreyi Güncelle</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:5000/api";
+
+      // URL'den Token'ı Çekme Fonksiyonu
+      function getTokenFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("token");
+      }
+
+      // Toast Bildirim Fonksiyonu (Login sayfasındakiyle aynı)
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        let iconClass = type === "error" ? "fa-circle-xmark" : "fa-circle-check";
+        let colorClass = type === "error" ? "error" : "";
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${colorClass}`;
+        toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><div class="toast-content"><span class="toast-title">${title}</span><span class="toast-msg">${message}</span></div>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+      }
+
+      // Form Gönderimi
+      document.getElementById("resetPasswordForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const token = getTokenFromUrl();
+        const btn = e.target.querySelector("button");
+
+        // 1. Basit Kontroller
+        if (!token) {
+            showToast("error", "Hata", "Geçersiz veya eksik bağlantı. Lütfen e-postadaki linke tekrar tıklayın.");
+            return;
+        }
+        if (password.length < 8) {
+            showToast("error", "Zayıf Şifre", "Şifreniz en az 8 karakter olmalıdır.");
+            return;
+        }
+        if (password !== confirmPassword) {
+            showToast("error", "Hata", "Şifreler birbiriyle uyuşmuyor.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Güncelleniyor...";
+
+        try {
+            // 2. Backend'e Gönder
+            const response = await fetch(`${API_URL}/auth/reset-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showToast("success", "Başarılı", "Şifreniz başarıyla güncellendi! Giriş sayfasına yönlendiriliyorsunuz...");
+                setTimeout(() => { window.location.href = "giris.html"; }, 3000);
+            } else {
+                showToast("error", "Hata", data.message || "Bir sorun oluştu.");
+                btn.disabled = false;
+                btn.textContent = "Şifreyi Güncelle";
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("error", "Bağlantı Hatası", "Sunucuya erişilemiyor.");
+            btn.disabled = false;
+            btn.textContent = "Şifreyi Güncelle";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+.siftah-style {
+  background: #fff;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.siftah-style h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.siftah-style .subtitle {
+  font-size: 1rem;
+  color: #555;
+  max-width: 750px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.style-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.style-card {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 30px 25px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.style-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.icon {
+  font-size: 1.6rem;
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #fff3cd;
+}
+.icon.yellow { background: #fff8e1; }
+.icon.gray { background: #eceff1; }
+.icon.blue { background: #e3f2fd; }
+
+.style-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.style-card p {
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.style-card .italic {
+  display: block;
+  color: #333;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Renk Paleti */
+.palette{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.palette .color{
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
+.palette .black { background: #000; }
+.palette .white { background: #fff; }
+.palette .gray { background: #d9d9d9; }
+.palette .blue { background: #0000FF; }
+
+.balance-bar{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.balance-bar .bar{
+  height: 6px;
+  border-radius: 3px;
+}
+
+.balance-bar .dark{
+  width: 80px;
+  background: #000;
+}
+
+.balance-bar .light{
+  width: 80px;
+  background: #e5e7eb;
+}
+
+.siftah-stories {
+  background: #f9fafb;
+  text-align: center;
+  padding: 60px 20px;
+  min-height: 80vh;
+}
+
+.siftah-stories h2{
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.siftah-stories .subtitle {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 50px;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.story-card{
+  background: #fff;
+  border-radius: 14px;
+  padding: 25px;
+  text-align: left;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.story-header{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.story-header img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.story-header h3{
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.story-header span{
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.quote{
+  font-style: italic;
+  color: #444;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.author{
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+
+

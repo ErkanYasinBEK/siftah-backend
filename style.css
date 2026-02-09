@@ -1,0 +1,376 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main {
+    background: linear-gradient(10deg, #ffffff 30%, #a0e0ff 100%);
+    width: 100%;
+}
+main .about{
+    display: flex;
+    justify-content: space-around;
+    height: auto;
+    padding: 5rem 16rem;
+}
+main .main-left h1{
+    font-size: 2rem;
+    font-weight: 800;
+    color: #17387b;
+    margin:0; 
+    padding: 0;
+    padding-bottom: 0.3rem;
+}
+main .main-left p:nth-child(2){
+    font-size: 1.3rem;
+}
+main .main-left p:nth-child(2), 
+main .main-left p span{
+    background: linear-gradient(to right, #0ea9e1, #042bdb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-bottom: 0.3rem;
+}
+main .main-left .siftah-presentation{
+    border: 1px solid #fff;
+    border-radius: 10px;
+    box-shadow: 2px 2px 30px 2px #dcdada;
+    background-color: #ffffff;
+    width: 350px;
+    height: auto;   
+    padding: 1rem;
+}
+main .main-left .siftah-presentation p{
+    font-size: 0.9rem;
+    width: auto;
+    margin: 0;
+}
+main .main-right img{
+    width: 290px;
+    border-radius: 20px;
+    /* box-shadow: 2px 2px 30px 2px #009ACE; */
+    box-shadow: 2px 2px 30px 2px #60a6bd;
+}
+main .main-right{
+    margin: auto 0;
+}
+
+
+.secure-shopping {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.secure-shopping h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.secure-shopping .subtitle {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 40px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 30px 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card .icon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #e8f5e9;
+}
+
+.card .icon.green { background: #e8f5e9; }
+.card .icon.yellow { background: #fff8e1; }
+.card .icon.blue { background: #e3f2fd; }
+.card .icon.purple { background: #f3e5f5; }
+
+.card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.transparency {
+  background: #000;
+  color: #fff;
+  border-radius: 18px;
+  padding: 40px 25px;
+  margin-top: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.transparency h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+
+.transparency p {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+.transparency .btn {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+.transparency .btn:hover {
+  background: #222;
+  color: #fff;
+}
+
+.siftah-badges {
+  background: #f9fafb;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.siftah-badges h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.siftah-badges .subtitle {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.badge-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  padding: 30px 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.badge-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.badge-icon {
+  font-size: 2rem;
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+}
+
+.badge-icon.blue { background: #e3f2fd; color: #0d8bff;}
+.badge-icon.purple { background: #f3e5f5; color: #a855f7;}
+.badge-icon.green { background: #e8f5e9; color: #16a34a;}
+.badge-icon.orange { background: #fff3e0; color: #f97316;}
+.badge-icon.red { background: #ffebee; color: #ef4444;}
+
+.badge-card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.badge-card p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.badge-info {
+  background: #000;
+  color: #fff;
+  border-radius: 18px;
+  padding: 40px 25px;
+  margin-top: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.badge-info h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+
+.badge-info p {
+  max-width: 650px;
+  margin: 0 auto 20px;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+.badge-info .btn {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+.badge-info .btn:hover {
+  background: #222;
+  color: #fff;
+}
+
+
+@media (max-width: 768px) {
+  .siftah-badges h2 {
+    font-size: 1.5rem;
+  }
+
+  .badge-info {
+    padding: 30px 20px;
+  }
+}
+
+
+@media (max-width: 768px) {
+    .siftah-style h2 {
+    font-size: 1.5rem;
+  }
+
+  .style-card {
+    padding: 25px 18px;
+  }
+  .secure-shopping h2 {
+    font-size: 1.5rem;
+  }
+
+  .transparency {
+    padding: 30px 20px;
+  }
+}
+
+
+@media (max-width: 992px) {
+    
+    main .about {
+        flex-direction: column-reverse; 
+        align-items: center; 
+        padding: 3rem 1.5rem;
+        gap: 2.5rem; 
+        text-align: center;
+    }
+
+    main .main-right {
+        margin: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    main .main-right img {
+        width: 100%; 
+        max-width: 320px; 
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(96, 166, 189, 0.4);
+        animation: floatImage 4s ease-in-out infinite; /* Hafif süzülme efekti */
+    }
+
+    main .main-left {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    main .main-left h1 {
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+    }
+
+    main .main-left p:nth-child(2) {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    main .main-left .siftah-presentation {
+        width: 100%;
+        max-width: 450px; 
+        height: auto;
+        background: rgba(255, 255, 255, 0.65); 
+        backdrop-filter: blur(12px); 
+        -webkit-backdrop-filter: blur(12px); 
+        border: 1px solid rgba(255, 255, 255, 0.8); 
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); 
+    }
+
+    main .main-left .siftah-presentation p {
+        font-size: 0.95rem;
+        line-height: 1.6; 
+        color: #333;
+    }
+    
+    main .main-left .siftah-presentation p span {
+        font-weight: 800;
+        color: #17387b;
+    }
+}
+
+@media (max-width: 400px) {
+    main .main-left h1 { font-size: 1.7rem; }
+    main .main-left p:nth-child(2) { font-size: 1rem; }
+    main .main-left .siftah-presentation { padding: 1.2rem; }
+    main .main-left .siftah-presentation p { font-size: 0.85rem; }
+}
+
+@keyframes floatImage {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}

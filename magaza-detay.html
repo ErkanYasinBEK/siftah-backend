@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Satıcı Profili | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link rel="stylesheet" href="nav-footer.css" />
+    <link rel="stylesheet" href="magaza.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="notification-area"></div>
+
+    <div id="navbar"></div>
+
+    <section class="brand-box" id="brandCover">
+      <div class="brand-overlay">
+        <div class="brand-identity">
+          <div class="brand-circle-logo">
+            <img id="brandLogo" src="" alt="Marka Logo" />
+          </div>
+          <div class="brand-title">
+            <div class="brand-tittle-text">
+              <h1 id="brandTitle">Yükleniyor...</h1>
+              <span id="siftahNote">...</span>
+            </div>
+
+            <div class="badge-row desktop-only" id="badgeContainer"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <header class="hero">
+      <div class="container hero__inner">
+        <div class="hero__brand">
+          <div class="seller-avatar">
+            <img id="sellerAvatar" src="" alt="Satıcı" />
+          </div>
+
+          <div class="brand-info">
+            <div class="name-title-row">
+              <h2 class="seller-name" id="sellerName">...</h2>
+              <span class="seller-role">Satıcı</span>
+            </div>
+
+            <p class="brand-tag" id="sellerDesc">...</p>
+
+            <div class="seller-stats-row">
+              <span><strong id="productCount">0</strong> ürün</span>
+              <span id="followerCountDisplay"><strong>0</strong> takipçi</span>
+              <span><strong>96%</strong> memnuniyet</span>
+              <span><strong>2025</strong> üyelik</span>
+            </div>
+
+            <div id="storeSocials" class="social-media-row"></div>
+
+            <div class="action-buttons">
+              <button
+                id="followBtn"
+                class="btn-follow"
+                onclick="toggleFollow()"
+              >
+                Takip Et
+              </button>
+              <button class="btn-message" onclick="openChat()">
+                Mesaj Gönder
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section
+      class="section featured-single"
+      id="featuredSection"
+      style="display: none"
+    >
+      <div class="container">
+        <h3>Öne Çıkan Ürün</h3>
+        <div class="featured-box">
+          <div class="featured-image">
+            <img id="featImg" src="" alt="Öne Çıkan" />
+          </div>
+          <div class="featured-info">
+            <span class="badge-premium">Vitrin Yıldızı</span>
+            <h4 id="featTitle">...</h4>
+            <p id="featDesc">...</p>
+            <div class="price-row">
+              <span class="price-lg" id="featPrice">...</span>
+              <a
+                id="featLink"
+                href="#"
+                class="btn-black"
+                style="
+                  text-decoration: none;
+                  padding: 12px 24px;
+                  border-radius: 8px;
+                "
+                >İncele</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="section products" id="products">
+      <div class="container">
+        <div class="section-head wrap-head">
+          <h2>Tüm Ürünler</h2>
+          <div class="controls">
+            <input type="text" id="searchInput" placeholder="Mağazada ara..." />
+          </div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+          <p style="width: 100%; text-align: center">Yükleniyor...</p>
+        </div>
+      </div>
+    </main>
+
+    <section
+      class="section brand-story"
+      id="storySection"
+      style="display: none"
+    >
+      <div class="container">
+        <div class="story-card">
+          <div class="story-text">
+            <h3>Marka Hikayem 🖋️</h3>
+            <p id="storyText">...</p>
+          </div>
+          <div class="story-image">
+            <img src="/images/deneme/EWM_shop_2007.jpg" alt="Atölye Görseli" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="chat-widget" class="chat-widget" style="display: none">
+      <div class="chat-header">
+        <div class="chat-user-info">
+          <div class="chat-status-dot"></div>
+          <span id="chatSellerName">Satıcı Adı</span>
+        </div>
+        <div class="chat-controls">
+          <button onclick="minimizeChat()" title="Küçült">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <button onclick="closeChat()" title="Kapat">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <div class="chat-date">Bugün</div>
+        <div class="message received">
+          <p>Merhaba, size nasıl yardımcı olabilirim?</p>
+          <span class="time">14:00</span>
+        </div>
+        <div class="message sent">
+          <p>Ürünün stok durumu nedir?</p>
+          <span class="time">14:01</span>
+        </div>
+      </div>
+
+      <div class="chat-footer">
+        <input
+          type="text"
+          id="chatInput"
+          placeholder="Bir mesaj yazın..."
+          onkeypress="handleEnter(event)"
+        />
+        <button onclick="sendMessage()" class="btn-send">
+          <i class="fa-regular fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="chat-minimized"
+      class="chat-minimized"
+      onclick="maximizeChat()"
+      style="display: none"
+    >
+      <div class="chat-status-dot online"></div>
+      <i class="fa-regular fa-comments"></i>
+    </div>
+
+    <div id="buyerSafetyModal" class="modal-overlay">
+  <div class="siftah-modal-content">
+    
+    <div class="modal-icon-circle">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+
+    <h3>Güvenli Alışveriş Uyarısı</h3>
+    
+    <div class="modal-body-text">
+      <p class="main-warning">Satıcıyla doğrudan iletişime geçiyorsunuz.</p>
+      <ul>
+        <li>Siftah, ödeme ve kargo süreçlerine <strong>müdahil değildir.</strong></li>
+        <li>Tanımadığınız kişilere <strong>IBAN ile Kapora</strong> göndermeyin.</li>
+        <li>Mümkünse <strong>"Kapıda Ödeme"</strong> veya <strong>"Elden Teslim"</strong> tercih edin.</li>
+      </ul>
+      <p class="danger-note">
+        *Olası dolandırıcılık durumlarında sorumluluk bize ait değildir. Keyifli Alışverişler.
+      </p>
+    </div>
+
+    <div class="confirm-actions">
+      <button class="btn-modal-cancel" onclick="document.getElementById('buyerSafetyModal').style.display='none'">Vazgeç</button>
+      <button class="btn-modal-confirm" onclick="confirmSafetyAndSend()">Okudum,<br>Onaylıyorum</button>
+    </div>
+
+  </div>
+</div>
+
+    <div id="footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null") return null;
+
+        let cleanPath = dbPath.replace(/\\/g, "/");
+
+        if (cleanPath.startsWith("http")) return cleanPath;
+
+        const uploadsIndex = cleanPath.toLowerCase().indexOf("uploads/");
+
+        if (uploadsIndex !== -1) {
+          cleanPath = cleanPath.substring(uploadsIndex);
+        } else {
+          if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
+          if (
+            !cleanPath.startsWith("/uploads") &&
+            !cleanPath.startsWith("uploads")
+          ) {
+            cleanPath = "uploads" + cleanPath;
+          }
+        }
+
+        cleanPath = cleanPath.replace("//", "/");
+
+        if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
+
+        return `${API_BASE_URL}/${cleanPath}?t=${Date.now()}`;
+      }
+
+      let allProducts = [];
+      const params = new URLSearchParams(window.location.search);
+      const sellerId = params.get("sellerId");
+      let isFirstMessageInChat = true;
+
+      function getMyId() {
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            window
+              .atob(base64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join(""),
+          );
+          return JSON.parse(jsonPayload).id;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        const area = document.getElementById("notification-area");
+        let iconHTML = '<i class="fa-solid fa-circle-info"></i>';
+        if (type === "success")
+          iconHTML = '<i class="fa-solid fa-circle-check"></i>';
+        if (type === "error")
+          iconHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+
+        const toast = document.createElement("div");
+        toast.className = `toast-message ${type}`;
+        toast.innerHTML = `<span class="toast-icon">${iconHTML}</span><span>${message}</span>`;
+        area.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add("hide");
+          toast.addEventListener("animationend", () => toast.remove());
+        }, 4000);
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!sellerId) {
+          showNotification(
+            "Satıcı bulunamadı, anasayfaya yönlendiriliyorsunuz.",
+            "error",
+          );
+          setTimeout(() => (window.location.href = "/"), 2000);
+          return;
+        }
+
+        const myId = getMyId();
+
+        if (myId && String(myId) === String(sellerId)) {
+          console.log("Kendi dükkanındasın, butonlar gizleniyor.");
+
+          const msgBtn = document.querySelector(".btn-message");
+          if (msgBtn) {
+            msgBtn.style.display = "none";
+          }
+
+          const followBtn = document.getElementById("followBtn");
+          if (followBtn) {
+            followBtn.style.display = "none";
+          }
+        }
+
+        try {
+          const token = localStorage.getItem("token");
+          const headers = { "Content-Type": "application/json" };
+          if (token) headers["Authorization"] = `Bearer ${token}`;
+
+          const response = await fetch(
+            `${API_BASE_URL}/api/users/${sellerId}`,
+            {
+              method: "GET",
+              headers: headers,
+            },
+          );
+
+          if (!response.ok) throw new Error("Veri alınamadı");
+
+          const seller = await response.json();
+
+          allProducts = seller.Products || [];
+
+          document.getElementById("brandTitle").textContent =
+            seller.brandName || `${seller.name} Dükkanı`;
+          document.getElementById("sellerName").textContent = `${seller.name} ${
+            seller.surname || ""
+          }`.trim();
+          document.getElementById("siftahNote").textContent =
+            seller.siftahNote || "Premium El Yapımı Ürünler";
+          document.getElementById("sellerDesc").textContent =
+            seller.siftahNote || "Siftah onaylı satıcı.";
+          document.getElementById("productCount").textContent =
+            allProducts.length;
+          document.getElementById("followerCountDisplay").innerHTML =
+            `<strong>${seller.followersCount || 0}</strong> takipçi`;
+
+          const followBtn = document.getElementById("followBtn");
+          if (seller.isFollowing) {
+            followBtn.innerText = "Takip Ediliyor";
+            followBtn.classList.add("following-active");
+          } else {
+            followBtn.innerText = "Takip Et";
+            followBtn.classList.remove("following-active");
+          }
+
+          const socialContainer = document.getElementById("storeSocials");
+          socialContainer.innerHTML = "";
+
+          console.log("Satıcı Sosyal Medya Verileri:", {
+            insta: seller.instagram,
+            web: seller.website,
+            yt: seller.youtube,
+          });
+
+          const createSocialLink = (link, type, iconClass) => {
+            if (
+              !link ||
+              link === "null" ||
+              link === "undefined" ||
+              link.trim() === ""
+            )
+              return;
+
+            let finalUrl = link;
+            if (!link.startsWith("http")) {
+              if (type === "instagram")
+                finalUrl = `https://instagram.com/${link}`;
+              else if (type === "twitter")
+                finalUrl = `https://twitter.com/${link}`;
+              else if (type === "facebook")
+                finalUrl = `https://facebook.com/${link}`;
+              else if (type === "youtube") finalUrl = link;
+              else if (type === "linkedin")
+                finalUrl = `https://linkedin.com/in/${link}`;
+              else if (type === "website") finalUrl = `https://${link}`;
+            }
+
+            const a = document.createElement("a");
+            a.href = finalUrl;
+            a.target = "_blank";
+            a.className = `store-social-btn ${type}`;
+            a.innerHTML = `<i class="${iconClass}"></i>`;
+            a.title = type.charAt(0).toUpperCase() + type.slice(1);
+
+            socialContainer.appendChild(a);
+          };
+
+          createSocialLink(seller.website, "website", "fa-solid fa-globe");
+          createSocialLink(
+            seller.instagram,
+            "instagram",
+            "fa-brands fa-instagram",
+          );
+          createSocialLink(seller.twitter, "twitter", "fa-brands fa-x-twitter");
+          createSocialLink(
+            seller.facebook,
+            "facebook",
+            "fa-brands fa-facebook-f",
+          );
+          createSocialLink(seller.youtube, "youtube", "fa-brands fa-youtube");
+          createSocialLink(
+            seller.linkedin,
+            "linkedin",
+            "fa-brands fa-linkedin-in",
+          );
+
+          // A. MARKA LOGOSU
+          const brandNameFallback = seller.brandName || seller.name;
+          let finalLogoUrl = fixImageUrl(seller.logoUrl);
+
+          if (!finalLogoUrl) {
+            finalLogoUrl = `https://ui-avatars.com/api/?name=${brandNameFallback}&background=000&color=fff&bold=true`;
+          }
+          document.getElementById("brandLogo").src = finalLogoUrl;
+
+          // B. SATICI PROFİL FOTOĞRAFI
+          const personalName = `${seller.name} ${seller.surname || ""}`.trim();
+          let finalProfileUrl = fixImageUrl(seller.profileImage);
+
+          if (!finalProfileUrl) {
+            finalProfileUrl = `https://ui-avatars.com/api/?name=${personalName}&background=random`;
+          }
+          document.getElementById("sellerAvatar").src = finalProfileUrl;
+
+          // C. KAPAK FOTOĞRAFI
+          if (seller.coverImage) {
+            const coverUrl = fixImageUrl(seller.coverImage);
+            document.getElementById("brandCover").style.backgroundImage =
+              `url('${coverUrl}')`;
+          }
+
+          // --- 2. ROZETLER ---
+          const badgeContainer = document.getElementById("badgeContainer");
+          if (badgeContainer) {
+            badgeContainer.innerHTML = "";
+            if (
+              seller.badges &&
+              Array.isArray(seller.badges) &&
+              seller.badges.length > 0
+            ) {
+              seller.badges.forEach((badge) => {
+                const label = badge.label || badge;
+                const colorName = badge.color || "blue";
+                const iconClass = badge.icon || "fa-solid fa-medal";
+                badgeContainer.innerHTML += `
+                    <span class="badge-pill badge-${colorName}" onclick="toggleBadge(this)">
+                        <i class="${iconClass}"></i> 
+                        <span class="badge-text">${label}</span>
+                    </span>`;
+              });
+            }
+          }
+
+          window.toggleBadge = function (element) {
+            const allBadges = document.querySelectorAll(".badge-pill");
+            allBadges.forEach((badge) => {
+              if (badge !== element) {
+                badge.classList.remove("expanded");
+              }
+            });
+
+            element.classList.toggle("expanded");
+          };
+
+          if (seller.featuredProductId) {
+            const featProd = allProducts.find(
+              (p) => p.id === seller.featuredProductId,
+            );
+            if (featProd) {
+              document.getElementById("featuredSection").style.display =
+                "block";
+              document.getElementById("featTitle").textContent = featProd.title;
+              document.getElementById("featDesc").textContent =
+                featProd.description.substring(0, 100) + "...";
+              document.getElementById("featPrice").textContent =
+                `₺${featProd.price}`;
+              document.getElementById("featLink").href =
+                `urun-detay.html?id=${featProd.id}`;
+              if (seller.featuredProductId) {
+                const featProd = allProducts.find(
+                  (p) => p.id === seller.featuredProductId,
+                );
+
+                if (featProd) {
+                  document.getElementById("featuredSection").style.display =
+                    "block";
+                  document.getElementById("featTitle").textContent =
+                    featProd.title;
+                  document.getElementById("featDesc").textContent =
+                    featProd.description.substring(0, 100) + "...";
+                  document.getElementById("featPrice").textContent =
+                    `₺${featProd.price}`;
+                  document.getElementById("featLink").href =
+                    `urun-detay.html?id=${featProd.id}`;
+
+                  let featImageUrl =
+                    "https://placehold.co/600x400?text=Resim+Yok";
+
+                  if (
+                    featProd.images &&
+                    Array.isArray(featProd.images) &&
+                    featProd.images.length > 0
+                  ) {
+                    featImageUrl = fixImageUrl(featProd.images[0]);
+                  } else if (featProd.image) {
+                    featImageUrl = fixImageUrl(featProd.image);
+                  }
+
+                  document.getElementById("featImg").src = featImageUrl;
+                  // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+                }
+              }
+            }
+          }
+
+          if (seller.story) {
+            document.getElementById("storySection").style.display = "block";
+            document.getElementById("storyText").textContent = seller.story;
+            const storyImgEl = document.querySelector(".story-image img");
+
+            if (storyImgEl) {
+              let storyUrl =
+                "https://placehold.co/800x450?text=Atölyemizden+Kareler";
+
+              if (seller.storyImage) {
+                storyUrl = fixImageUrl(seller.storyImage);
+              }
+              storyImgEl.src = storyUrl;
+            }
+          }
+          renderProducts(allProducts);
+        } catch (error) {
+          console.error(error);
+          showNotification(
+            "Satıcı bilgileri yüklenirken bir hata oluştu.",
+            "error",
+          );
+          document.getElementById("productGrid").innerHTML =
+            '<p style="text-align:center;">Bir hata oluştu.</p>';
+        }
+      });
+
+      function renderProducts(products) {
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = "";
+
+        if (products.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1; text-align:center; padding: 40px;">' +
+            '<i class="fa-solid fa-box-open" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>' +
+            '<p style="color:#888;">Bu mağazada henüz ürün bulunmuyor.</p>' +
+            "</div>";
+          return;
+        }
+
+        products.forEach((product) => {
+          let imageUrl = "https://placehold.co/400x500?text=Resim+Yok";
+
+          if (
+            product.images &&
+            Array.isArray(product.images) &&
+            product.images.length > 0
+          ) {
+            imageUrl = fixImageUrl(product.images[0]);
+          } else if (product.image) {
+            imageUrl = fixImageUrl(product.image);
+          }
+
+          let priceDisplay = `<span class="price-current">${product.price}₺</span>`;
+          if (product.discountPrice) {
+            priceDisplay = `
+                <span class="price-old" style="text-decoration:line-through; color:#999; font-size:0.9em; margin-right:6px;">${product.price}₺</span>
+                <span class="price-new" style="color:#d32f2f; font-weight:bold;">${product.discountPrice}₺</span>
+            `;
+          }
+
+          const card = `
+            <article class="product-card" onclick="window.location.href='urun-detay.html?id=${product.id}'" style="cursor:pointer;">
+                <div class="product-media ratio-4x5">
+                    <img src="${imageUrl}" alt="${product.title}" loading="lazy" style="width:100%; height:100%; object-fit:contain;">
+                </div>
+                <div class="product-body">
+                    <h3 class="product-title" style="margin-bottom: 5px;">${product.title}</h3>
+                    <p class="product-sub" style="color:#666; font-size:0.85rem;">${product.category || "Genel"}</p>
+                    <div class="product-row" style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="price">${priceDisplay}</div>
+                        <button class="btn btn--ghost icon-btn" onclick="event.stopPropagation(); window.location.href='urun-detay.html?id=${product.id}'">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </article>`;
+
+          grid.innerHTML += card;
+        });
+      }
+
+      document.getElementById("searchInput").addEventListener("input", (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = allProducts.filter((p) =>
+          p.title.toLowerCase().includes(val),
+        );
+        renderProducts(filtered);
+      });
+
+      async function toggleFollow() {
+        const btn = document.getElementById("followBtn");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          showNotification(
+            "Takip edebilmek için önce giriş yapmalısınız!",
+            "error",
+          );
+          setTimeout(() => (window.location.href = "login.html"), 2000);
+          return;
+        }
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/users/${sellerId}/follow`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          const data = await response.json();
+          if (response.ok && data.success) {
+            document.getElementById("followerCountDisplay").innerHTML =
+              `<strong>${data.followersCount}</strong> takipçi`;
+            if (data.isFollowing) {
+              btn.innerText = "Takip Ediliyor";
+              btn.classList.add("following-active");
+              showNotification("Mağaza takip listesine eklendi!", "success");
+            } else {
+              btn.innerText = "Takip Et";
+              btn.classList.remove("following-active");
+              showNotification("Mağaza takipten çıkarıldı.", "info");
+            }
+          } else {
+            showNotification(data.message || "Bir hata oluştu.", "error");
+          }
+        } catch (error) {
+          showNotification("Sunucu bağlantı hatası.", "error");
+        }
+      }
+
+      async function openChat() {
+    const myId = getMyId();
+    if (myId && String(myId) === String(sellerId)) {
+        showNotification("Kendi kendinize mesaj gönderemezsiniz.", "error");
+        return;
+    }
+    const chatWidget = document.getElementById("chat-widget");
+    const minimized = document.getElementById("chat-minimized");
+    const sellerName = document.getElementById("sellerName").textContent;
+    document.getElementById("chatSellerName").textContent = sellerName;
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        showNotification("Mesaj göndermek için giriş yapmalısınız.", "error");
+        return;
+    }
+    
+    chatWidget.style.display = "flex";
+    minimized.style.display = "none";
+    
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/messages/conversation/${sellerId}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            },
+        );
+        const messages = await response.json();
+
+        if (Array.isArray(messages) && messages.length > 0) {
+            isFirstMessageInChat = false; 
+        } else {
+            isFirstMessageInChat = true;  
+        }
+
+        renderChatHistory(messages);
+        setTimeout(() => {
+            const chatBody = document.getElementById("chatBody");
+            chatBody.scrollTop = chatBody.scrollHeight;
+            document.getElementById("chatInput").focus();
+        }, 100);
+    } catch (error) {
+        console.error(error);
+        isFirstMessageInChat = true; 
+        renderChatHistory([]); 
+    }
+}
+
+      function renderChatHistory(messages) {
+        const chatBody = document.getElementById("chatBody");
+        const myId = getMyId();
+        chatBody.innerHTML = `<div class="chat-date">Sohbet Geçmişi</div>`;
+        if (!messages || messages.length === 0) {
+          chatBody.innerHTML += `<p style="text-align:center; font-size:0.8rem; color:#999; margin-top:20px;">Henüz mesaj yok. İlk mesajı sen at! 👋</p>`;
+          return;
+        }
+        messages.forEach((msg) => {
+          const isSentByMe = Number(msg.senderId) === Number(myId);
+          const time = new Date(msg.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const msgHTML = `<div class="message ${
+            isSentByMe ? "sent" : "received"
+          }"><p>${msg.content}</p><span class="time">${time}</span></div>`;
+          chatBody.innerHTML += msgHTML;
+        });
+      }
+
+      async function sendMessage(forceSend = false) {
+    const input = document.getElementById("chatInput");
+    const content = input.value.trim();
+    const token = localStorage.getItem("token");
+
+    if (!content || !token) return;
+
+    if (isFirstMessageInChat && !forceSend) {
+        const modal = document.getElementById('buyerSafetyModal');
+        modal.style.display = 'flex';
+        modal.style.zIndex = '9999999'; 
+        return; 
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ receiverId: sellerId, content: content }),
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            isFirstMessageInChat = false; 
+
+            const chatBody = document.getElementById("chatBody");
+            const time = new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+            const msgHTML = `<div class="message sent"><p>${content}</p><span class="time">${time}</span></div>`;
+            chatBody.innerHTML += msgHTML;
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+        } else {
+            showNotification(data.message || "Mesaj gönderilemedi.", "error");
+        }
+    } catch (error) {
+        showNotification("Bağlantı hatası.", "error");
+    }
+}
+
+      function confirmSafetyAndSend() {
+          document.getElementById('buyerSafetyModal').style.display = 'none';
+          sendMessage(true);
+      }
+
+      function closeChat() {
+        document.getElementById("chat-widget").style.display = "none";
+      }
+      function minimizeChat() {
+        document.getElementById("chat-widget").style.display = "none";
+        document.getElementById("chat-minimized").style.display = "flex";
+      }
+      function maximizeChat() {
+        document.getElementById("chat-widget").style.display = "flex";
+        document.getElementById("chat-minimized").style.display = "none";
+      }
+      function handleEnter(e) {
+        if (e.key === "Enter") sendMessage();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3075 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yönetim Paneli | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div id="toast-container"></div>
+
+    <div id="customConfirmModal" class="confirm-modal-overlay">
+      <div class="confirm-modal-card">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="confirm-title" id="confirmTitle">Emin misiniz?</h3>
+        <p class="confirm-desc" id="confirmDesc">Bu işlemi geri alamazsınız.</p>
+        <div class="confirm-actions">
+          <button class="btn-confirm-cancel" onclick="closeConfirmModal()">
+            Vazgeç
+          </button>
+          <button class="btn-confirm-yes" id="btnConfirmYes">
+            Evet, Onaylıyorum
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="admin-layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <i class="fa-solid fa-shield-cat"></i>
+          <span>Siftah Admin</span>
+        </div>
+
+        <nav class="menu">
+          <a
+            href="#"
+            class="menu-item active"
+            onclick="switchTab('dashboard', this)"
+          >
+            <i class="fa-solid fa-chart-pie"></i> Genel Bakış
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('applications', this)"
+          >
+            <i class="fa-solid fa-users-viewfinder"></i> Satıcı Başvuruları
+            <span class="badge count" id="pendingBadge">0</span>
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('active-stores', this)"
+          >
+            <i class="fa-solid fa-store"></i> Aktif Mağazalar
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('marketplace', this)"
+          >
+            <i class="fa-solid fa-shop-lock"></i> Pazar Yeri Yönetimi
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('messages-audit', this)"
+          >
+            <i class="fa-solid fa-comments"></i> Mesaj Denetimi
+          </a>
+          <a
+            href="#"
+            class="menu-item"
+            onclick="switchTab('product-approvals', this)"
+          >
+            <i class="fa-solid fa-tags"></i> Ürün Onayları
+            <span
+              class="badge count"
+              id="pendingProductBadge"
+              style="background: #f59e0b; display: none"
+              >0</span
+            >
+          </a>
+
+          <a href="#" class="menu-item" onclick="switchTab('members', this)">
+            <i class="fa-solid fa-users-gear"></i> Üye Listesi
+          </a>
+
+          <a href="#" class="menu-item" onclick="switchTab('badges', this)">
+            <i class="fa-solid fa-medal"></i> Rozet Yönetimi
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('logs', this)">
+            <i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('settings', this)">
+            <i class="fa-solid fa-gear"></i> Ayarlar
+          </a>
+        </nav>
+
+        <button class="logout-btn" onclick="logout()">
+          <i class="fa-solid fa-power-off"></i> Çıkış
+        </button>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div class="mobile-menu-btn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </div>
+          <h2 id="pageTitle">Genel Bakış</h2>
+          <div class="admin-profile">
+            <span>Erkan</span>
+            <img
+              src="https://ui-avatars.com/api/?name=Erkan&background=000&color=fff"
+              alt="Admin"
+            />
+          </div>
+        </header>
+
+        <div id="dashboard" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="icon blue"><i class="fa-solid fa-users"></i></div>
+              <div>
+                <h3>Toplam Üye</h3>
+                <span id="totalUserCount">...</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="icon purple" style="background: #f3e8ff; color: #9333ea;">
+                  <i class="fa-solid fa-store"></i>
+              </div>
+              <div>
+                <h3>Aktif Satıcı</h3>
+                <span id="totalSellerCount">...</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="icon orange"><i class="fa-solid fa-shop"></i></div>
+              <div>
+                <h3>Bekleyen İşlem</h3>
+                <span id="statPendingCount">...</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="icon green"><i class="fa-solid fa-box"></i></div>
+              <div>
+                <h3>Toplam Ürün</h3>
+                <span id="totalProductCount">...</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 50px; color: #999">
+            <i
+              class="fa-solid fa-chart-line"
+              style="font-size: 3rem; margin-bottom: 10px; opacity: 0.3"
+            ></i>
+            <p>Detaylı tablolar için soldaki menüyü kullanın.</p>
+          </div>
+        </div>
+
+        <div id="applications" class="tab-content">
+          <div
+            class="table-section"
+            style="background: transparent; box-shadow: none; border: none"
+          >
+            <div
+              class="table-header"
+              style="
+                background: #fff;
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+                margin-bottom: 25px;
+              "
+            >
+              <div>
+                <h3 style="margin: 0">Bekleyen Başvurular</h3>
+                <p style="color: #64748b; font-size: 0.9rem; margin-top: 5px">
+                  Onay bekleyen yeni satıcılar veya güncelleme talepleri.
+                </p>
+              </div>
+              <button class="btn-refresh" onclick="loadPendingSellers()">
+                <i class="fa-solid fa-rotate-right"></i> Yenile
+              </button>
+            </div>
+
+            <div class="application-grid" id="pendingSellersGrid">
+              <p style="text-align: center; color: #999; grid-column: 1/-1">
+                Yükleniyor...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="product-approvals" class="tab-content">
+          <div class="table-section">
+            <div class="table-header">
+              <h3>Onay Bekleyen Ürünler</h3>
+              <button class="btn-refresh" onclick="loadPendingProducts()">
+                <i class="fa-solid fa-rotate-right"></i> Yenile
+              </button>
+            </div>
+
+            <div class="product-approval-grid" id="pendingProductsGrid">
+              <p style="text-align: center; color: #999; grid-column: 1/-1">
+                Yükleniyor...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="productDetailModal" class="modal-overlay">
+          <div class="modal-content large-modal" style="max-width: 900px">
+            <div class="modal-header-custom">
+              <h3>Ürün İnceleme</h3>
+              <button onclick="closeProductModal()" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="product-review-layout">
+              <div class="review-image-col">
+                <div class="review-gallery-container">
+                  <div class="review-main-image">
+                    <img id="modalMainImg" src="" alt="Ana Görsel" />
+                    <div class="price-tag" id="modalProdPrice">0₺</div>
+                  </div>
+
+                  <div class="review-thumbnails" id="modalThumbnails"></div>
+                </div>
+                <div class="seller-mini-card">
+                  <img id="modalSellerImg" src="" alt="Satıcı" />
+                  <div>
+                    <h4 id="modalSellerName">Satıcı Adı</h4>
+                    <span id="modalSellerBrand">Marka</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="review-info-col">
+                <span class="category-badge" id="modalProdCat">Kategori</span>
+                <h2 id="modalProdTitle">Ürün Başlığı</h2>
+
+                <div class="detail-group">
+                  <label>Açıklama</label>
+                  <div class="desc-box" id="modalProdDesc">...</div>
+                </div>
+
+                <div class="detail-row">
+                  <div>
+                    <label>Stok</label>
+                    <span id="modalProdStock">0</span>
+                  </div>
+                  <div>
+                    <label>Eklenme Tarihi</label>
+                    <span id="modalProdDate">...</span>
+                  </div>
+                </div>
+
+                <div
+                  class="modal-actions"
+                  style="
+                    margin-top: auto;
+                    padding-top: 20px;
+                    border-top: 1px solid #eee;
+                  "
+                >
+                  <button
+                    class="btn-reject"
+                    id="btnRejectProduct"
+                    style="flex: 1"
+                  >
+                    <i class="fa-solid fa-trash"></i> Reddet & Sil
+                  </button>
+                  <button
+                    class="btn-approve"
+                    id="btnApproveProduct"
+                    style="flex: 2"
+                  >
+                    <i class="fa-solid fa-check"></i> Yayına Al
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="active-stores" class="tab-content">
+          <div class="table-section">
+            <div class="table-header">
+              <div style="display: flex; align-items: center; gap: 15px">
+                <h3 style="margin: 0">Siftah Onaylı Mağazalar</h3>
+                <div class="header-search-wrapper">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="storeSearchInput"
+                    placeholder="Mağaza, isim veya e-posta ara..."
+                    onkeyup="filterActiveSellers()"
+                  />
+                </div>
+              </div>
+
+              <button class="btn-refresh" onclick="loadActiveSellers()">
+                <i class="fa-solid fa-rotate-right"></i> Yenile
+              </button>
+            </div>
+
+            <div class="store-grid-container" id="activeSellersGrid">
+              <p style="text-align: center; color: #999; grid-column: 1/-1">
+                Yükleniyor...
+              </p>
+            </div>
+
+            <div class="store-grid-container" id="activeSellersGrid">
+            </div>
+
+            <div class="pagination-container" id="sellerPagination" style="display:none;">
+            </div>
+          </div>
+        </div>
+
+        <div id="marketplace" class="tab-content">
+          <div class="marketplace-header">
+            <div>
+              <h3>Yayındaki Ürünler</h3>
+              <p style="color: #64748b; font-size: 0.9rem">
+                Platformdaki tüm aktif ürünleri buradan denetleyebilirsiniz.
+              </p>
+            </div>
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="marketplaceSearch"
+                placeholder="Ürün, marka veya satıcı ara..."
+                onkeyup="filterMarketplace()"
+              />
+            </div>
+          </div>
+
+          <div class="marketplace-grid" id="marketplaceGrid">
+            <p style="grid-column: 1/-1; text-align: center; color: #999">
+              Yükleniyor...
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="rejectReasonModal"
+          class="modal-overlay"
+          style="z-index: 100001"
+        >
+          <div class="modal-content" style="width: 400px">
+            <div style="text-align: center; margin-bottom: 20px">
+              <div
+                class="confirm-icon"
+                style="background: #fee2e2; color: #ef4444; margin: 0 auto 15px"
+              >
+                <i class="fa-solid fa-ban"></i>
+              </div>
+              <h3>Ürünü Yayından Kaldır</h3>
+              <p style="color: #666; font-size: 0.9rem">
+                Satıcıya iletilecek sebebi giriniz:
+              </p>
+            </div>
+
+            <textarea
+              id="rejectReasonInput"
+              rows="4"
+              placeholder="Örn: Görseller bulanık, açıklama yetersiz..."
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                resize: none;
+                margin-bottom: 20px;
+                outline: none;
+              "
+            ></textarea>
+
+            <div class="modal-actions" style="justify-content: center">
+              <button class="btn-cancel" onclick="closeRejectModal()">
+                Vazgeç
+              </button>
+              <button
+                class="btn-reject"
+                onclick="confirmProductRejection()"
+                style="padding: 10px 20px"
+              >
+                Yayından Kaldır
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="badges" class="tab-content">
+          <div class="badge-creator-box">
+            <h4 style="margin-bottom: 15px; color: #334155; font-weight: 700">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Yeni Rozet Tanımla
+            </h4>
+
+            <div class="badge-form-row">
+              <input
+                type="text"
+                id="newBadgeName"
+                placeholder="Rozet İsmi (Örn: Hızlı Gönderim)"
+                style="
+                  flex: 1;
+                  padding: 12px;
+                  border: 1px solid #cbd5e1;
+                  border-radius: 8px;
+                  outline: none;
+                "
+              />
+
+              <select
+                id="newBadgeColor"
+                style="
+                  padding: 12px;
+                  border: 1px solid #cbd5e1;
+                  border-radius: 8px;
+                  min-width: 120px;
+                  outline: none;
+                  cursor: pointer;
+                "
+              >
+                <option value="blue">Mavi</option>
+                <option value="green">Yeşil</option>
+                <option value="purple">Mor</option>
+                <option value="orange">Turuncu</option>
+                <option value="red">Kırmızı</option>
+                <option value="dark">Siyah</option>
+              </select>
+            </div>
+
+            <label
+              style="
+                font-size: 0.9rem;
+                color: #64748b;
+                font-weight: 600;
+                margin-bottom: 8px;
+                display: block;
+              "
+            >
+              Bir İkon Seçin:
+            </label>
+            <div class="icon-picker-area">
+              <div class="icon-grid" id="iconPickerGrid"></div>
+            </div>
+
+            <button
+              onclick="createNewBadge()"
+              class="btn-create-badge"
+              style="width: 100%; justify-content: center"
+            >
+              <i class="fa-solid fa-plus"></i> Rozeti Oluştur
+            </button>
+
+            <div
+              style="
+                margin-top: 25px;
+                border-top: 1px solid #eee;
+                padding-top: 15px;
+              "
+            >
+              <h5 style="margin-bottom: 10px; color: #64748b">
+                Mevcut Rozetler
+              </h5>
+              <div
+                id="badgeDefinitionsList"
+                style="display: flex; flex-wrap: wrap; gap: 10px"
+              >
+                <p style="color: #999; font-size: 0.9rem">Yükleniyor...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-section">
+            <div class="table-header">
+              <h3>Satıcılara Rozet Ata</h3>
+              <button class="btn-refresh" onclick="loadBadgeManagement()">
+                <i class="fa-solid fa-rotate-right"></i> Yenile
+              </button>
+            </div>
+
+            <div class="badge-grid-container" id="badgeGrid">
+              <p style="color: #999; grid-column: 1/-1; text-align: center">
+                Yükleniyor...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="members" class="tab-content">
+          <div class="marketplace-header" style="flex-wrap: wrap; gap: 15px">
+            <div>
+              <h3>Kayıtlı Üyeler</h3>
+              <p style="color: #64748b; font-size: 0.9rem">
+                Platformdaki tüm kullanıcıları yönetin.
+              </p>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <div
+                class="role-filters"
+                style="
+                  background: #fff;
+                  padding: 5px;
+                  border-radius: 8px;
+                  border: 1px solid #e2e8f0;
+                  display: flex;
+                  gap: 5px;
+                "
+              >
+                <button
+                  onclick="filterMembers('all')"
+                  class="filter-btn active"
+                  id="filterBtnAll"
+                >
+                  Tümü
+                </button>
+                <button
+                  onclick="filterMembers('seller')"
+                  class="filter-btn"
+                  id="filterBtnSeller"
+                >
+                  Satıcılar
+                </button>
+                <button
+                  onclick="filterMembers('buyer')"
+                  class="filter-btn"
+                  id="filterBtnBuyer"
+                >
+                  Alıcılar
+                </button>
+              </div>
+
+              <div class="search-wrapper" style="width: auto">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="memberSearch"
+                  placeholder="İsim veya E-posta..."
+                  onkeyup="searchMembers()"
+                />
+              </div>
+
+              <button class="btn-refresh" onclick="loadAllMembers()">
+                <i class="fa-solid fa-rotate-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="members-grid" id="membersGrid">
+            <p style="grid-column: 1/-1; text-align: center; color: #999">
+              Yükleniyor...
+            </p>
+          </div>
+        </div>
+
+        <div id="settings" class="tab-content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px">
+            <div class="settings-container" style="height: fit-content">
+              <div class="settings-header">
+                <h3>Admin Profil Ayarları</h3>
+                <p style="color: #999; font-size: 0.9rem">
+                  Kendi hesap bilgilerinizi buradan güncelleyebilirsiniz.
+                </p>
+              </div>
+              <form id="adminSettingsForm">
+                <div
+                  style="
+                    margin-bottom: 20px;
+                    display: flex;
+                    justify-content: center;
+                  "
+                >
+                  <img
+                    src="https://ui-avatars.com/api/?name=Admin&background=0f172a&color=fff"
+                    style="
+                      width: 80px;
+                      height: 80px;
+                      border-radius: 50%;
+                      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                    "
+                  />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px">
+                  <label>Adınız</label>
+                  <input type="text" id="adminName" required />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px">
+                  <label>Soyadınız</label>
+                  <input type="text" id="adminSurname" required />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px">
+                  <label>E-Posta Adresi</label>
+                  <input
+                    type="email"
+                    id="adminEmail"
+                    disabled
+                    style="background: #f1f5f9; cursor: not-allowed"
+                  />
+                </div>
+                <button type="submit" class="btn-primary">Güncelle</button>
+              </form>
+            </div>
+
+            <div class="settings-container">
+              <div class="settings-header">
+                <h3>
+                  <i class="fa-solid fa-user-shield"></i> Yönetici İşlemleri
+                </h3>
+                <p style="color: #999; font-size: 0.9rem">
+                  Sisteme erişebilecek yeni bir yönetici ekleyin.
+                </p>
+              </div>
+
+              <form id="createAdminForm" onsubmit="handleCreateAdmin(event)">
+                <div
+                  class="form-row"
+                  style="display: flex; gap: 10px; margin-bottom: 15px"
+                >
+                  <div style="flex: 1">
+                    <label
+                      style="
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        color: #64748b;
+                        display: block;
+                        margin-bottom: 5px;
+                      "
+                      >Ad</label
+                    >
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #cbd5e1;
+                        border-radius: 8px;
+                      "
+                    />
+                  </div>
+                  <div style="flex: 1">
+                    <label
+                      style="
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        color: #64748b;
+                        display: block;
+                        margin-bottom: 5px;
+                      "
+                      >Soyad</label
+                    >
+                    <input
+                      type="text"
+                      name="surname"
+                      required
+                      style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #cbd5e1;
+                        border-radius: 8px;
+                      "
+                    />
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px">
+                  <label>E-Posta</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="admin@siftah.com"
+                    style="
+                      width: 100%;
+                      padding: 10px;
+                      border: 1px solid #cbd5e1;
+                      border-radius: 8px;
+                    "
+                  />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px">
+                  <label>Şifre</label>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    placeholder="******"
+                    style="
+                      width: 100%;
+                      padding: 10px;
+                      border: 1px solid #cbd5e1;
+                      border-radius: 8px;
+                    "
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn-primary"
+                  style="background: #16a34a"
+                >
+                  <i class="fa-solid fa-plus"></i> Yeni Yönetici Oluştur
+                </button>
+              </form>
+
+              <div
+                style="
+                  margin-top: 30px;
+                  border-top: 1px solid #eee;
+                  padding-top: 20px;
+                "
+              >
+                <h4
+                  style="font-size: 0.9rem; color: #334155; margin-bottom: 10px"
+                >
+                  Mevcut Yöneticiler
+                </h4>
+                <div
+                  id="adminListContainer"
+                  style="display: flex; flex-direction: column; gap: 10px"
+                >
+                  <p style="color: #999; font-size: 0.9rem">Yükleniyor...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages-audit" class="tab-content">
+          <div class="marketplace-header">
+            <div>
+              <h3><i class="fa-solid fa-shield-halved"></i> Mesaj Denetimi</h3>
+              <p style="color: #64748b; font-size: 0.9rem">
+                Platform içi güvenliği sağlamak için sohbet kayıtları.
+              </p>
+            </div>
+            
+            <div class="search-wrapper" style="width: 400px;">
+                <i class="fa-solid fa-filter"></i>
+                <input
+                  type="text"
+                  id="auditSearchInput"
+                  placeholder="Anahtar kelime ara (Örn: IBAN, Kapora, Numara)..."
+                  onkeyup="filterAuditMessages()"
+                />
+            </div>
+            
+            <button class="btn-refresh" onclick="loadAuditConversations()">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+
+          <div class="table-section">
+             <div class="audit-grid-header">
+                <span>Gönderen</span>
+                <span>Alıcı</span>
+                <span>Son Mesaj</span>
+                <span>Tarih</span>
+                <span style="text-align: right;">İşlem</span>
+             </div>
+             <div id="auditListContainer" class="audit-list-container">
+                <p style="text-align:center; padding:20px; color:#999;">Yükleniyor...</p>
+             </div>
+          </div>
+        </div>
+
+        <div id="logs" class="tab-content">
+            <div class="marketplace-header">
+                <div>
+                  <h3>Yönetici İşlem Kayıtları</h3>
+                  <p style="color: #64748b; font-size: 0.9rem;">
+                    Sistemde yapılan son kritik işlemler.
+                  </p>
+                </div>
+                <button class="btn-refresh" onclick="loadAdminLogs()">
+                    <i class="fa-solid fa-rotate-right"></i> Yenile
+                </button>
+            </div>
+
+            <div class="table-section">
+                <div id="logsContainer" class="logs-list">
+                    <p style="text-align:center; padding:20px; color:#999;">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="chatDetailModal" class="modal-overlay">
+            <div class="modal-content large-modal" style="height: 80vh; display: flex; flex-direction: column;">
+                <div class="modal-header-custom" style="flex-shrink: 0;">
+                    <h3 id="chatModalTitle">Sohbet Geçmişi</h3>
+                    <button onclick="closeChatModal()" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div id="chatHistoryBody" class="audit-chat-body">
+                    </div>
+
+                <div class="audit-chat-footer">
+                    <small><i class="fa-solid fa-info-circle"></i> Bu alan sadece görüntüleme amaçlıdır. Müdahale edilemez.</small>
+                </div>
+            </div>
+        </div>
+
+
+      </main>
+    </div>
+
+    <div id="badgeModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Rozet Yönetimi</h3>
+        <p><strong id="modalTargetName">...</strong> için rozet seç:</p>
+
+        <div class="badge-select-grid">
+          <label class="badge-option"
+            ><input type="checkbox" />
+            <span class="badge-pill blue">Genç Girişimci</span></label
+          >
+          <label class="badge-option"
+            ><input type="checkbox" />
+            <span class="badge-pill purple">Tecrübeli</span></label
+          >
+          <label class="badge-option"
+            ><input type="checkbox" />
+            <span class="badge-pill green">İlgili Satıcı</span></label
+          >
+          <label class="badge-option"
+            ><input type="checkbox" />
+            <span class="badge-pill orange">Popüler</span></label
+          >
+          <label class="badge-option"
+            ><input type="checkbox" />
+            <span class="badge-pill red">Rekortmen</span></label
+          >
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeBadgeModal()">İptal</button>
+          <button class="btn-save" onclick="saveBadges()">Kaydet</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewModal" class="modal-overlay">
+      <div class="modal-content large-modal" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+          <h3>Değişiklik Talebi İnceleme</h3>
+          <button onclick="closeReviewModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto; padding: 20px 0;">
+          <p style="margin-bottom: 20px;">
+            Satıcı <strong><span id="reviewSellerName">...</span></strong> profilinde ve vitrininde değişiklik yapmak istiyor.
+          </p>
+
+          <div class="comparison-grid">
+            <div class="comp-box current">
+              <div class="comp-header"><i class="fa-solid fa-clock-rotate-left"></i> Mevcut Bilgiler</div>
+              
+              <div class="data-group">
+                <label>Kimlik Görselleri</label>
+                <div style="display: flex; gap: 10px;">
+                   <img src="" id="currProfileImg" class="comp-img" title="Profil">
+                   <img src="" id="currLogoImg" class="comp-logo" title="Logo" style="width: 80px; height: 80px; object-fit: contain;">
+                </div>
+              </div>
+
+              <div class="data-row"><label>Ad Soyad:</label> <span id="currName">-</span></div>
+              <div class="data-row"><label>Marka:</label> <span id="currBrand">-</span></div>
+              
+              <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #ccc;">
+              
+              <div class="data-group">
+                 <label>Kapak Fotoğrafı</label>
+                 <img src="" id="currCoverImg" style="width: 100%; height: 80px; object-fit: cover; border-radius: 6px;">
+              </div>
+              <div class="data-group">
+                 <label>Hikaye Görseli</label>
+                 <img src="" id="currStoryImg" style="width: 100%; height: 80px; object-fit: cover; border-radius: 6px;">
+              </div>
+              <div class="data-row"><label>Motto:</label> <span id="currMotto">-</span></div>
+              
+              <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #ccc;">
+
+              <div class="data-group">
+                  <label>Sosyal Medya</label>
+                  <div id="currSocials" style="font-size: 0.85rem; color: #666;">-</div>
+              </div>
+            </div>
+
+            <div class="comp-box new">
+              <div class="comp-header"><i class="fa-solid fa-pen-to-square"></i> Yeni Talep</div>
+              
+              <div class="data-group">
+                <label>Kimlik Görselleri</label>
+                <div style="display: flex; gap: 10px;">
+                   <img src="" id="newProfileImg" class="comp-img" title="Yeni Profil">
+                   <img src="" id="newLogoImg" class="comp-logo" title="Yeni Logo" style="width: 80px; height: 80px; object-fit: contain;">
+                </div>
+              </div>
+
+              <div class="data-row"><label>Ad Soyad:</label> <span id="newName">-</span></div>
+              <div class="data-row"><label>Marka:</label> <span id="newBrand">-</span></div>
+
+              <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #ccc;">
+
+              <div class="data-group">
+                 <label>Kapak Fotoğrafı</label>
+                 <img src="" id="newCoverImg" style="width: 100%; height: 80px; object-fit: cover; border-radius: 6px;">
+              </div>
+              <div class="data-group">
+                 <label>Hikaye Görseli</label>
+                 <img src="" id="newStoryImg" style="width: 100%; height: 80px; object-fit: cover; border-radius: 6px;">
+              </div>
+              <div class="data-row"><label>Motto:</label> <span id="newMotto">-</span></div>
+
+              <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #ccc;">
+
+              <div class="data-group">
+                  <label>Sosyal Medya</label>
+                  <div id="newSocials" style="font-size: 0.85rem; color: #333;">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="border-top: 1px solid #eee; padding-top: 20px; margin-top: auto;">
+          <button class="btn-cancel" onclick="closeReviewModal()" style="margin-right: auto">Kapat</button>
+          <button class="btn-reject" id="btnRejectUpdate">Talebi Reddet</button>
+          <button class="btn-approve" id="btnApproveUpdate">Değişiklikleri Onayla</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="editAdminModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Yönetici Düzenle</h3>
+        <form id="editAdminForm" onsubmit="handleUpdateAdmin(event)">
+          <input type="hidden" id="editAdminId" />
+
+          <div class="form-group" style="margin-bottom: 15px">
+            <label>Ad</label>
+            <input type="text" id="editAdminName" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 15px">
+            <label>Soyad</label>
+            <input type="text" id="editAdminSurname" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 15px">
+            <label>E-Posta</label>
+            <input type="email" id="editAdminEmail" required />
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-cancel"
+              onclick="closeModal('editAdminModal')"
+            >
+              İptal
+            </button>
+            <button type="submit" class="btn-save">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:5000/api";
+      let confirmCallback = null;
+      let currentAdminId = null; 
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await getMyId(); 
+        
+        preloadBadgeDefinitions();
+        loadPendingSellers();
+        loadActiveSellers();
+        loadDashboardStats();
+      });
+
+      async function getMyId() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_URL}/users/me`, {
+                headers: { Authorization: "Bearer " + token },
+            });
+            const data = await res.json();
+            currentAdminId = data.id; 
+        } catch (e) {
+            console.error("Kimlik doğrulama hatası", e);
+        }
+      }
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        let icon = "fa-circle-check";
+        if (type === "error") icon = "fa-circle-xmark";
+
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        toast.innerHTML = `
+            <i class="fa-solid ${icon}" style="font-size:1.5rem;"></i>
+            <div class="toast-content">
+                <span class="toast-title">${title}</span>
+                <span class="toast-msg">${message}</span>
+            </div>
+          `;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.animation = "fadeOut 0.5s ease forwards";
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+
+      async function preloadBadgeDefinitions() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+          const res = await fetch(`${API_URL}/admin/badges/list`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          if (res.ok) {
+            availableBadges = await res.json();
+            console.log("Rozet tanımları yüklendi:", availableBadges.length);
+          }
+        } catch (e) {
+          console.error("Rozet tanımları çekilemedi:", e);
+        }
+      }
+
+      let availableBadges = [];
+      let selectedBadgeIcon = "fa-solid fa-star";
+
+      // --- GENİŞLETİLMİŞ İKON KÜTÜPHANESİ ---
+      const iconList = [
+        // 1. Prestij & Başarı
+        "fa-solid fa-star",
+        "fa-solid fa-medal",
+        "fa-solid fa-crown",
+        "fa-solid fa-trophy",
+        "fa-solid fa-award",
+        "fa-solid fa-certificate",
+        "fa-solid fa-gem",
+        "fa-solid fa-diamond",
+
+        // 2. Güven & Onay
+        "fa-solid fa-shield-cat",
+        "fa-solid fa-check-circle",
+        "fa-solid fa-user-check",
+        "fa-solid fa-lock",
+        "fa-solid fa-user-shield",
+        "fa-solid fa-circle-check",
+
+        // 3. Hız & Performans
+        "fa-solid fa-bolt",
+        "fa-solid fa-fire",
+        "fa-solid fa-rocket",
+        "fa-solid fa-gauge-high",
+        "fa-solid fa-stopwatch",
+        "fa-solid fa-truck-fast",
+
+        // 4. Ticaret & Lojistik
+        "fa-solid fa-store",
+        "fa-solid fa-shop",
+        "fa-solid fa-box-open",
+        "fa-solid fa-cart-shopping",
+        "fa-solid fa-bag-shopping",
+        "fa-solid fa-handshake",
+        "fa-solid fa-briefcase",
+        "fa-solid fa-tags",
+        "fa-solid fa-percent",
+
+        // 5. Doğa & Organik
+        "fa-solid fa-leaf",
+        "fa-solid fa-seedling",
+        "fa-solid fa-tree",
+        "fa-solid fa-paw",
+        "fa-solid fa-wheat-awn",
+
+        // 6. Sosyal & İletişim
+        "fa-solid fa-heart",
+        "fa-solid fa-thumbs-up",
+        "fa-solid fa-comments",
+        "fa-solid fa-bullhorn",
+        "fa-solid fa-users",
+        "fa-solid fa-face-smile",
+
+        // 7. Teknoloji & Diğer
+        "fa-solid fa-wand-magic-sparkles",
+        "fa-solid fa-gift",
+        "fa-solid fa-palette",
+        "fa-solid fa-camera",
+        "fa-solid fa-lightbulb",
+        "fa-solid fa-mug-hot",
+      ];
+
+      function renderIconPicker() {
+        const grid = document.getElementById("iconPickerGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        iconList.forEach((iconClass) => {
+          const div = document.createElement("div");
+          div.className = `icon-option ${
+            iconClass === selectedBadgeIcon ? "selected" : ""
+          }`;
+          div.innerHTML = `<i class="${iconClass}"></i>`;
+
+          div.onclick = () => {
+            document
+              .querySelectorAll(".icon-option")
+              .forEach((el) => el.classList.remove("selected"));
+            div.classList.add("selected");
+            selectedBadgeIcon = iconClass;
+          };
+
+          grid.appendChild(div);
+        });
+      }
+
+      async function loadBadgeManagement() {
+        renderIconPicker();
+        renderBadgeDefinitions();
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+          const resSellers = await fetch(`${API_URL}/admin/approved`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const data = await resSellers.json();
+          const sellers = data.sellers;
+
+          cachedActiveSellers = sellers;
+
+          const grid = document.getElementById("badgeGrid");
+          grid.innerHTML = "";
+
+          if (sellers.length === 0) {
+            grid.innerHTML =
+              '<p style="text-align:center; color:#999; grid-column:1/-1;">Hiç aktif satıcı yok.</p>';
+            return;
+          }
+
+          sellers.forEach((seller) => {
+            let badgeHtml = "";
+            if (seller.badges && Array.isArray(seller.badges)) {
+              seller.badges.forEach((bName) => {
+                // İsme göre veritabanındaki tanımı bul (Rengi ve İkonu al)
+                const badgeDef = availableBadges.find((x) => x.label === bName);
+                const color = badgeDef ? badgeDef.color : "blue";
+                const icon = badgeDef ? badgeDef.icon : "fa-solid fa-tag";
+
+                badgeHtml += `<span class="badge-pill ${color}" style="font-size:0.75rem; margin-right:4px;">
+                                          <i class="${icon}"></i> ${bName}
+                                        </span>`;
+              });
+            } else {
+              badgeHtml =
+                '<span style="color:#ccc; font-size:0.8rem;">Rozet Yok</span>';
+            }
+
+            const initial = seller.name.charAt(0).toUpperCase();
+            const card = `
+                <div class="badge-user-card">
+                    <div class="card-banner"></div>
+                    
+                    <div class="badge-avatar">${seller.name.charAt(0).toUpperCase()}</div>
+                    
+                    <div class="card-info">
+                        <h4>${seller.brandName || seller.name}</h4>
+                        
+                        <div class="badge-list-area">
+                            ${badgeHtml || '<span class="no-badge-text">Rozet Yok</span>'}
+                        </div>
+
+                        <button class="badge-btn-edit" onclick="openBadgeModal('${seller.brandName || seller.name}', ${seller.id})">
+                            <i class="fa-solid fa-pen-to-square"></i> Düzenle
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += card;
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function renderBadgeDefinitions() {
+        const list = document.getElementById("badgeDefinitionsList");
+        list.innerHTML = "";
+
+        if (availableBadges.length === 0) {
+          list.innerHTML = "<small>Henüz tanımlı rozet yok.</small>";
+          return;
+        }
+
+        availableBadges.forEach((b) => {
+          const item = document.createElement("div");
+          item.className = `badge-def-item ${b.color}`;
+
+          item.innerHTML = `
+                <i class="${b.icon || "fa-solid fa-star"}"></i>
+                <span>${b.label}</span>
+                <i class="fa-solid fa-xmark" onclick="deleteBadgeDef(${
+                  b.id
+                })" title="Sil"></i>
+              `;
+          list.appendChild(item);
+        });
+      }
+
+      async function createNewBadge() {
+        const label = document.getElementById("newBadgeName").value.trim();
+        const color = document.getElementById("newBadgeColor").value;
+
+        if (!label)
+          return showToast(
+            "error",
+            "Eksik Bilgi",
+            "Lütfen rozet ismini giriniz.",
+          );
+
+        try {
+          const res = await fetch(`${API_URL}/admin/badges/add`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              label: label,
+              color: color,
+              icon: selectedBadgeIcon,
+            }),
+          });
+          if (res.ok) {
+            document.getElementById("newBadgeName").value = "";
+            loadBadgeManagement();
+            showToast("success", "Başarılı", "Yeni rozet oluşturuldu.");
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function deleteBadgeDef(id) {
+        if (
+          !confirm(
+            "Bu rozet tanımını silmek istiyor musunuz? (Kullanıcılardan silinmez)",
+          )
+        )
+          return;
+        try {
+          const res = await fetch(`${API_URL}/admin/badges/delete/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          if (res.ok) loadBadgeManagement();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // --- AYARLAR YÖNETİMİ ---
+      // 1. Admin Bilgilerini Çek ve Forma Doldur
+      async function loadAdminSettings() {
+        const token = localStorage.getItem("token");
+        try {
+          // User endpointinden kendi verisini çekiyor
+          const res = await fetch(`${API_URL}/users/me`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+          const data = await res.json();
+
+          if (document.getElementById("adminName")) {
+            document.getElementById("adminName").value = data.name;
+            document.getElementById("adminSurname").value = data.surname;
+            document.getElementById("adminEmail").value = data.email;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // 2. Güncelleme İşlemi
+      document
+        .getElementById("adminSettingsForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const token = localStorage.getItem("token");
+
+          // Form verilerini al
+          const name = document.getElementById("adminName").value;
+          const surname = document.getElementById("adminSurname").value;
+
+          // API'nin beklediği format (FormData veya JSON)
+          // userController.updateMyProfile genelde FormData bekler (resim olmasa bile)
+          const formData = new FormData();
+          formData.append("name", name);
+          formData.append("surname", surname);
+
+          try {
+            const res = await fetch(`${API_URL}/users/me`, {
+              method: "PUT",
+              headers: { Authorization: "Bearer " + token },
+              body: formData,
+            });
+
+            if (res.ok) {
+              showToast(
+                "success",
+                "Başarılı",
+                "Profil bilgileriniz güncellendi.",
+              );
+              // Headerdaki ismi de güncelle
+              document.querySelector(".admin-profile span").innerText =
+                `${name} (Süper Admin)`;
+            } else {
+              showToast("error", "Hata", "Güncelleme başarısız.");
+            }
+          } catch (e) {
+            console.error(e);
+            showToast("error", "Hata", "Sunucu hatası.");
+          }
+        });
+
+      // --- ÜYE YÖNETİMİ JS ---
+      let allMembersCache = []; // Tüm üyeleri hafızada tutmak için
+
+      async function loadAllMembers() {
+        const grid = document.getElementById("membersGrid");
+        grid.innerHTML =
+          '<p style="grid-column: 1/-1; text-align: center; color: #999">Yükleniyor...</p>';
+
+        const token = localStorage.getItem("token");
+
+        try {
+          // Backend'de yazdığımız yeni rotayı çağırıyoruz
+          const res = await fetch(`${API_URL}/admin/users/all-list`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const users = await res.json();
+          allMembersCache = users; // Hafızaya al
+
+          renderMembers(users); // Ekrana bas
+        } catch (e) {
+          console.error(e);
+          grid.innerHTML =
+            '<p style="color:red; text-align:center;">Veriler alınamadı.</p>';
+        }
+      }
+
+      function renderMembers(users) {
+        const grid = document.getElementById("membersGrid");
+        grid.innerHTML = "";
+
+        if (users.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-users-slash" style="font-size:2rem; margin-bottom:10px;"></i><p>Üye bulunamadı.</p></div>';
+          return;
+        }
+
+        users.forEach((user) => {
+          // Rol Ayarları
+          const isSeller = user.role === "seller";
+          const roleText = isSeller ? "Satıcı" : "Alıcı";
+          const roleClass = isSeller ? "seller" : "buyer";
+
+          // 🔥 BAN KONTROLÜ (GÖRSELLİK)
+          const isBanned = user.isBanned === true; // Veritabanından gelen bilgi
+          const cardStyle = isBanned
+            ? "border: 2px solid #ef4444; background: #fef2f2;"
+            : "";
+          const banBadge = isBanned
+            ? '<span class="role-badge" style="background:#ef4444; color:white; right: 80px;">YASAKLI</span>'
+            : "";
+
+          // Buton Ayarı (Banlıysa 'Kaldır', değilse 'Yasakla')
+          const btnText = isBanned
+            ? '<i class="fa-solid fa-lock-open"></i> Yasağı Kaldır'
+            : '<i class="fa-solid fa-ban"></i> Yasakla';
+          const btnColor = isBanned ? "background: #22c55e; color: white;" : ""; // Yeşil buton (Kaldır)
+
+          // Profil Resmi
+          const avatar = user.profileImage
+            ? fixImageUrl(user.profileImage)
+            : `https://ui-avatars.com/api/?name=${user.name}+${user.surname}&background=f1f5f9&color=64748b`;
+
+          const date = new Date(user.createdAt).toLocaleDateString("tr-TR");
+
+          const card = `
+                <div class="member-card" style="${cardStyle}">
+                    <span class="role-badge ${roleClass}">${roleText}</span>
+                    ${banBadge} <div class="member-header">
+                        <img src="${avatar}" class="member-avatar">
+                        <div class="member-info">
+                            <h4>${user.name} ${user.surname}</h4>
+                            <span>${user.email}</span>
+                            ${isSeller && user.brandName ? `<br><small style="color:#3b82f6"><i class="fa-solid fa-store"></i> ${user.brandName}</small>` : ""}
+                        </div>
+                    </div>
+
+                    <div class="member-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${date}</span>
+                        <button class="btn-ban" onclick="toggleBanUser(${user.id}, ${isBanned})" title="Erişim Durumu" style="${btnColor}">
+                            ${btnText}
+                        </button>
+                    </div>
+                </div>
+            `;
+          grid.innerHTML += card;
+        });
+      }
+
+      function toggleBanUser(id, isCurrentlyBanned) {
+        const title = isCurrentlyBanned
+          ? "Yasağı Kaldır?"
+          : "Kullanıcıyı Yasakla?";
+        const desc = isCurrentlyBanned
+          ? "Bu kullanıcının sisteme erişimi tekrar açılacak."
+          : "Bu kullanıcının sisteme girişi engellenecek.";
+
+        openConfirmModal(title, desc, async () => {
+          const token = localStorage.getItem("token");
+          try {
+            // Yeni route ismini kullanıyoruz: /toggle-ban/
+            const res = await fetch(`${API_URL}/admin/users/toggle-ban/${id}`, {
+              method: "PUT",
+              headers: { Authorization: "Bearer " + token },
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+              showToast("success", "İşlem Tamam", data.message);
+              loadAllMembers();
+            } else {
+              showToast("error", "Hata", data.error || "İşlem başarısız.");
+            }
+          } catch (e) {
+            console.error(e);
+            showToast("error", "Hata", "Sunucu hatası.");
+          }
+        });
+      }
+
+      // Filtreleme (Satıcı / Alıcı)
+      function filterMembers(type) {
+        // Buton renklerini güncelle
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+
+        if (type === "all") {
+          document.getElementById("filterBtnAll").classList.add("active");
+          renderMembers(allMembersCache);
+        } else if (type === "seller") {
+          document.getElementById("filterBtnSeller").classList.add("active");
+          const filtered = allMembersCache.filter((u) => u.role === "seller");
+          renderMembers(filtered);
+        } else {
+          document.getElementById("filterBtnBuyer").classList.add("active");
+          const filtered = allMembersCache.filter((u) => u.role !== "seller");
+          renderMembers(filtered);
+        }
+      }
+
+      // Arama (Anlık)
+      function searchMembers() {
+        const query = document
+          .getElementById("memberSearch")
+          .value.toLowerCase();
+
+        const filtered = allMembersCache.filter((user) => {
+          const name = (user.name + " " + user.surname).toLowerCase();
+          const email = user.email.toLowerCase();
+          const brand = (user.brandName || "").toLowerCase();
+
+          return (
+            name.includes(query) ||
+            email.includes(query) ||
+            brand.includes(query)
+          );
+        });
+
+        renderMembers(filtered);
+      }
+
+      // Banlama Fonksiyonu
+      function banUser(id) {
+        openConfirmModal(
+          "Kullanıcıyı Yasakla?",
+          "Bu kullanıcının sisteme girişi engellenecek.",
+          async () => {
+            const token = localStorage.getItem("token");
+            try {
+              const res = await fetch(`${API_URL}/admin/users/ban/${id}`, {
+                method: "PUT",
+                headers: { Authorization: "Bearer " + token },
+              });
+
+              if (res.ok) {
+                showToast(
+                  "success",
+                  "Engellendi",
+                  "Kullanıcı erişimi kısıtlandı.",
+                );
+                // İleride veritabanında 'isBanned' alanı olunca listeyi yenileriz.
+              } else {
+                showToast("error", "Hata", "İşlem başarısız.");
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          },
+        );
+      }
+
+      function switchTab(tabId, element) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+
+        document.getElementById(tabId).classList.add("active");
+
+        document
+          .querySelectorAll(".menu a")
+          .forEach((el) => el.classList.remove("active"));
+        element.classList.add("active");
+
+        const titles = {
+          dashboard: "Genel Bakış",
+          applications: "Satıcı Başvuruları",
+          "active-stores": "Aktif Mağazalar",
+          "product-approvals": "Ürün Onayları",
+          badges: "Rozet Yönetimi",
+          settings: "Ayarlar",
+          marketplace: "Pazar Yeri Yönetimi",
+        };
+        document.getElementById("pageTitle").innerText = titles[tabId];
+
+        if (tabId === "applications") loadPendingSellers();
+        if (tabId === "active-stores") loadActiveSellers();
+        if (tabId === "badges") loadBadgeManagement();
+        if (tabId === "members") loadAllMembers();
+        if (tabId === "settings") {
+          loadAdminSettings();
+          loadAdminList();
+        }
+        if (tabId === "logs") loadAdminLogs();
+        if (tabId === "messages-audit") loadAuditConversations();
+        if (tabId === "product-approvals") loadPendingProducts();
+        if (tabId === "marketplace") loadMarketplace();
+
+        if (window.innerWidth <= 1024) toggleSidebar();
+      }
+
+      async function updateCounts() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+          const response = await fetch(`${API_URL}/admin/pending`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            const count = Array.isArray(data) ? data.length : 0;
+
+            // Menüdeki kırmızı rozet
+            const badge = document.getElementById("pendingBadge");
+            badge.innerText = count;
+            badge.style.display = count > 0 ? "inline-block" : "none";
+
+            document.getElementById("statPendingCount").innerText = count;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+
+      function openConfirmModal(title, desc, callback) {
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmDesc").textContent = desc;
+        document.getElementById("customConfirmModal").style.display = "flex";
+        confirmCallback = callback;
+      }
+
+      function closeConfirmModal() {
+        document.getElementById("customConfirmModal").style.display = "none";
+        confirmCallback = null;
+      }
+
+      document.getElementById("btnConfirmYes").addEventListener("click", () => {
+        if (confirmCallback) confirmCallback();
+        closeConfirmModal();
+      });
+
+      async function loadPendingSellers() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "satici-girisi.html";
+          return;
+        }
+
+        const grid = document.getElementById("pendingSellersGrid");
+        grid.innerHTML =
+          '<p style="text-align: center; color: #999; grid-column: 1/-1">Yükleniyor...</p>';
+
+        try {
+          const response = await fetch(`${API_URL}/admin/pending`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const sellers = await response.json();
+          grid.innerHTML = "";
+
+          if (!Array.isArray(sellers) || sellers.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #94a3b8;">
+                    <i class="fa-solid fa-clipboard-check" style="font-size: 3rem; margin-bottom: 15px; opacity:0.5;"></i>
+                    <p style="font-size: 1.1rem;">Şu an bekleyen başvuru yok.</p>
+                    <p style="font-size: 0.9rem;">Her şey yolunda görünüyor!</p>
+                </div>
+            `;
+            updateCounts();
+            return;
+          }
+
+          sellers.forEach((seller) => {
+            const safeSeller = JSON.stringify(seller).replace(/'/g, "&#39;");
+
+            let badgeHtml = "";
+            let actionHtml = "";
+
+            if (seller.isUpdatePending) {
+              badgeHtml =
+                '<span class="app-badge update"><i class="fa-solid fa-pen-to-square"></i> Güncelleme</span>';
+              actionHtml = `
+                    <button class="btn-app-action btn-review-card" onclick='openReviewModal(${safeSeller})'>
+                        <i class="fa-solid fa-magnifying-glass"></i> Talebi İncele
+                    </button>
+                `;
+            } else {
+              badgeHtml =
+                '<span class="app-badge new"><i class="fa-solid fa-user-plus"></i> Yeni Başvuru</span>';
+              actionHtml = `
+                    <button class="btn-app-action btn-reject-card" onclick="rejectSeller(${seller.id})">
+                        <i class="fa-solid fa-xmark"></i> Reddet
+                    </button>
+                    <button class="btn-app-action btn-approve-card" onclick="approveSeller(${seller.id})">
+                        <i class="fa-solid fa-check"></i> Onayla
+                    </button>
+                `;
+            }
+
+            const card = `
+                <div class="app-card">
+                    ${badgeHtml}
+                    
+                    <div class="app-header">
+                        <div class="app-avatar">${seller.name.charAt(0).toUpperCase()}</div>
+                        <div class="app-user-info">
+                            <h4>${seller.name} ${seller.surname}</h4>
+                            <span><i class="fa-regular fa-envelope"></i> ${seller.email}</span>
+                        </div>
+                    </div>
+
+                    <div class="app-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Marka</span>
+                            <span class="detail-value">${seller.brandName || "-"}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Kategori</span>
+                            <span class="detail-value">${seller.category || "Genel"}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">TC / Vergi No</span>
+                            <span class="detail-value">${seller.tc_no || "-"}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Başvuru Tarihi</span>
+                            <span class="detail-value">${new Date(seller.createdAt).toLocaleDateString("tr-TR")}</span>
+                        </div>
+                    </div>
+
+                    <div class="app-actions">
+                        ${actionHtml}
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += card;
+          });
+
+          updateCounts(); 
+        } catch (error) {
+          console.error(error);
+          grid.innerHTML =
+            '<p style="color:red; text-align:center; grid-column:1/-1;">Veriler yüklenemedi.</p>';
+        }
+      }
+
+      async function loadAdminLogs() {
+          const container = document.getElementById("logsContainer");
+          container.innerHTML = '<p style="text-align:center; padding:20px;">Yükleniyor...</p>';
+          
+          const token = localStorage.getItem("token");
+          
+          try {
+              const res = await fetch(`${API_URL}/admin/logs`, {
+                  headers: { Authorization: "Bearer " + token }
+              });
+              const logs = await res.json();
+              
+              if(logs.length === 0) {
+                  container.innerHTML = '<p style="text-align:center; padding:40px; color:#999;">Kayıt bulunamadı.</p>';
+                  return;
+              }
+              
+              container.innerHTML = "";
+              
+              logs.forEach(log => {
+                  let icon = "fa-file-lines";
+                  if(log.actionType === "ONAY") icon = "fa-check";
+                  if(log.actionType === "RET" || log.actionType === "BAN") icon = "fa-ban";
+                  if(log.actionType === "ROZET") icon = "fa-medal";
+                  if(log.actionType.includes("ÜRÜN")) icon = "fa-box";
+
+                  const date = new Date(log.createdAt).toLocaleString("tr-TR");
+                  const adminName = log.admin ? `${log.admin.name} ${log.admin.surname}` : "Silinmiş Admin";
+
+                  const html = `
+                      <div class="log-item">
+                          <div class="log-icon ${log.actionType}">
+                              <i class="fa-solid ${icon}"></i>
+                          </div>
+                          <div class="log-content">
+                              <div class="log-title">${adminName} <small style="font-weight:400; color:#999;">(${log.actionType})</small></div>
+                              <div class="log-desc">${log.description}</div>
+                          </div>
+                          <div class="log-date">${date}</div>
+                      </div>
+                  `;
+                  container.innerHTML += html;
+              });
+
+          } catch (error) {
+              console.error(error);
+              container.innerHTML = '<p style="color:red; text-align:center;">Veri alınamadı.</p>';
+          }
+      }
+
+
+      let cachedActiveSellers = []; 
+
+      let currentSellerPage = 1; 
+      const itemsPerPage = 12;  
+
+      async function loadActiveSellers(page = 1) {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        currentSellerPage = page;
+
+        const grid = document.getElementById("activeSellersGrid");
+        const pagination = document.getElementById("sellerPagination");
+        
+        grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#999; margin-top:50px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Yükleniyor...</p>';
+        pagination.style.display = 'none'; // Yüklenirken butonları gizle
+
+        try {
+          const searchQuery = document.getElementById("storeSearchInput").value.trim();
+          
+          let url = `${API_URL}/admin/approved?page=${page}&limit=${itemsPerPage}`;
+          if(searchQuery) {
+              url += `&search=${encodeURIComponent(searchQuery)}`;
+          }
+
+          const response = await fetch(url, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const data = await response.json();
+
+          cachedActiveSellers = data.sellers;
+
+          renderStoreGrid(data.sellers);
+          renderPagination(data.totalPages, data.currentPage);
+
+        } catch (error) {
+          console.error(error);
+          grid.innerHTML = '<p style="color:red; text-align:center;">Veriler alınamadı.</p>';
+        }
+      }
+      function renderPagination(totalPages, currentPage) {
+          const container = document.getElementById("sellerPagination");
+          container.innerHTML = "";
+          
+          if (totalPages <= 1) {
+              container.style.display = "none";
+              return;
+          }
+          container.style.display = "flex";
+
+          const prevBtn = document.createElement("button");
+          prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+          prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+          prevBtn.onclick = () => { if(currentPage > 1) loadActiveSellers(currentPage - 1); };
+          container.appendChild(prevBtn);
+          
+          let startPage = Math.max(1, currentPage - 2);
+          let endPage = Math.min(totalPages, startPage + 4);
+          
+          if (endPage - startPage < 4) {
+              startPage = Math.max(1, endPage - 4);
+          }
+
+          for (let i = startPage; i <= endPage; i++) {
+              const btn = document.createElement("button");
+              btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+              btn.innerText = i;
+              btn.onclick = () => loadActiveSellers(i);
+              container.appendChild(btn);
+          }
+          const nextBtn = document.createElement("button");
+          nextBtn.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+          nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+          nextBtn.onclick = () => { if(currentPage < totalPages) loadActiveSellers(currentPage + 1); };
+          container.appendChild(nextBtn);
+      }
+
+      let searchTimeout = null;
+      function filterActiveSellers() {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+              loadActiveSellers(1); 
+          }, 300);
+      }
+
+      function renderStoreGrid(sellers) {
+        const grid = document.getElementById("activeSellersGrid");
+        grid.innerHTML = "";
+
+        if (sellers.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-store-slash" style="font-size:2rem; margin-bottom:10px;"></i><p>Sonuç bulunamadı.</p></div>';
+          return;
+        }
+
+        sellers.forEach((seller) => {
+          let badgeHtml = "";
+          if (
+            seller.badges &&
+            Array.isArray(seller.badges) &&
+            seller.badges.length > 0
+          ) {
+            seller.badges.forEach((badgeText) => {
+              let colorClass = "blue";
+              if (badgeText.includes("Tecrübeli")) colorClass = "purple";
+              if (badgeText.includes("İlgili")) colorClass = "green";
+              if (badgeText.includes("Popüler")) colorClass = "orange";
+              if (badgeText.includes("Rekortmen")) colorClass = "red";
+              badgeHtml += `<span class="badge-pill ${colorClass}"><i class="fa-solid fa-medal"></i> ${badgeText}</span>`;
+            });
+          } else {
+            badgeHtml =
+              '<span style="color:#ccc; font-size:0.8rem;">Rozet Yok</span>';
+          }
+
+          const rating = seller.averageRating
+            ? parseFloat(seller.averageRating).toFixed(1)
+            : "Yeni";
+          const productCount = seller.productCount || 0;
+          const logo = seller.logoUrl
+            ? fixImageUrl(seller.logoUrl)
+            : `https://ui-avatars.com/api/?name=${seller.name}&background=f1f5f9&color=64748b`;
+
+          const card = `
+                <div class="store-card">
+                    <div class="store-header-row">
+                        <img src="${logo}" class="store-logo">
+                        <div class="store-info">
+                            <h4>${seller.brandName || seller.name}</h4>
+                            <div class="store-meta">
+                                <i class="fa-regular fa-user"></i> ${seller.name} ${seller.surname || ""}
+                            </div>
+                            <div class="store-meta" style="margin-top:2px; font-size:0.75rem;">
+                                <i class="fa-regular fa-calendar"></i> Katılım: ${new Date(seller.createdAt).toLocaleDateString("tr-TR")}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="store-stats-row">
+                        <div class="stat-box">
+                            <strong>${rating} <i class="fa-solid fa-star" style="color:#f59e0b; font-size:0.8rem;"></i></strong>
+                            <span>Mağaza Puanı</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-box">
+                            <strong>${productCount}</strong>
+                            <span>Ürün Sayısı</span>
+                        </div>
+                    </div>
+                    <div class="store-badges-area">
+                        ${badgeHtml}
+                    </div>
+                    <div class="store-actions">
+                        <a href="magaza-detay.html?sellerId=${seller.id}" target="_blank" class="btn-store-action btn-visit-store">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Mağazayı Gör
+                        </a>
+
+                        <button class="btn-store-action btn-manage-badges" onclick="openBadgeModal('${seller.brandName || seller.name}', ${seller.id})">
+                            <i class="fa-solid fa-award"></i> Rozetler
+                        </button>
+                    </div>
+                </div>
+            `;
+          grid.innerHTML += card;
+        });
+      }
+
+      function filterActiveSellers() {
+        const query = document
+          .getElementById("storeSearchInput")
+          .value.toLowerCase();
+
+        const filtered = cachedActiveSellers.filter((seller) => {
+          const brand = (seller.brandName || "").toLowerCase();
+          const name = (seller.name || "").toLowerCase();
+          const surname = (seller.surname || "").toLowerCase();
+          const email = (seller.email || "").toLowerCase();
+
+          return (
+            brand.includes(query) ||
+            name.includes(query) ||
+            surname.includes(query) ||
+            email.includes(query)
+          );
+        });
+
+        renderStoreGrid(filtered);
+      }
+
+      function approveSeller(id) {
+        openConfirmModal(
+          "Satıcıyı Onayla",
+          "Bu satıcının platforma giriş yapmasına izin verilecek.",
+          async () => {
+            try {
+              const res = await fetch(`${API_URL}/admin/approve/${id}`, {
+                method: "PUT",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              });
+              if (res.ok) {
+                showToast(
+                  "success",
+                  "Onaylandı",
+                  "Satıcı başarıyla onaylandı.",
+                );
+                loadPendingSellers();
+                loadActiveSellers();
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          },
+        );
+      }
+
+      function rejectSeller(id) {
+        openConfirmModal(
+          "Başvuruyu Reddet",
+          "Bu işlem geri alınamaz ve satıcı kaydı silinir.",
+          async () => {
+            try {
+              const res = await fetch(`${API_URL}/admin/reject/${id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              });
+              if (res.ok) {
+                showToast("success", "Reddedildi", "Başvuru silindi.");
+                loadPendingSellers();
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          },
+        );
+      }
+
+      let currentSellerIdForBadge = null;
+      function openBadgeModal(name, id) {
+        currentSellerIdForBadge = id;
+        document.getElementById("modalTargetName").textContent = name;
+
+        const seller = cachedActiveSellers.find((s) => s.id === id);
+        const currentBadges = seller ? seller.badges || [] : [];
+
+        const grid = document.querySelector(".badge-select-grid");
+        grid.innerHTML = "";
+
+        availableBadges.forEach((b) => {
+          const label = document.createElement("label");
+          label.className = "badge-option";
+          label.style.padding = "10px";
+          label.style.border = "1px solid #eee";
+          label.style.borderRadius = "8px";
+          label.style.display = "flex";
+          label.style.alignItems = "center";
+          label.style.cursor = "pointer";
+
+          const isChecked = currentBadges.includes(b.label) ? "checked" : "";
+
+          label.innerHTML = `
+                <input type="checkbox" value="${b.label}" ${isChecked} style="margin-right:10px; width:16px; height:16px;">
+                <span class="badge-pill ${b.color}" style="font-size:0.85rem;">
+                    <i class="${b.icon || "fa-solid fa-star"}"></i> ${b.label}
+                </span>
+            `;
+          grid.appendChild(label);
+        });
+
+        document.getElementById("badgeModal").style.display = "flex";
+      }
+
+      function closeBadgeModal() {
+        document.getElementById("badgeModal").style.display = "none";
+      }
+
+      async function saveBadges() {
+        if (!currentSellerIdForBadge) return;
+        const selectedBadges = [];
+        document
+          .querySelectorAll(".badge-select-grid input:checked")
+          .forEach((cb) => {
+            selectedBadges.push(
+              cb.parentElement.querySelector("span").textContent.trim(),
+            );
+          });
+
+        try {
+          const res = await fetch(
+            `${API_URL}/admin/badge/${currentSellerIdForBadge}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+              body: JSON.stringify({ badges: selectedBadges }),
+            },
+          );
+          if (res.ok) {
+            showToast("success", "Kaydedildi", "Rozetler güncellendi.");
+            closeBadgeModal();
+            loadActiveSellers();
+          } else {
+            showToast("error", "Hata", "Rozetler kaydedilemedi.");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "null" || dbPath === "") {
+            return "https://via.placeholder.com/150?text=Gorsel+Yok";
+        }
+        let cleanPath = dbPath.replace(/\\/g, "/");
+        if (cleanPath.includes("backend/uploads/")) {
+            cleanPath = cleanPath.split("backend/")[1];
+        } 
+        else if (!cleanPath.startsWith("uploads/") && !cleanPath.startsWith("http")) {
+             cleanPath = "uploads/" + cleanPath;
+        }
+        if (cleanPath.startsWith("http")) {
+            return cleanPath;
+        }
+        return `${API_URL.replace('/api', '')}/${cleanPath}?t=${Date.now()}`;
+      }
+
+      function openReviewModal(seller) {
+        const data = (typeof seller === "string") ? JSON.parse(seller) : seller;
+        document.getElementById("reviewModal").style.display = "flex";
+        document.getElementById("reviewSellerName").textContent = data.brandName || data.name;
+
+        document.getElementById("currName").textContent = `${data.name} ${data.surname || ''}`;
+        document.getElementById("currBrand").textContent = data.brandName || "Belirtilmemiş";
+        document.getElementById("currMotto").textContent = data.siftahNote || "Motto yok";
+        
+        document.getElementById("currProfileImg").src = fixImageUrl(data.profileImage);
+        document.getElementById("currLogoImg").src = fixImageUrl(data.logoUrl);
+        document.getElementById("currCoverImg").src = fixImageUrl(data.coverImage);
+        document.getElementById("currStoryImg").src = fixImageUrl(data.storyImage);
+
+        let currSocialHtml = "";
+        if(data.instagram) currSocialHtml += `<div class="social-row"><i class="fa-brands fa-instagram"></i> <span>${data.instagram}</span></div>`;
+        if(data.twitter)   currSocialHtml += `<div class="social-row"><i class="fa-brands fa-twitter"></i> <span>${data.twitter}</span></div>`;
+        if(data.website)   currSocialHtml += `<div class="social-row"><i class="fa-solid fa-globe"></i> <span>${data.website}</span></div>`;
+        
+        document.getElementById("currSocials").innerHTML = currSocialHtml || "<span style='color:#ccc'>Sosyal medya eklenmemiş</span>";
+
+        const newNameText = data.pendingName ? `${data.pendingName} ${data.pendingSurname || ''}` : `${data.name} ${data.surname || ''}`;
+        const elName = document.getElementById("newName");
+        elName.textContent = newNameText;
+        elName.style.color = data.pendingName ? "#16a34a" : "#64748b"; 
+        elName.style.fontWeight = data.pendingName ? "bold" : "normal";
+
+        const newBrandText = data.pendingBrandName || data.brandName || "Belirtilmemiş";
+        const elBrand = document.getElementById("newBrand");
+        elBrand.textContent = newBrandText;
+        elBrand.style.color = data.pendingBrandName ? "#16a34a" : "#64748b";
+        elBrand.style.fontWeight = data.pendingBrandName ? "bold" : "normal";
+
+        const newMottoText = data.pendingSiftahNote || data.siftahNote || "Motto yok";
+        const elMotto = document.getElementById("newMotto");
+        elMotto.textContent = newMottoText;
+        elMotto.style.color = data.pendingSiftahNote ? "#16a34a" : "#64748b";
+        elMotto.style.fontWeight = data.pendingSiftahNote ? "bold" : "normal";
+
+        const updateImg = (imgId, pendingSrc, currentSrc) => {
+            const el = document.getElementById(imgId);
+            if(pendingSrc && pendingSrc !== "null") {
+                el.src = fixImageUrl(pendingSrc);
+                el.style.border = "3px solid #22c55e";
+                el.style.opacity = "1";
+            } else {
+                el.src = fixImageUrl(currentSrc);
+                el.style.border = "1px solid #eee";
+                el.style.opacity = "0.7"; 
+            }
+        };
+
+        updateImg("newProfileImg", data.pendingProfileImage, data.profileImage);
+        updateImg("newLogoImg", data.pendingLogoUrl, data.logoUrl);
+        updateImg("newCoverImg", data.pendingCoverImage, data.coverImage);
+        updateImg("newStoryImg", data.pendingStoryImage, data.storyImage);
+
+        let newSocialHtml = "";
+        
+        const renderSocialItem = (icon, newVal, oldVal) => {
+            if(newVal && newVal !== oldVal) {
+                return `<div class="social-row" style="color:#16a34a; font-weight:bold;">
+                          <i class="${icon}"></i> <span>${newVal}</span> <i class="fa-solid fa-check" style="font-size:0.7rem; margin-left:5px;"></i>
+                        </div>`;
+            } else if (oldVal) {
+                return `<div class="social-row" style="color:#94a3b8;">
+                          <i class="${icon}"></i> <span>${oldVal}</span>
+                        </div>`;
+            }
+            return "";
+        };
+
+        newSocialHtml += renderSocialItem("fa-brands fa-instagram", data.pendingInstagram, data.instagram);
+        newSocialHtml += renderSocialItem("fa-brands fa-twitter", data.pendingTwitter, data.twitter);
+        newSocialHtml += renderSocialItem("fa-solid fa-globe", data.pendingWebsite, data.website);
+
+        document.getElementById("newSocials").innerHTML = newSocialHtml || "<span style='color:#ccc'>Değişiklik yok</span>";
+
+        document.getElementById("btnApproveUpdate").onclick = () => processUpdate(data.id, "approve");
+        document.getElementById("btnRejectUpdate").onclick = () => processUpdate(data.id, "reject");
+      }
+
+      function closeReviewModal() {
+        document.getElementById("reviewModal").style.display = "none";
+      }
+
+      function processUpdate(id, action) {
+        const actionText =
+          action === "approve" ? "Değişiklikleri onayla" : "Talebi reddet";
+
+        openConfirmModal(actionText + "?", "Bu işlem kalıcıdır.", async () => {
+          const endpoint =
+            action === "approve" ? "approve-update" : "reject-update";
+          try {
+            const res = await fetch(`${API_URL}/admin/${endpoint}/${id}`, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            });
+            if (res.ok) {
+              showToast(
+                "success",
+                "Başarılı",
+                action === "approve"
+                  ? "Bilgiler güncellendi."
+                  : "Talep reddedildi.",
+              );
+              closeReviewModal();
+              loadPendingSellers();
+              loadActiveSellers();
+            } else {
+              showToast("error", "Hata", "İşlem başarısız.");
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        });
+      }
+
+      async function loadDashboardStats() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+          const res = await fetch(`${API_URL}/admin/stats`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+
+            document.getElementById("totalUserCount").innerText = data.totalUsers;
+            document.getElementById("totalProductCount").innerText = data.totalProducts;
+            document.getElementById("statPendingCount").innerText = data.pendingCount;
+
+            const sellerCountEl = document.getElementById("totalSellerCount");
+            if(sellerCountEl) {
+                sellerCountEl.innerText = data.activeSellers;
+            }
+
+            const badge = document.getElementById("pendingBadge");
+            if (badge) {
+              badge.innerText = data.pendingCount;
+              badge.style.display =
+                data.pendingCount > 0 ? "inline-block" : "none";
+            }
+          }
+        } catch (e) {
+          console.error("İstatistik yüklenemedi", e);
+        }
+      }
+
+
+      async function loadPendingProducts() {
+        const grid = document.getElementById("pendingProductsGrid");
+        if (!grid) return;
+        grid.innerHTML =
+          '<p style="text-align:center; grid-column:1/-1;">Yükleniyor...</p>';
+
+        const token = localStorage.getItem("token");
+        try {
+          // 🔥 DÜZELTME: Artık genel /products değil, Admin'e özel /pending rotasını çağırıyoruz
+          const res = await fetch(`${API_URL}/admin/products/pending`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          // Backend zaten filtreli gönderiyor, ekstra filter yapmaya gerek yok
+          const pendingProducts = await res.json();
+
+          grid.innerHTML = "";
+
+          // Menüdeki sayıyı güncelle
+          const badge = document.getElementById("pendingProductBadge");
+          if (badge) {
+            badge.innerText = pendingProducts.length;
+            badge.style.display =
+              pendingProducts.length > 0 ? "inline-block" : "none";
+          }
+
+          if (pendingProducts.length === 0) {
+            grid.innerHTML =
+              '<div style="text-align:center; padding:40px; color:#999; grid-column:1/-1;"><i class="fa-solid fa-check-circle" style="font-size:2rem; margin-bottom:10px;"></i><p>Onay bekleyen ürün yok.</p></div>';
+            return;
+          }
+
+          pendingProducts.forEach((prod) => {
+            let img = "https://via.placeholder.com/300x300?text=Resim+Yok";
+
+            if (
+              prod.images &&
+              Array.isArray(prod.images) &&
+              prod.images.length > 0
+            ) {
+              img = fixImageUrl(prod.images[0]);
+            } else if (
+              prod.image &&
+              prod.image !== "null" &&
+              prod.image !== ""
+            ) {
+              img = fixImageUrl(prod.image);
+            }
+
+            // Satıcı bilgisi yoksa hata vermesin diye kontrol
+            const sellerName = prod.User
+              ? prod.User.brandName || prod.User.name
+              : "Bilinmeyen Satıcı";
+            const sellerImg = prod.User
+              ? fixImageUrl(prod.User.logoUrl || prod.User.profileImage)
+              : "";
+
+            const safeProd = JSON.stringify(prod)
+              .replace(/'/g, "&#39;")
+              .replace(/"/g, "&quot;");
+
+            const card = `
+                    <div class="approval-card" onclick='openProductApprovalModal(${safeProd})'>
+                        <img src="${img}" class="approval-img">
+                        <div class="approval-body">
+                            <h4 class="approval-title">${prod.title}</h4>
+                            <div class="approval-seller">
+                                <img src="${
+                                  sellerImg || "https://via.placeholder.com/20"
+                                }" onerror="this.style.display='none'">
+                                <span>${sellerName}</span>
+                            </div>
+                            <div class="approval-footer">
+                                <span style="font-weight:700; color:#0f172a;">${
+                                  prod.price
+                                }₺</span>
+                                <span class="status-waiting"><i class="fa-regular fa-clock"></i> Bekliyor</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            grid.innerHTML += card;
+          });
+        } catch (e) {
+          console.error("Ürünler yüklenemedi:", e);
+          grid.innerHTML =
+            '<p style="color:red; text-align:center;">Hata oluştu.</p>';
+        }
+      }
+
+      // Modalı Aç ve Doldur
+      function openProductApprovalModal(product) {
+        if (typeof product === "string") product = JSON.parse(product);
+
+        document.getElementById("productDetailModal").style.display = "flex";
+
+        // --- 1. RESİM GALERİSİ MANTIĞI ---
+        const mainImgEl = document.getElementById("modalMainImg");
+        const thumbContainer = document.getElementById("modalThumbnails");
+        thumbContainer.innerHTML = ""; // Temizle
+
+        let images = [];
+        if (
+          product.images &&
+          Array.isArray(product.images) &&
+          product.images.length > 0
+        ) {
+          images = product.images;
+        } else if (product.image) {
+          images = [product.image];
+        } else {
+          images = [];
+        }
+
+        if (images.length > 0) {
+          mainImgEl.src = fixImageUrl(images[0]);
+
+          images.forEach((img, index) => {
+            const url = fixImageUrl(img);
+            const thumb = document.createElement("img");
+            thumb.src = url;
+            thumb.className = index === 0 ? "thumb-item active" : "thumb-item";
+
+            thumb.onclick = () => {
+              mainImgEl.src = url;
+              document
+                .querySelectorAll(".thumb-item")
+                .forEach((t) => t.classList.remove("active"));
+              thumb.classList.add("active");
+            };
+
+            thumbContainer.appendChild(thumb);
+          });
+        } else {
+          mainImgEl.src = "https://placehold.co/400x400?text=Resim+Yok";
+        }
+        document.getElementById("modalProdPrice").innerText =
+          product.price + "₺";
+        document.getElementById("modalProdTitle").innerText = product.title;
+        document.getElementById("modalProdDesc").innerText =
+          product.description;
+        document.getElementById("modalProdCat").innerText = product.category
+          ? product.category.toUpperCase()
+          : "-";
+        document.getElementById("modalProdStock").innerText =
+          product.stock + " Adet";
+        document.getElementById("modalProdDate").innerText = new Date(
+          product.createdAt,
+        ).toLocaleDateString("tr-TR");
+
+        if (product.User) {
+          document.getElementById("modalSellerName").innerText =
+            product.User.name + " " + (product.User.surname || "");
+          document.getElementById("modalSellerBrand").innerText =
+            product.User.brandName || "Bireysel";
+          document.getElementById("modalSellerImg").src = fixImageUrl(
+            product.User.logoUrl || product.User.profileImage,
+          );
+        }
+
+        document.getElementById("btnApproveProduct").onclick = () =>
+          handleProductAction(product.id, "approve");
+        document.getElementById("btnRejectProduct").onclick = () =>
+          handleProductAction(product.id, "reject");
+      }
+
+      function closeProductModal() {
+        document.getElementById("productDetailModal").style.display = "none";
+      }
+
+      function handleProductAction(id, action) {
+        const actionText =
+          action === "approve" ? "Ürünü Onayla" : "Ürünü Reddet ve Sil";
+        const confirmDesc =
+          action === "approve"
+            ? "Bu ürün yayına alınacak."
+            : "Bu ürün kalıcı olarak silinecek.";
+
+        openConfirmModal(actionText, confirmDesc, async () => {
+          const token = localStorage.getItem("token");
+          try {
+            let url, method;
+
+            if (action === "reject") {
+              url = `${API_URL}/admin/delete-product/${id}`;
+              method = "DELETE";
+            }
+
+            if (action === "approve") {
+              url = `${API_URL}/admin/approve-product/${id}`;
+              method = "PUT";
+            }
+
+            const res = await fetch(url, {
+              method: method,
+              headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (res.ok) {
+              showToast(
+                "success",
+                "Başarılı",
+                action === "approve" ? "Ürün yayına alındı." : "Ürün silindi.",
+              );
+              closeProductModal();
+              loadPendingProducts();
+            } else {
+              const err = await res.json();
+              showToast("error", "Hata", err.error || "İşlem başarısız.");
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("error", "Hata", "Sunucu hatası.");
+          }
+        });
+      }
+
+      let allMarketplaceProducts = [];
+      let productToRejectId = null;
+
+      async function loadMarketplace() {
+        const grid = document.getElementById("marketplaceGrid");
+        grid.innerHTML =
+          '<p style="grid-column:1/-1; text-align:center;">Yükleniyor...</p>';
+
+        const token = localStorage.getItem("token");
+        try {
+          const res = await fetch(`${API_URL}/admin/products/all-marketplace`, {
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const products = await res.json();
+          allMarketplaceProducts = products;
+
+          allMarketplaceProducts.forEach((prod) => {
+            if (prod.User) {
+              prod.sellerInfo = {
+                name: prod.User.brandName || prod.User.name,
+                img: prod.User.logoUrl || prod.User.profileImage,
+              };
+            } else {
+              prod.sellerInfo = { name: "Bilinmiyor", img: null };
+            }
+          });
+
+          renderMarketplace(allMarketplaceProducts);
+        } catch (e) {
+          console.error(e);
+          grid.innerHTML =
+            '<p style="color:red; text-align:center;">Veriler yüklenemedi.</p>';
+        }
+      }
+
+      function renderMarketplace(products) {
+        const grid = document.getElementById("marketplaceGrid");
+        grid.innerHTML = "";
+
+        if (products.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-box-open" style="font-size:2rem; margin-bottom:10px;"></i><p>Hiç ürün bulunamadı.</p></div>';
+          return;
+        }
+
+        products.forEach((prod) => {
+          let img = "https://placehold.co/300x300?text=Resim+Yok";
+
+          if (
+            prod.images &&
+            Array.isArray(prod.images) &&
+            prod.images.length > 0
+          ) {
+            img = fixImageUrl(prod.images[0]);
+          } else if (prod.image) {
+            img = fixImageUrl(prod.image);
+          }
+          const sellerImg = prod.sellerInfo.img
+            ? fixImageUrl(prod.sellerInfo.img)
+            : "https://via.placeholder.com/50";
+
+          const safeProd = JSON.stringify(prod)
+            .replace(/'/g, "&#39;")
+            .replace(/"/g, "&quot;");
+
+          const card = `
+                <div class="mp-card">
+                    <div class="mp-img-area">
+                        <img src="${img}" loading="lazy">
+                        <div class="mp-price-badge">${prod.price}₺</div>
+                        <div class="mp-actions">
+                            <button class="btn-mp-action btn-mp-view" onclick='openProductApprovalModal(${safeProd})' title="İncele">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-mp-action btn-mp-archive" onclick="openRejectModal(${prod.id})" title="Yayından Kaldır (Arşivle)">
+                                <i class="fa-solid fa-ban"></i>
+                            </button>
+                             <button class="btn-mp-action btn-mp-delete" onclick="openDeleteConfirmModal(${prod.id})" title="Kalıcı Olarak Sil" style="color: darkred;">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mp-content">
+                        <span class="mp-category">${prod.category || "Genel"}</span>
+                        <h4 class="mp-title" title="${prod.title}">${prod.title}</h4>
+                        <div class="mp-seller-info">
+                            <img src="${sellerImg}" class="mp-seller-img">
+                            <span class="mp-seller-name">${prod.sellerInfo.name}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+          grid.innerHTML += card;
+        });
+      }
+
+      // Arama Fonksiyonu (Anlık Filtreleme)
+      function filterMarketplace() {
+        const query = document
+          .getElementById("marketplaceSearch")
+          .value.toLowerCase();
+
+        const filtered = allMarketplaceProducts.filter((prod) => {
+          const titleMatch = prod.title.toLowerCase().includes(query);
+          const sellerMatch = prod.sellerInfo.name
+            .toLowerCase()
+            .includes(query);
+          return titleMatch || sellerMatch;
+        });
+
+        renderMarketplace(filtered);
+      }
+
+      // --- REDDETME MODALI İŞLEMLERİ ---
+      function openRejectModal(productId) {
+        productToRejectId = productId;
+        document.getElementById("rejectReasonInput").value = ""; // Temizle
+        document.getElementById("rejectReasonModal").style.display = "flex";
+      }
+
+      function closeRejectModal() {
+        productToRejectId = null;
+        document.getElementById("rejectReasonModal").style.display = "none";
+      }
+
+      async function confirmProductRejection() {
+        if (!productToRejectId) return;
+
+        const reason = document
+          .getElementById("rejectReasonInput")
+          .value.trim();
+        if (!reason) {
+          alert("Lütfen bir sebep giriniz.");
+          return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const res = await fetch(
+            `${API_URL}/admin/archive-product/${productToRejectId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+              body: JSON.stringify({ reason: reason }),
+            },
+          );
+
+          if (res.ok) {
+            showToast(
+              "success",
+              "Kaldırıldı",
+              "Ürün yayından kaldırıldı ve satıcıya bildirildi.",
+            );
+            closeRejectModal();
+            loadMarketplace();
+          } else {
+            showToast("error", "Hata", "İşlem başarısız.");
+          }
+        } catch (e) {
+          console.error(e);
+          showToast("error", "Hata", "Sunucu hatası.");
+        }
+      }
+
+      // --- KALICI SİLME İŞLEMLERİ ---
+      let productToDeleteId = null;
+
+      function openDeleteConfirmModal(productId) {
+        productToDeleteId = productId;
+        // Mevcut genel onay modalını kullanabiliriz
+        openConfirmModal(
+          "Ürünü Kalıcı Olarak Sil?",
+          "Bu işlem geri alınamaz! Ürün veritabanından tamamen silinecek ve satıcı artık göremeyecek.",
+          executeProductDeletion,
+        );
+      }
+
+      async function executeProductDeletion() {
+        if (!productToDeleteId) return;
+
+        const token = localStorage.getItem("token");
+        try {
+          // Admin için özel silme rotasını çağırıyoruz
+          const res = await fetch(
+            `${API_URL}/admin/delete-product/${productToDeleteId}`,
+            {
+              method: "DELETE",
+              headers: { Authorization: "Bearer " + token },
+            },
+          );
+
+          if (res.ok) {
+            showToast("success", "Silindi", "Ürün kalıcı olarak silindi.");
+            loadMarketplace(); // Listeyi yenile
+          } else {
+            showToast("error", "Hata", "Silme işlemi başarısız.");
+          }
+        } catch (e) {
+          console.error(e);
+          showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+          productToDeleteId = null;
+        }
+      }
+
+      function toggleSidebar() {
+        document.querySelector(".sidebar").classList.toggle("mobile-active");
+        document.querySelector(".sidebar-overlay").classList.toggle("active");
+      }
+      function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+      }
+      // --- YENİ ADMİN OLUŞTURMA ---
+      async function handleCreateAdmin(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fa-solid fa-circle-notch fa-spin"></i> İşleniyor...';
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries()); // Form verisini JSON'a çevir
+
+        try {
+          const res = await fetch(`${API_URL}/admin/create-admin`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await res.json();
+
+          if (res.ok) {
+            showToast("success", "Başarılı", result.message);
+            e.target.reset();
+            loadAdminList();
+          } else {
+            showToast("error", "Hata", result.message);
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<i class="fa-solid fa-plus"></i> Yeni Yönetici Oluştur';
+        }
+      }
+
+      async function loadAdminList() {
+        const container = document.getElementById("adminListContainer");
+        if (!container) return;
+
+        try {
+          const res = await fetch(`${API_URL}/admin/list-admins`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+          const admins = await res.json();
+
+          container.innerHTML = "";
+          
+          admins.forEach((admin) => {
+            const safeAdmin = JSON.stringify(admin)
+              .replace(/'/g, "&#39;")
+              .replace(/"/g, "&quot;");
+
+            const isMainAdminTarget = (admin.id === 1); 
+            const amISuperAdmin = (currentAdminId === 1); 
+            const isMe = (admin.id === currentAdminId); 
+
+            let actionButtons = "";
+
+            if (isMainAdminTarget && !amISuperAdmin) {
+                actionButtons = `<span style="font-size:0.75rem; background:#e2e8f0; color:#475569; padding:2px 8px; border-radius:4px;"><i class="fa-solid fa-lock"></i> Ana Yetkili</span>`;
+            } else {
+                const editBtn = `
+                    <button onclick='openEditAdminModal(${safeAdmin})' style="border:none; background:white; color:#3b82f6; cursor:pointer; padding:5px; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,0.05);" title="Düzenle">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>`;
+                
+                const deleteBtn = isMe ? '' : `
+                    <button onclick="deleteAdmin(${admin.id})" style="border:none; background:white; color:#ef4444; cursor:pointer; padding:5px; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,0.05);" title="Sil">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>`;
+
+                actionButtons = editBtn + deleteBtn;
+            }
+
+            let emailDisplay = admin.email;
+            
+            
+            if (admin.id === 1 && currentAdminId !== 1) {
+                emailDisplay = `<span style="color:#94a3b8; font-style:italic; font-size:0.75rem;">
+                                    <i class="fa-solid fa-lock"></i> Gizli Bilgi
+                                </span>`;
+            }
+
+            const html = `
+                <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+                    <div style="width: 35px; height: 35px; background: #0f172a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                        ${admin.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: #334155;">
+                            ${admin.name} ${admin.surname} 
+                            ${admin.id === 1 ? '<i class="fa-solid fa-crown" style="color:#eab308; margin-left:5px;" title="Ana Admin"></i>' : ''}
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: #64748b;">${emailDisplay}</div>
+                        </div>
+
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        ${actionButtons}
+                    </div>
+                </div>
+              `;
+            container.innerHTML += html;
+          });
+        } catch (error) {
+          console.error("Admin listesi yüklenemedi", error);
+        }
+      }
+
+      function deleteAdmin(id) {
+        openConfirmModal(
+          "Yöneticiyi Sil?",
+          "Bu işlem geri alınamaz.",
+          async () => {
+            try {
+              const res = await fetch(`${API_URL}/admin/delete-admin/${id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              });
+
+              const data = await res.json();
+
+              if (res.ok) {
+                showToast("success", "Silindi", "Yönetici silindi.");
+                loadAdminList();
+              } else {
+                showToast("error", "Hata", data.message || "Silinemedi.");
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          },
+        );
+      }
+
+      // --- ADMİN DÜZENLEME MODALINI AÇ ---
+      function openEditAdminModal(admin) {
+        if (typeof admin === "string") admin = JSON.parse(admin);
+
+        document.getElementById("editAdminId").value = admin.id;
+        document.getElementById("editAdminName").value = admin.name;
+        document.getElementById("editAdminSurname").value = admin.surname;
+        document.getElementById("editAdminEmail").value = admin.email;
+
+        document.getElementById("editAdminModal").style.display = "flex";
+      }
+
+      // --- ADMİN GÜNCELLEME İŞLEMİ ---
+      async function handleUpdateAdmin(e) {
+        e.preventDefault();
+
+        const id = document.getElementById("editAdminId").value;
+        const name = document.getElementById("editAdminName").value;
+        const surname = document.getElementById("editAdminSurname").value;
+        const email = document.getElementById("editAdminEmail").value;
+
+        try {
+          const res = await fetch(`${API_URL}/admin/update-admin/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ name, surname, email }),
+          });
+
+          if (res.ok) {
+            showToast("success", "Güncellendi", "Bilgiler kaydedildi.");
+            closeModal("editAdminModal");
+            loadAdminList();
+          } else {
+            showToast("error", "Hata", "Güncelleme başarısız.");
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      
+      let allAuditConversations = [];
+
+      async function loadAuditConversations() {
+          const grid = document.getElementById("auditListContainer");
+          grid.innerHTML = '<p style="text-align:center; padding:20px; color:#999;"><i class="fa-solid fa-circle-notch fa-spin"></i> Sohbetler taranıyor...</p>';
+          
+          const token = localStorage.getItem("token");
+          
+          try {
+              // Gerçek Backend İsteği
+              const res = await fetch(`${API_URL}/admin/messages/all`, { 
+                  headers: { Authorization: "Bearer " + token } 
+              });
+              
+              if(!res.ok) throw new Error("Veri çekilemedi");
+
+              const data = await res.json();
+              allAuditConversations = data;
+              renderAuditList(data);
+
+          } catch (error) {
+              console.error(error);
+              grid.innerHTML = '<p style="text-align:center; color:red;">Mesaj verilerine ulaşılamadı.</p>';
+          }
+      }
+
+      function renderAuditList(conversations) {
+          const grid = document.getElementById("auditListContainer");
+          grid.innerHTML = "";
+
+          if (conversations.length === 0) {
+              grid.innerHTML = `
+                  <div style="text-align:center; padding:40px; color:#999;">
+                      <i class="fa-regular fa-comments" style="font-size:2rem; margin-bottom:10px;"></i>
+                      <p>Henüz başlatılmış bir sohbet yok.</p>
+                  </div>`;
+              return;
+          }
+
+          conversations.forEach(conv => {
+              const dateStr = new Date(conv.date).toLocaleString('tr-TR', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+              
+              let rowStyle = "";
+              const suspiciousKeywords = ["iban", "havale", "whatsapp", "05", "eft", "fast"];
+              if (conv.lastMessage && suspiciousKeywords.some(kw => conv.lastMessage.toLowerCase().includes(kw))) {
+                  rowStyle = "background-color: #fef2f2; border-left: 4px solid #ef4444;"; 
+              }
+
+              const senderRoleColor = conv.sender.role === 'seller' ? '#3b82f6' : '#64748b';
+              const receiverRoleColor = conv.receiver.role === 'seller' ? '#3b82f6' : '#64748b';
+
+              const html = `
+                  <div class="audit-item" style="${rowStyle}">
+                      <div class="audit-user">
+                          <div class="audit-avatar" style="background:${senderRoleColor}; color:#fff;">
+                              ${conv.sender.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                              <strong>${conv.sender.name}</strong><br>
+                              <small style="color:${senderRoleColor}">${conv.sender.role === 'seller' ? 'Satıcı' : 'Alıcı'}</small>
+                          </div>
+                      </div>
+                      
+                      <div class="audit-user">
+                          <div class="audit-avatar" style="background:${receiverRoleColor}; color:#fff;">
+                              ${conv.receiver.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                              <strong>${conv.receiver.name}</strong><br>
+                              <small style="color:${receiverRoleColor}">${conv.receiver.role === 'seller' ? 'Satıcı' : 'Alıcı'}</small>
+                          </div>
+                      </div>
+
+                      <div class="audit-preview" title="${conv.lastMessage}">
+                          ${conv.lastMessage}
+                      </div>
+                      
+                      <div style="font-size:0.8rem; color:#94a3b8;">
+                          ${dateStr}
+                      </div>
+                      
+                      <div style="text-align:right;">
+                          <button class="btn-view-chat" onclick="openChatDetail(${conv.sender.id}, ${conv.receiver.id}, '${conv.sender.name}', '${conv.receiver.name}')" title="Sohbeti Oku">
+                              <i class="fa-solid fa-eye"></i>
+                          </button>
+                      </div>
+                  </div>
+              `;
+              grid.innerHTML += html;
+          });
+      }
+
+      function filterAuditMessages() {
+          const query = document.getElementById("auditSearchInput").value.toLowerCase();
+          const filtered = allAuditConversations.filter(c => 
+              c.sender.name.toLowerCase().includes(query) ||
+              c.receiver.name.toLowerCase().includes(query) ||
+              c.lastMessage.toLowerCase().includes(query)
+          );
+          renderAuditList(filtered);
+      }
+
+      async function openChatDetail(user1Id, user2Id, name1, name2) {
+          document.getElementById("chatDetailModal").style.display = "flex";
+          document.getElementById("chatModalTitle").innerText = `${name1} ↔ ${name2}`;
+          
+          const chatBody = document.getElementById("chatHistoryBody");
+          chatBody.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:#ccc;"></i></div>';
+
+          const token = localStorage.getItem("token");
+
+          try {
+              const res = await fetch(`${API_URL}/admin/messages/detail/${user1Id}/${user2Id}`, {
+                  headers: { Authorization: "Bearer " + token }
+              });
+              
+              if(!res.ok) throw new Error("Mesajlar alınamadı");
+
+              const messages = await res.json();
+              chatBody.innerHTML = ""; 
+
+              if(messages.length === 0) {
+                  chatBody.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Bu sohbetin içeriği boş görünüyor.</p>';
+                  return;
+              }
+
+              messages.forEach(msg => {
+                  const isRight = (msg.senderId == user2Id); 
+                  const bubbleClass = isRight ? "right" : "left";
+                  
+                  const time = new Date(msg.createdAt).toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+                  
+                  let senderName = "Bilinmeyen";
+                  if (msg.sender) {
+                      senderName = msg.sender.brandName || msg.sender.name;
+                  } else {
+                      senderName = isRight ? name2 : name1;
+                  }
+
+                  const content = msg.content || "<i>Medya/Dosya</i>";
+
+                  const html = `
+                      <div class="chat-bubble ${bubbleClass}">
+                          <span class="bubble-info" style="color:${isRight ? '#1e40af' : '#334155'}">
+                              ${senderName}
+                          </span>
+                          <div style="margin-top:2px;">${content}</div>
+                          <span class="bubble-time">${time}</span>
+                      </div>
+                  `;
+                  chatBody.innerHTML += html;
+              });
+              chatBody.scrollTop = chatBody.scrollHeight;
+
+          } catch (error) {
+              console.error(error);
+              chatBody.innerHTML = '<p style="color:red; text-align:center; margin-top:20px;">Sohbet yüklenirken bir hata oluştu.</p>';
+          }
+      }
+
+      function closeChatModal() {
+          document.getElementById("chatDetailModal").style.display = "none";
+      }
+
+    </script>
+  </body>
+</html>

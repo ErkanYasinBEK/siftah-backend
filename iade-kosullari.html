@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İade ve İptal Koşulları | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="nav-footer.css">
+
+    <style>
+        /* --- SAYFA STİLLERİ --- */
+        :root {
+            --primary: #111;
+            --bg: #f9fafb;
+            --border: #e5e7eb;
+            --warning-bg: #fffbf0;
+            --warning-border: #f5c045;
+            --warning-text: #8a6a0d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .policy-container {
+            max-width: 800px;
+            margin: 5rem auto;
+            padding: 0 20px;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .policy-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .policy-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Kart Yapısı */
+        .policy-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .policy-card h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .policy-card h2 i {
+            color: #007bff;
+        }
+
+        .policy-card p, .policy-card li {
+            color: #444;
+            font-size: 0.95rem;
+        }
+
+        .policy-card ul {
+            padding-left: 20px;
+        }
+
+        .policy-card li {
+            margin-bottom: 10px;
+        }
+
+        /* Uyarı Kutusu */
+        .alert-box {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .alert-box i {
+            color: #d97706;
+            font-size: 1.5rem;
+            margin-top: 2px;
+        }
+
+        .alert-content h4 {
+            margin: 0 0 5px 0;
+            color: var(--warning-text);
+            font-size: 1rem;
+        }
+
+        .alert-content p {
+            margin: 0;
+            color: #664d03;
+            font-size: 0.9rem;
+        }
+
+        /* Adım Adım İade */
+        .steps {
+            display: flex;
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+
+        .step {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        
+        .step-num {
+            background: #111;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .steps { flex-direction: column; }
+            .policy-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar"></div> <section class="policy-container">
+        
+        <div class="policy-header">
+            <h1>İade ve İptal Koşulları</h1>
+            <p>Siftah platformunda güvenli alışveriş için bilmeniz gerekenler.</p>
+        </div>
+
+        <div class="alert-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="alert-content">
+                <h4>Siftah Bir "Vitrin" Platformudur</h4>
+                <p>Siftah, ödeme işlemlerine aracılık etmez. Alışveriş, doğrudan alıcı ve satıcı arasında gerçekleşir. Bu nedenle iade süreçleri, anlaştığınız satıcının inisiyatifindedir.</p>
+            </div>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fa-solid fa-scale-balanced"></i> Genel İade Prensipleri</h2>
+            <p>Siftah üzerindeki satıcılar, Türk Ticaret Kanunu ve Tüketici Hakları kapsamında kendi iade politikalarını belirlemekte özgürdür. Ancak platformumuzda satış yapan tüm mağazaların aşağıdaki standartlara uymasını bekleriz:</p>
+            <ul>
+                <li><strong>Ayıplı Mal:</strong> Ürün anlatıldığı gibi değilse, kırık veya bozuksa satıcı iadeyi kabul etmek zorundadır.</li>
+                <li><strong>Yanlış Ürün:</strong> Sipariş ettiğinizden farklı bir ürün geldiyse değişim hakkınız saklıdır.</li>
+                <li><strong>Kargoda Hasar:</strong> Kargo tutanağı tutulduğu takdirde sorumluluk satıcıya veya kargo firmasına aittir.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fa-solid fa-rotate-left"></i> İade Süreci Nasıl İşler?</h2>
+            <p>Ödeme ve kargo süreci site dışında gerçekleştiği için, iade talebinizi doğrudan satıcıya iletmelisiniz.</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <strong>İletişime Geçin</strong>
+                    <p>Satıcı profili üzerinden mesaj atın veya telefonla arayın.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <strong>Anlaşma Sağlayın</strong>
+                    <p>İade nedeni ve kargo ücretini (kimin ödeyeceğini) konuşun.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <strong>Kargolayın</strong>
+                    <p>Ürünü eksiksiz paketleyip satıcının adresine gönderin.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fa-solid fa-shield-halved"></i> Siftah Güvencesi Nedir?</h2>
+            <p>Biz para transferine karışmasak da topluluğumuzu korumakla yükümlüyüz. Eğer bir satıcı:</p>
+            <ul>
+                <li>Parayı alıp ürünü göndermezse,</li>
+                <li>Bile isteye kusurlu ürün gönderip iade almazsa,</li>
+                <li>İletişim kurallarına uymazsa;</li>
+            </ul>
+            <p>Lütfen <strong>destek@siftah.com</strong> adresine kanıtlarınızla (dekont, yazışma ekran görüntüsü) bildirin. Bu satıcıların mağazası <strong>kalıcı olarak kapatılır</strong> ve diğer kullanıcıların zarar görmesi engellenir.</p>
+        </div>
+
+    </section>
+
+    <div id="footer"></div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

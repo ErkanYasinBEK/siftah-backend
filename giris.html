@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giriş Yap | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="buyer-login.css" />
+  </head>
+  <body>
+    <div id="toast-container"></div>
+
+    <div class="login-wrapper">
+      <div class="login-visual">
+        <div class="visual-content">
+          <a href="/" class="logo-link">
+            <span class="logo-text">siftah</span>
+          </a>
+
+          <div class="hero-text">
+            <h2>Keyifli Alışverişe<br />Kaldığın Yerden Devam Et.</h2>
+            <p>Favorilerin ve sepetin seni bekliyor.</p>
+          </div>
+
+          <div class="visual-footer">
+            <span>© 2025 Siftah Inc.</span>
+          </div>
+        </div>
+        <img
+          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop"
+          alt="Shopping"
+          class="bg-image"
+        />
+        <div class="overlay"></div>
+      </div>
+
+      <div class="login-form-container">
+
+        <div class="mobile-header">
+            <a href="/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> Geri</a>
+            <span class="mobile-logo">siftah</span>
+            <div class="spacer"></div> 
+        </div>
+
+        <div class="form-header">
+          <h1>Tekrar Hoş Geldiniz 👋</h1>
+          <p>Hesabınıza giriş yapın.</p>
+        </div>
+
+        <form id="buyerLoginForm">
+          <div class="input-group">
+            <label>E-posta Adresi</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input
+                type="email"
+                id="email" 
+                name="email"
+                placeholder="ornek@email.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Şifre</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                required
+              />
+              <i
+                class="fa-regular fa-eye toggle-password"
+                onclick="togglePassword('password')"
+              ></i>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <div class="checkbox-group">
+              <input type="checkbox" id="remember" />
+              <label for="remember">Beni Hatırla</label>
+            </div>
+            <a href="javascript:void(0)" class="forgot-link" onclick="openModal()">Şifremi Unuttum?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+
+          <div class="divider">
+            <span>veya</span>
+          </div>
+
+          <button type="button" class="btn btn-google w-100">
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google Logo"
+            />
+            Google ile Giriş Yap
+          </button>
+
+          <div class="register-redirect">
+            <p>Hesabın yok mu? <a href="kayit-ol.html">Kayıt Ol</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="modal-icon">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            
+            <h3>Şifreni mi Unuttun?</h3>
+            <p>Endişelenme, olur böyle şeyler. E-posta adresini gir, sana sıfırlama bağlantısı gönderelim.</p>
+            
+            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <input type="email" id="forgot-email" placeholder="E-posta adresin" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">
+                    Sıfırlama Linki Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:5000/api";
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        
+        let iconClass = "fa-circle-check";
+        if (type === "error") iconClass = "fa-circle-xmark";
+        if (type === "warning") iconClass = "fa-triangle-exclamation";
+
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+        
+        toast.innerHTML = `
+            <i class="fa-solid ${iconClass}"></i>
+            <div class="toast-content">
+                <span class="toast-title"></span>
+                <span class="toast-msg"></span>
+            </div>
+        `;
+        
+        toast.querySelector(".toast-title").textContent = title;
+        toast.querySelector(".toast-msg").textContent = message;
+        
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = "fadeOut 0.5s ease forwards";
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+
+      function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.parentElement.querySelector('.toggle-password');
+        
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      }
+
+      const loginForm = document.getElementById("buyerLoginForm");
+
+      if (loginForm) {
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+
+        loginForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Kontrol Ediliyor...';
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast("success", `Hoş geldin ${data.user.name}!`, "Giriş başarılı, yönlendiriliyorsunuz...");
+
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("user", JSON.stringify(data.user));
+
+                    setTimeout(() => {
+                        if(data.user.role === 'admin') {
+                            window.location.href = "yonetim.html";
+                        } else if (data.user.role === 'seller') {
+                            window.location.href = "satici-paneli.html"; 
+                        } else {
+                            window.location.href = "/"; 
+                        }
+                    }, 2000);
+
+                } else {
+                    showToast("error", "Giriş Başarısız", data.message || "Bilgilerinizi kontrol ediniz.");
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+            } catch (error) {
+                console.error("Hata:", error);
+                showToast("error", "Bağlantı Hatası", "Sunucuya ulaşılamadı.");
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+      }
+
+      function openModal() {
+          const modal = document.getElementById('forgot-password-modal');
+          modal.style.display = 'flex'; 
+          setTimeout(() => {
+              modal.classList.add('active');
+          }, 10);
+      }
+
+      function closeModal() {
+          const modal = document.getElementById('forgot-password-modal');
+          modal.classList.remove('active');
+          setTimeout(() => {
+              modal.style.display = 'none';
+          }, 300);
+      }
+
+      window.onclick = function(event) {
+          const modal = document.getElementById('forgot-password-modal');
+          if (event.target === modal) {
+              closeModal();
+          }
+      }
+
+      async function handleForgotPassword(e) {
+          e.preventDefault();
+          const email = document.getElementById('forgot-email').value;
+          const btn = e.target.querySelector('button');
+          const originalText = btn.textContent;
+
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Gönderiliyor...';
+
+          try {
+              const response = await fetch(`${API_URL}/auth/forgot-password`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: email, role: 'buyer' })
+              });
+
+              const data = await response.json();
+
+              if (response.ok) {
+                  closeModal();
+                  showToast("success", "E-posta Gönderildi", "Sıfırlama bağlantısı gelen kutunuza yollandı. (Spam'i kontrol etmeyi unutma!)");
+              } else {
+                  showToast("error", "Hata", data.message || "Bu e-posta adresi sistemde bulunamadı.");
+              }
+
+          } catch (error) {
+              console.error(error);
+              showToast("error", "Bağlantı Hatası", "Sunucuya ulaşılamadı.");
+          } finally {
+              btn.disabled = false;
+              btn.textContent = originalText;
+          }
+      }
+
+    </script>
+  </body>
+</html>

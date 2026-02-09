@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizyon & Misyon | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="nav-footer.css" />
+
+    <style>
+      /* --- SAYFAYA ÖZEL PREMIUM CSS --- */
+      :root {
+        --primary: #0f172a; /* Koyu Lacivert/Siyah */
+        --accent: #3b82f6; /* Siftah Mavisi */
+        --text: #475569;   /* Okunabilir Gri */
+        --bg: #f8fafc;     /* Çok açık gri arka plan */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg);
+        color: var(--primary);
+        line-height: 1.6;
+      }
+
+      /* HERO SECTION */
+      .mission-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: white;
+        padding: 100px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .mission-hero::before {
+        /* Arkaya hafif bir desen veya logo flu şekilde atılabilir */
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .mission-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin: 0 0 20px 0;
+        line-height: 1.1;
+        letter-spacing: -1px;
+      }
+
+      .mission-hero p {
+        font-size: 1.2rem;
+        color: #cbd5e1;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* MAIN CONTAINER */
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* VIZYON & MISYON KARTLARI */
+      .vm-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: -60px; /* Hero'nun üzerine binsin */
+        position: relative;
+        z-index: 10;
+        margin-bottom: 80px;
+      }
+
+      .vm-card {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.03);
+      }
+
+      .vm-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+      }
+
+      .icon-box {
+        width: 60px;
+        height: 60px;
+        background: #eff6ff;
+        color: var(--accent);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+      }
+
+      .vm-card.vision .icon-box {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
+
+      .vm-card h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--primary);
+      }
+
+      .vm-card p {
+        color: var(--text);
+        font-size: 1.05rem;
+        margin-bottom: 0;
+      }
+
+      /* DEĞERLERİMİZ BÖLÜMÜ */
+      .values-section {
+        padding: 60px 0 100px 0;
+        text-align: center;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: var(--primary);
+      }
+      .section-subtitle {
+        color: var(--text);
+        max-width: 600px;
+        margin: 0 auto 60px auto;
+        font-size: 1.1rem;
+      }
+
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
+
+      .value-item {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        text-align: left;
+        transition: 0.3s;
+      }
+      .value-item:hover {
+        border-color: var(--accent);
+      }
+
+      .value-item i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .value-item h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .value-item p {
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+
+      /* MOBİL UYUM */
+      @media (max-width: 768px) {
+        .mission-hero h1 { font-size: 2.5rem; }
+        .vm-grid { grid-template-columns: 1fr; margin-top: -30px; }
+        .values-grid { grid-template-columns: 1fr; }
+        .vm-card { padding: 30px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <section class="mission-hero">
+      <div class="container">
+        <span class="hero-badge">Siftah Hakkında</span>
+        <h1>Ticaretin Geleceğini<br />Birlikte İnşa Ediyoruz</h1>
+        <p>
+          Herkesin bir hikayesi, herkesin satacak bir değeri vardır. Biz sadece bu değerleri doğru insanlarla buluşturuyoruz.
+        </p>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="vm-grid">
+        <div class="vm-card">
+          <div class="icon-box">
+            <i class="fa-solid fa-rocket"></i>
+          </div>
+          <h2>Misyonumuz</h2>
+          <p>
+            Karmaşık e-ticaret süreçlerini ortadan kaldırarak, bireysel satıcılardan küçük işletmelere kadar herkesin <strong>hızlı, güvenli ve kolay</strong> bir şekilde "Siftah" yapmasını sağlamak. Dijital ticareti herkes için erişilebilir kılmak.
+          </p>
+        </div>
+
+        <div class="vm-card vision">
+          <div class="icon-box">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <h2>Vizyonumuz</h2>
+          <p>
+            Türkiye'nin en güvenilir ve en samimi pazar yeri olmak. Teknolojiyi insan odaklı kullanarak, alıcı ve satıcı arasındaki duvarları yıkmak ve ticareti bir <strong>topluluk deneyimine</strong> dönüştürmek.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section class="values-section">
+      <div class="container">
+        <h2 class="section-title">Bizi Biz Yapan Değerler</h2>
+        <p class="section-subtitle">
+          Siftah'ı kurarken temel aldığımız ve asla taviz vermeyeceğimiz prensiplerimiz.
+        </p>
+
+        <div class="values-grid">
+          <div class="value-item">
+            <i class="fa-solid fa-shield-heart"></i>
+            <h3>Önce Güven</h3>
+            <p>
+              Ticaretten önce güven gelir. Şeffaf satıcı profilleri ve onaylı ürün sistemiyle sürprizlere yer yok.
+            </p>
+          </div>
+          <div class="value-item">
+            <i class="fa-solid fa-bolt"></i>
+            <h3>Hız ve Sadelik</h3>
+            <p>
+              Karmaşık formlar yok. Fotoğrafını çek, bilgilerini gir ve saniyeler içinde vitrinini oluştur.
+            </p>
+          </div>
+          <div class="value-item">
+            <i class="fa-solid fa-users"></i>
+            <h3>Topluluk Odaklı</h3>
+            <p>
+              Sadece al-sat değil, etkileşim kur. Hikayeni anlat, müşterilerinle bağ kur ve büyümene odaklan.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script> </body>
+</html>

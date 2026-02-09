@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <title>Markalar & Satıcılar | Siftah</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="nav-footer.css" />
+    <link rel="stylesheet" href="all-seller.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <main class="container-seller">
+      <div class="page-header">
+        <span class="badge-pill">Siftah Ailesi</span>
+        <h2>Vitrinlerin Arkasındaki Yüzler</h2>
+        <p class="subtitle">
+          Her markanın bir hikayesi, her ürünün bir ustası var. Güvenle
+          alışveriş yapacağın onaylı satıcılarımızı keşfet.
+        </p>
+      </div>
+
+      <div class="filter-sticky-wrapper">
+        <div class="filter-content">
+          <div class="search-box-premium">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Mağaza adı, kategori veya etiket ara..."
+            />
+          </div>
+
+          <div class="filter-chips-container" id="dynamicFilters">
+            <p style="font-size: 0.8rem; color: #999; padding: 5px">
+              Menü hazırlanıyor...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="seller-grid" id="sellerGrid">
+        <div class="loading-state">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+          <p>Markalar yükleniyor...</p>
+        </div>
+      </div>
+
+      <div id="sellerDetailModal" class="modal-overlay" style="display: none">
+        <div class="modal-content-wrapper">
+          <button onclick="closeSellerModal()" class="close-modal-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="modal-header-clean" id="modalCover"></div>
+
+          <div class="modal-body-grid">
+            <div class="modal-info-col">
+              <div class="identity-card">
+                <div class="seller-avatar-large">
+                  <img src="" id="modalFace" alt="Satıcı" />
+                  <div class="verified-badge-large" title="Onaylı Satıcı">
+                    <i class="fa-solid fa-check"></i>
+                  </div>
+                </div>
+
+                <h2 id="modalSellerName" class="big-seller-name">
+                  Satıcı İsmi
+                </h2>
+
+                <div class="brand-badge-row">
+                  <span class="owner-label">Kurucusu</span>
+                  <div class="brand-pill">
+                    <img src="" id="modalLogo" alt="Logo" />
+                    <span id="modalBrandName">Marka İsmi</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-box">
+                <h4>Marka Hikayesi</h4>
+                <p id="modalStory">Hikaye yükleniyor...</p>
+              </div>
+
+              <div class="info-box">
+                <div class="social-links" id="modalSocials"></div>
+                <button onclick="contactSeller()" class="btn-message">
+                  <i class="fa-regular fa-envelope"></i> Satıcıya Yaz
+                </button>
+              </div>
+            </div>
+
+            <div class="modal-products-col">
+              <div class="products-header">
+                <h4>Popüler Ürünler</h4>
+                <a href="#" id="modalStoreLink" class="view-all-link"
+                  >Tümünü Gör <i class="fa-solid fa-arrow-right"></i
+                ></a>
+              </div>
+              <div class="mini-product-grid" id="modalProductsGrid">
+                <p style="color: #999; font-size: 0.9rem">
+                  Ürünler yükleniyor...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="script.js"></script>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+
+      function getMyId() {
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            window
+              .atob(base64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join(""),
+          );
+          return JSON.parse(jsonPayload).id;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      const iconMap = {
+        giyim: "fa-shirt",
+        ayakkabi: "fa-shoe-prints",
+        elektronik: "fa-plug",
+        teknoloji: "fa-laptop",
+        telefon: "fa-mobile-screen",
+        bilgisayar: "fa-computer",
+        kozmetik: "fa-wand-magic-sparkles",
+        bakim: "fa-pump-soap",
+        ev: "fa-couch",
+        yasam: "fa-leaf",
+        spor: "fa-dumbbell",
+        outdoor: "fa-person-hiking",
+        aksesuar: "fa-hat-cowboy",
+        canta: "fa-bag-shopping",
+        saat: "fa-clock",
+        oyun: "fa-gamepad",
+        bebek: "fa-baby",
+        cocuk: "fa-child",
+        kitap: "fa-book",
+        hobi: "fa-palette",
+        market: "fa-basket-shopping",
+        otomotiv: "fa-car",
+      };
+
+      function fixImageUrl(dbPath) {
+        if (
+          !dbPath ||
+          dbPath === "undefined" ||
+          dbPath === "null" ||
+          dbPath === ""
+        ) {
+          return null;
+        }
+        let strPath = String(dbPath);
+        let cleanPath = strPath.replace(/\\/g, "/");
+        if (cleanPath.startsWith("http")) return cleanPath;
+        if (cleanPath.includes("uploads/")) {
+          cleanPath = cleanPath.substring(cleanPath.indexOf("uploads/"));
+        } else if (cleanPath.startsWith("/")) {
+          cleanPath = cleanPath.substring(1);
+        }
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      let allSellersData = [];
+      let currentCategory = "all";
+      let currentSellerId = null;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const grid = document.getElementById("sellerGrid");
+
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/users/sellers/public`,
+          );
+          if (!response.ok) throw new Error("Veri çekilemedi");
+          allSellersData = await response.json();
+          createAutoFilters(allSellersData);
+          renderSellers(allSellersData);
+        } catch (error) {
+          console.error(error);
+          if (grid)
+            grid.innerHTML =
+              '<div class="error-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Markalar yüklenirken bir sorun oluştu.</p></div>';
+        }
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+          searchInput.addEventListener("input", () => applyFilters());
+        }
+      });
+
+      function createAutoFilters(sellers) {
+        const container = document.getElementById("dynamicFilters");
+        if (!container) return;
+        container.innerHTML = "";
+
+        const fixedButtons = [
+          { id: "all", label: "Tümü", icon: "fa-border-all", active: true },
+          {
+            id: "verified",
+            label: "Onaylı",
+            icon: "fa-circle-check",
+            extraClass: "verified-chip",
+          },
+          {
+            id: "popular",
+            label: "Popüler",
+            icon: "fa-fire",
+            extraClass: "badge-chip",
+          },
+          {
+            id: "new",
+            label: "Yeni",
+            icon: "fa-sparkles",
+            extraClass: "new-chip",
+          },
+        ];
+
+        fixedButtons.forEach((btn) => {
+          const button = document.createElement("button");
+          button.className = `filter-chip ${btn.extraClass || ""} ${
+            btn.active ? "active" : ""
+          }`;
+          button.innerHTML = `<i class="fa-solid ${btn.icon}"></i> ${btn.label}`;
+          button.onclick = () => handleFilterClick(btn.id, button);
+          container.appendChild(button);
+        });
+
+        // 2. VERİTABANINDAN GELEN KATEGORİLERİ BUL
+        const foundCategories = new Set();
+        sellers.forEach((s) => {
+          if (s.category) foundCategories.add(s.category);
+        });
+
+        // 3. KATEGORİLERİ BUTONA DÖNÜŞTÜR VE EKLE
+        Array.from(foundCategories)
+          .sort()
+          .forEach((catKey) => {
+            // İsim Formatlama: "ev_yasam" -> "Ev Yasam"
+            const label = catKey
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+
+            // İkon Bulma (Otomatik Eşleştirme)
+            let iconClass = "fa-hashtag"; // Varsayılan ikon
+            for (const [key, val] of Object.entries(iconMap)) {
+              if (catKey.toLowerCase().includes(key)) {
+                iconClass = val;
+                break;
+              }
+            }
+
+            const btn = document.createElement("button");
+            btn.className = "filter-chip";
+            btn.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${label}`;
+
+            // Tıklanınca o kategori ID'sini (örn: 'giyim_kadin') gönderir
+            btn.onclick = () => handleFilterClick(catKey, btn);
+
+            container.appendChild(btn);
+          });
+      }
+
+      function handleFilterClick(filterType, btnElement) {
+        // Aktif sınıfını güncelle
+        document
+          .querySelectorAll(".filter-chip")
+          .forEach((b) => b.classList.remove("active"));
+        btnElement.classList.add("active");
+
+        currentCategory = filterType;
+        applyFilters();
+      }
+
+      function applyFilters() {
+        const searchInput = document.getElementById("searchInput");
+        const searchVal = searchInput ? searchInput.value.toLowerCase() : "";
+
+        const filtered = allSellersData.filter((s) => {
+          // 1. Arama
+          const matchesSearch =
+            (s.brandName && s.brandName.toLowerCase().includes(searchVal)) ||
+            (s.name && s.name.toLowerCase().includes(searchVal)) ||
+            (s.siftahNote && s.siftahNote.toLowerCase().includes(searchVal));
+
+          // 2. Filtreleme
+          let matchesCategory = true;
+          if (currentCategory === "all") {
+            matchesCategory = true;
+          } else if (currentCategory === "verified") {
+            matchesCategory = s.isApproved === true;
+          } else if (currentCategory === "popular") {
+            matchesCategory = s.Products && s.Products.length >= 2;
+          } else if (currentCategory === "new") {
+            const joinDate = new Date(s.createdAt);
+            const daysAgo = new Date();
+            daysAgo.setDate(daysAgo.getDate() - 30);
+            matchesCategory = joinDate > daysAgo;
+          } else {
+            // Tam Eşleşme (Veritabanındaki değer neyse o)
+            matchesCategory = s.category === currentCategory;
+          }
+
+          return matchesSearch && matchesCategory;
+        });
+
+        renderSellers(filtered);
+      }
+
+      function renderSellers(sellers) {
+        const grid = document.getElementById("sellerGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        if (sellers.length === 0) {
+          grid.innerHTML =
+            '<div class="error-state"><i class="fa-solid fa-ghost"></i><p>Aradığınız kriterde satıcı bulunamadı.</p></div>';
+          return;
+        }
+
+        sellers.forEach((seller) => {
+          let coverImg = seller.coverImage
+            ? fixImageUrl(seller.coverImage)
+            : "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&auto=format&fit=crop&q=60";
+
+          if (!coverImg)
+            coverImg =
+              "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&auto=format&fit=crop&q=60";
+
+          let logoUrl = seller.logoUrl ? fixImageUrl(seller.logoUrl) : null;
+          if (!logoUrl)
+            logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.brandName)}&background=0f172a&color=fff&bold=true`;
+
+          let profileImg = seller.profileImage
+            ? fixImageUrl(seller.profileImage)
+            : null;
+          if (!profileImg)
+            profileImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=f1f5f9&color=333`;
+
+          const brandName = seller.brandName || "İsimsiz Marka";
+          const sellerName = seller.name + " " + (seller.surname || "");
+          const productCount = seller.Products ? seller.Products.length : 0;
+          const bio =
+            seller.siftahNote || seller.story || "Siftah onaylı satıcı.";
+          const ratingValue = seller.averageRating
+            ? parseFloat(seller.averageRating).toFixed(1)
+            : "Yeni";
+
+          const responseRateValue =
+            seller.responseRate !== undefined
+              ? `%${seller.responseRate}`
+              : "%100";
+          const reviewCountValue = seller.totalReviews || 0;
+          const shortBio = bio.length > 90 ? bio.substring(0, 90) + "..." : bio;
+
+          let catLabel = "Genel";
+          if (seller.category) {
+            catLabel = seller.category
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+          }
+
+          const safeSeller = JSON.stringify(seller)
+            .replace(/'/g, "&#39;")
+            .replace(/"/g, "&quot;");
+
+          const card = `
+                <div class="seller-card" onclick='openSellerModal(${safeSeller})' style="cursor:pointer;">
+                    <div class="card-header" style="background-image: url('${coverImg}');">
+                        <span class="category-tag">${catLabel}</span>
+                    </div>
+                    <div class="card-identity">
+                        <div class="brand-logo-wrapper">
+                            <img src="${logoUrl}" alt="${brandName}" class="brand-logo">
+                        </div>
+                        <div class="seller-face-wrapper" title="Satıcı: ${sellerName}">
+                            <img src="${profileImg}" alt="${sellerName}" class="seller-face">
+                            <div class="verified-icon"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="brand-name">${brandName}</h3>
+                        <p class="seller-name"><i class="fa-regular fa-user"></i> ${sellerName}</p>
+                        <p class="bio-text">"${shortBio}"</p>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <strong>${productCount}</strong>
+                                <span>Ürün</span>
+                            </div>
+                            <div class="stat-item" style="min-width: 60px;"> <strong>${ratingValue} <i class="fa-solid fa-star" style="color:#f59e0b; font-size:0.8em;"></i></strong>
+                                <span>(${reviewCountValue} Yorum)</span>
+                            </div>
+                            <div class="stat-item">
+                                <strong>${responseRateValue}</strong>
+                                <span>Yanıt</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            ${
+                              seller.instagram
+                                ? `<a href="https://instagram.com/${seller.instagram}" target="_blank" onclick="event.stopPropagation()" class="btn-icon"><i class="fa-brands fa-instagram"></i></a>`
+                                : ""
+                            }
+                            <a href="magaza-detay.html?sellerId=${
+                              seller.id
+                            }" onclick="event.stopPropagation()" class="btn-store">Mağazayı Gör <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            `;
+          grid.innerHTML += card;
+        });
+      }
+
+      async function openSellerModal(seller) {
+        if (typeof seller === "string") seller = JSON.parse(seller);
+        currentSellerId = seller.id;
+        const modal = document.getElementById("sellerDetailModal");
+
+        const myId = getMyId();
+        const contactBtn = document.querySelector(
+          "#sellerDetailModal .btn-message",
+        );
+
+        if (contactBtn) contactBtn.style.display = "block";
+
+        if (myId && String(myId) === String(seller.id)) {
+          if (contactBtn) contactBtn.style.display = "none";
+        }
+
+        document.getElementById("modalCover").style.backgroundImage = `url('${
+          seller.coverImage
+            ? fixImageUrl(seller.coverImage)
+            : "https://via.placeholder.com/800x300"
+        }')`;
+        document.getElementById("modalFace").src = seller.profileImage
+          ? fixImageUrl(seller.profileImage)
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              seller.name,
+            )}`;
+        document.getElementById("modalLogo").src = seller.logoUrl
+          ? fixImageUrl(seller.logoUrl)
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              seller.brandName,
+            )}`;
+
+        document.getElementById("modalSellerName").textContent = `${
+          seller.name
+        } ${seller.surname || ""}`;
+        document.getElementById("modalBrandName").textContent =
+          seller.brandName || "Marka";
+        document.getElementById("modalStory").textContent =
+          seller.story ||
+          seller.siftahNote ||
+          "Bu satıcı henüz marka hikayesini eklemedi.";
+
+        const socialsDiv = document.getElementById("modalSocials");
+        socialsDiv.innerHTML = "";
+
+        const addSocialBtn = (link, platform, iconClass) => {
+          if (!link) return;
+
+          let finalLink = link;
+          if (!link.startsWith("http")) {
+            if (platform === "instagram")
+              finalLink = `https://instagram.com/${link}`;
+            else if (platform === "twitter")
+              finalLink = `https://twitter.com/${link}`;
+            else if (platform === "facebook")
+              finalLink = `https://facebook.com/${link}`;
+            else if (platform === "youtube")
+              finalLink = `https://youtube.com/${link}`;
+            else if (platform === "linkedin")
+              finalLink = `https://linkedin.com/in/${link}`;
+            else if (platform === "website") finalLink = `https://${link}`;
+          }
+
+          const btn = document.createElement("a");
+          btn.href = finalLink;
+          btn.target = "_blank";
+          btn.className = `social-btn ${platform}`;
+          btn.title = platform.charAt(0).toUpperCase() + platform.slice(1);
+          btn.innerHTML = `<i class="${iconClass}"></i>`;
+          socialsDiv.appendChild(btn);
+        };
+
+        addSocialBtn(seller.website, "website", "fa-solid fa-globe");
+        addSocialBtn(seller.instagram, "instagram", "fa-brands fa-instagram");
+        addSocialBtn(seller.twitter, "twitter", "fa-brands fa-x-twitter");
+        addSocialBtn(seller.facebook, "facebook", "fa-brands fa-facebook-f");
+        addSocialBtn(seller.youtube, "youtube", "fa-brands fa-youtube");
+        addSocialBtn(seller.linkedin, "linkedin", "fa-brands fa-linkedin-in");
+
+        if (socialsDiv.children.length === 0) {
+          socialsDiv.innerHTML =
+            '<span style="font-size:0.9rem; color:#999;">Sosyal medya hesabı eklenmemiş.</span>';
+        }
+
+        document.getElementById("modalStoreLink").href =
+          `magaza-detay.html?sellerId=${seller.id}`;
+        fetchSellerProducts(seller.id);
+
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSellerModal() {
+        document.getElementById("sellerDetailModal").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+
+      function contactSeller() {
+    if (currentSellerId) {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        alert("Mesaj göndermek için giriş yapmalısınız.");
+        window.location.href = "giris.html";
+        return;
+      }
+
+      const myId = getMyId();
+      if (myId && String(myId) === String(currentSellerId)) {
+          alert("Kendinize mesaj gönderemezsiniz.");
+          return;
+      }
+
+      window.location.href = `mesajlarim.html?chatUserId=${currentSellerId}`;
+    }
+  }
+
+      async function fetchSellerProducts(sellerId) {
+        const prodGrid = document.getElementById("modalProductsGrid");
+        prodGrid.innerHTML =
+          '<p style="grid-column:1/-1; text-align:center;">Yükleniyor...</p>';
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/products`);
+          const allProds = await res.json();
+          const sellerProds = allProds
+            .filter(
+              (p) =>
+                p.sellerId === sellerId || (p.User && p.User.id === sellerId),
+            )
+            .slice(0, 4);
+
+          prodGrid.innerHTML = "";
+          if (sellerProds.length === 0) {
+            prodGrid.innerHTML =
+              '<p style="grid-column:1/-1; text-align:center; color:#999; font-size:0.9rem;">Henüz ürün yok.</p>';
+            return;
+          }
+
+          sellerProds.forEach((p) => {
+            let img = "https://via.placeholder.com/300?text=Resim+Yok";
+
+            let rawPath = null;
+            if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+              rawPath = p.images[0];
+            } else if (p.image) {
+              rawPath = p.image;
+            }
+
+            const fixed = fixImageUrl(rawPath);
+            if (fixed) img = fixed;
+
+            let priceHtml = "";
+            if (p.discountPrice && p.discountPrice > 0) {
+              priceHtml = `<div class="price-row"><span class="old-price">${p.price}₺</span><span class="new-price">${p.discountPrice}₺</span></div>`;
+            } else {
+              priceHtml = `<span class="mini-prod-price">${p.price}₺</span>`;
+            }
+
+            const html = `
+                  <a href="urun-detay.html?id=${p.id}" class="mini-prod-card">
+                      <img src="${img}" class="mini-prod-img">
+                      <div class="mini-prod-info">
+                          <h5 class="mini-prod-title">${p.title}</h5>
+                          ${priceHtml}
+                      </div>
+                  </a>
+              `;
+            prodGrid.innerHTML += html;
+          });
+        } catch (e) {
+          console.error(e);
+          prodGrid.innerHTML = '<p style="color:red;">Hata.</p>';
+        }
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("sellerDetailModal");
+        if (event.target == modal) closeSellerModal();
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sıkça Sorulan Sorular | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="nav-footer.css">
+
+    <style>
+        :root {
+            --primary: #111;
+            --accent: #007bff;
+            --bg: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 0;
+        }
+
+        .faq-section {
+            max-width: 800px;
+            margin: 7rem auto;
+            padding: 0 20px;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .faq-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .faq-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Sekme Yapısı (Alıcı / Satıcı) */
+        .faq-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #555;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Akordiyon Kutusu */
+        .faq-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Detaylar (Details) Etiketi Stili */
+        details {
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        details:last-child {
+            border-bottom: none;
+        }
+
+        details[open] {
+            background-color: #fcfcfc;
+        }
+
+        summary {
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            list-style: none; /* Varsayılan üçgeni gizle */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+        }
+
+        /* Özel İkon (Artı/Eksi) */
+        summary::after {
+            content: '\f078'; /* FontAwesome Chevron Down */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: #888;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::after {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+
+        /* Varsayılan ok işaretini gizle (Webkit) */
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-answer {
+            padding: 0 24px 24px 24px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border-top: 1px solid transparent; /* Animasyon için yer tutucu */
+        }
+        
+        details[open] .faq-answer {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* İletişim Kutusu */
+        .contact-box {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #eef2ff;
+            border-radius: 16px;
+        }
+        
+        .contact-box h3 { margin: 0 0 10px; }
+        .contact-box a { color: var(--accent); font-weight: 700; text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .faq-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar"></div> <section class="faq-section">
+        <div class="faq-header">
+            <h1>Aklınıza Takılanlar</h1>
+            <p>Siftah'ın çalışma mantığı ve süreçler hakkında en çok merak edilenler.</p>
+        </div>
+
+        <div class="faq-tabs">
+            <button class="tab-btn active" onclick="showTab('buyer')">Alıcılar İçin</button>
+            <button class="tab-btn" onclick="showTab('seller')">Satıcılar İçin</button>
+        </div>
+
+        <div id="buyer-faq" class="faq-group">
+            <div class="faq-container">
+                <details>
+                    <summary>Ürünü nasıl satın alabilirim? Sepete Ekle butonu yok.</summary>
+                    <div class="faq-answer">
+                        Siftah, klasik bir pazar yeri değil, bir vitrin platformudur. Beğendiğiniz ürün için <strong>"Satıcıyla İletişime Geç"</strong> veya <strong>"Teklif Ver"</strong> butonlarını kullanarak doğrudan üreticiyle görüşürsünüz. Aracı olmadan, komisyonsuz fiyata anlaşırsınız.
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Ödemeyi site üzerinden kredi kartıyla yapabilir miyim?</summary>
+                    <div class="faq-answer">
+                        Şu an için site içi ödeme sistemimiz bulunmamaktadır. Ödeme yöntemini (Havale/EFT/Kapıda Ödeme vb.) satıcıyla görüşerek karşılıklı belirleyebilirsiniz. Siftah, ödeme sürecine müdahil olmaz.
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Satıcının güvenilir olduğunu nasıl anlarım?</summary>
+                    <div class="faq-answer">
+                        Platformumuzdaki tüm satıcılar kimlik, iletişim ve marka doğrulama süreçlerinden geçer. Satıcı profilindeki <strong>"Doğrulanmış Rozeti"</strong>, puanlar ve kullanıcı yorumları size rehberlik edecektir.
+                    </div>
+                </details>
+                
+                <details>
+                    <summary>Ürünüm gelmezse ne yapmalıyım?</summary>
+                    <div class="faq-answer">
+                        Alışverişiniz doğrudan satıcı ile sizin aranızdadır. Ancak, Siftah topluluk kuralları gereği, sorunlu bir alışveriş deneyimi yaşarsanız durumu bize bildirebilirsiniz. Şikayet edilen satıcılar incelenir ve gerekirse platformdan uzaklaştırılır.
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div id="seller-faq" class="faq-group" style="display: none;">
+            <div class="faq-container">
+                <details>
+                    <summary>Mağaza açmak ve ürün listelemek ücretli mi?</summary>
+                    <div class="faq-answer">
+                        Siftah "Vitrin Kiralama" modeliyle çalışır. Satışlarınızdan <strong>komisyon almayız</strong>, kazancınızın tamamı size kalır. Bunun yerine bütçe dostu aylık veya yıllık abonelik planlarımızla mağazanızı açık tutarsınız.
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Komisyon oranı nedir?</summary>
+                    <div class="faq-answer">
+                        <strong>%0 Komisyon!</strong> Ürününüzü 1000 TL'ye satıyorsanız, 1000 TL'nin tamamı cebinize girer. Biz sadece vitrin kiranızı alırız.
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Herkes mağaza açabilir mi? Onay süreci nasıl?</summary>
+                    <div class="faq-answer">
+                        Siftah'ın kalitesini korumak için seçici davranıyoruz. Başvuru formunu doldurduktan sonra ekibimiz ürünlerinizi ve marka duruşunuzu inceler. Özgün, kaliteli ve yasalara uygun ürünler satıyorsanız mağazanız onaylanır.
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div class="contact-box">
+            <h3>Başka bir sorunuz mu var?</h3>
+            <p>Ekibimiz size yardımcı olmaktan mutluluk duyar. <br> <a href="mailto:destek@siftah.com">destek@siftah.com</a> adresine yazabilirsiniz.</p>
+        </div>
+
+    </section>
+
+    <div id="footer"></div> <script>
+        function showTab(type) {
+            document.getElementById('buyer-faq').style.display = 'none';
+            document.getElementById('seller-faq').style.display = 'none';
+
+            document.getElementById(type + '-faq').style.display = 'block';
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (type === 'buyer') buttons[0].classList.add('active');
+            else buttons[1].classList.add('active');
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

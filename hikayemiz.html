@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siftah Hikayeleri - İlham Veren Yolculuklar</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+    <link rel="stylesheet" href="nav-footer.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      /* Hikaye Kartı Hover Efekti */
+      .story-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .story-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1),
+          0 10px 20px -6px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Görsel Zoom Efekti */
+      .img-container {
+        overflow: hidden;
+      }
+      .img-container img {
+        transition: transform 0.5s ease;
+      }
+      .story-card:hover .img-container img {
+        transform: scale(1.05);
+      }
+
+      /* Metin Kısaltma (Line Clamp) */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+    <div id="navbar"></div>
+    <div id="toast-container"></div>
+
+    <div class="bg-white border-b border-gray-100">
+      <div class="container mt-16 mx-auto px-4 py-16 max-w-7xl text-center">
+        <span
+          class="text-blue-600 font-bold tracking-wider uppercase text-xs bg-blue-50 px-3 py-1 rounded-full mb-4 inline-block"
+          >Girişimci Dünyası</span
+        >
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
+        >
+          Siftah Hikayeleri
+        </h1>
+        <p class="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+          Her ürünün arkasında bir emek, her markanın arkasında bir hikaye var.
+          Siftah satıcılarının ilham veren yolculuklarını keşfedin.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex-grow container mx-auto px-4 py-12 max-w-7xl">
+      <div
+        id="loading-skeleton"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        <div class="bg-white rounded-3xl h-96 animate-pulse"></div>
+        <div class="bg-white rounded-3xl h-96 animate-pulse"></div>
+        <div class="bg-white rounded-3xl h-96 animate-pulse"></div>
+      </div>
+
+      <div
+        id="stories-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"
+      ></div>
+
+      <div
+        id="no-stories"
+        class="hidden flex-col items-center justify-center py-20 text-center"
+      >
+        <div class="bg-gray-100 p-6 rounded-full mb-4">
+          <i class="fa-solid fa-feather-pointed text-4xl text-gray-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Henüz Hikaye Yok</h3>
+        <p class="text-gray-500 mt-2">
+          Satıcılarımız kalemlerini hazırlıyor. Yakında burada harika hikayeler
+          olacak.
+        </p>
+      </div>
+    </div>
+
+    <footer id="footer"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+      // ============================================================
+      // 1. AYARLAR
+      // ============================================================
+      const API_BASE_URL = "http://localhost:5000";
+
+      // Resim Yolu Düzeltici (Standart Fonksiyonumuz)
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null") return null;
+        let cleanPath = dbPath.replace(/\\/g, "/");
+        if (cleanPath.startsWith("http")) return cleanPath;
+        const uploadsIndex = cleanPath.toLowerCase().indexOf("uploads/");
+        if (uploadsIndex !== -1) {
+          cleanPath = cleanPath.substring(uploadsIndex);
+        } else {
+          if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
+          if (!cleanPath.startsWith("uploads"))
+            cleanPath = "uploads/" + cleanPath;
+        }
+        if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      // Tarih Formatlayıcı (Örn: 12 Ekim 2025)
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Date(dateString).toLocaleDateString("tr-TR", options);
+      }
+
+      // Okuma Süresi Hesaplayıcı (Tahmini)
+      function calculateReadTime(text) {
+        const wordsPerMinute = 200;
+        const words = text.split(/\s+/).length;
+        const minutes = Math.ceil(words / wordsPerMinute);
+        return `${minutes} dk okuma`;
+      }
+
+      // ============================================================
+      // 2. VERİLERİ ÇEK VE GÖSTER
+      // ============================================================
+      document.addEventListener("DOMContentLoaded", async () => {
+        const skeleton = document.getElementById("loading-skeleton");
+        const grid = document.getElementById("stories-grid");
+        const noStories = document.getElementById("no-stories");
+
+        try {
+          // Backend endpoint'imiz (Bunu birazdan oluşturacağız)
+          const response = await fetch(`${API_BASE_URL}/api/stories/public`);
+
+          if (!response.ok) throw new Error("Veri alınamadı");
+          const stories = await response.json();
+
+          skeleton.style.display = "none";
+
+          if (stories.length === 0) {
+            noStories.classList.remove("hidden");
+            noStories.classList.add("flex");
+            return;
+          }
+
+          grid.classList.remove("hidden");
+
+          stories.forEach((story) => {
+            const seller = story.User || {};
+            const sellerName =
+              seller.brandName || seller.name || "Siftah Satıcısı";
+            const sellerAvatar =
+              fixImageUrl(seller.profileImage) ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                sellerName
+              )}&background=random&color=fff`;
+            const storyImage =
+              fixImageUrl(story.coverImage) ||
+              "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop";
+
+            const date = formatDate(story.createdAt);
+            const readTime = calculateReadTime(story.content);
+
+            const html = `
+                    <article class="bg-white rounded-3xl overflow-hidden border border-gray-100 story-card flex flex-col h-full cursor-pointer" onclick="window.location.href='hikaye-detay.html?id=${
+                      story.id
+                    }'">
+                        
+                        <div class="h-64 img-container relative">
+                            <img src="${storyImage}" alt="${
+              story.title
+            }" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-sm">
+                                ${seller.brandName || "Marka Hikayesi"}
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <img src="${sellerAvatar}" alt="${sellerName}" class="w-10 h-10 rounded-full border border-gray-100 object-cover">
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900 leading-none">${sellerName}</h4>
+                                    <span class="text-xs text-gray-500">${date} • ${readTime}</span>
+                                </div>
+                            </div>
+
+                            <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
+                                ${story.title}
+                            </h2>
+                            
+                            <p class="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
+                                ${story.content.replace(/<[^>]*>?/gm, "")}
+                            </p>
+
+                            <div class="pt-4 border-t border-gray-50 flex items-center justify-between text-sm">
+                                <span class="text-blue-600 font-semibold flex items-center gap-2 group">
+                                    Devamını Oku <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            grid.insertAdjacentHTML("beforeend", html);
+          });
+        } catch (error) {
+          console.error("Hikaye Hatası:", error);
+          skeleton.style.display = "none";
+          grid.innerHTML =
+            '<div class="col-span-full text-center py-20 text-red-500">Hikayeler yüklenirken bir hata oluştu.</div>';
+          grid.classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1393 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hesabım | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="buyer-dashboard.css" />
+  </head>
+  <body>
+    <div id="toast-container"></div>
+
+    <div id="customConfirmModal" class="confirm-overlay">
+      <div class="confirm-box">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 id="confirmTitle">Emin misiniz?</h3>
+        <p id="confirmDesc">Bu işlem geri alınamaz.</p>
+        <div class="confirm-actions">
+          <button class="btn-cancel" onclick="closeConfirmModal()">
+            Vazgeç
+          </button>
+          <button class="btn-confirm" id="btnConfirmYes">Evet, Onayla</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <a href="/" class="brand-link">
+            <img src="/images/navbar/logo.png" alt="Siftah" />
+            <h2>Siftah</h2>
+          </a>
+          <button class="close-sidebar-btn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="user-profile-summary">
+          <div class="avatar-circle">M</div>
+          <div class="user-text">
+            <h4 id="sidebarName">Yükleniyor...</h4>
+            <p>Alıcı Hesabı</p>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <a
+            href="#"
+            class="menu-item active"
+            onclick="switchTab('dashboard', this)"
+          >
+            <i class="fa-solid fa-gauge-high"></i> Özet
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('offers', this)">
+            <i class="fa-solid fa-hand-holding-dollar"></i> Tekliflerim
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('orders', this)">
+            <i class="fa-solid fa-box-open"></i> Siparişlerim
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('favorites', this)">
+            <i class="fa-regular fa-heart"></i> Favorilerim
+          </a>
+          <a href="#" class="menu-item" onclick="switchTab('messages', this)">
+            <i class="fa-regular fa-envelope"></i> Mesajlar
+          </a>
+          <div class="menu-divider"></div>
+          <a href="#" class="menu-item" onclick="switchTab('settings', this)">
+            <i class="fa-solid fa-gear"></i> Ayarlar
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button onclick="confirmLogout()" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="flex-align">
+            <button class="mobile-toggle" onclick="toggleSidebar()">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1 id="pageTitle">Hesap Özeti</h1>
+          </div>
+          <div class="topbar-actions">
+            <a href="/" class="go-home-btn" title="Anasayfaya Dön"
+              ><i class="fa-solid fa-house"></i
+            ></a>
+          </div>
+        </header>
+
+        <div id="dashboard" class="tab-content active">
+          <div class="welcome-banner">
+            <div>
+              <h2>Hoş Geldin, <span id="welcomeName">Misafir</span> 👋</h2>
+              <p>Siftah pazar yerinde keyifli alışverişler dileriz.</p>
+            </div>
+            <i class="fa-solid fa-bag-shopping banner-icon"></i>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="icon-box blue"><i class="fa-solid fa-box"></i></div>
+              <div>
+                <h3 id="stat-active">-</h3>
+                <p>Aktif Sipariş</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="icon-box green">
+                <i class="fa-solid fa-check"></i>
+              </div>
+              <div>
+                <h3 id="stat-completed">-</h3>
+                <p>Tamamlanan</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="icon-box orange">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </div>
+              <div>
+                <h3>0</h3>
+                <p>Bekleyen Teklif</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="favorites" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Favori Listem</h2>
+            </div>
+            <div class="favorites-grid" id="favGrid">
+              <p>Yükleniyor...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="offers" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Pazarlıklarım</h2>
+            </div>
+            <div class="empty-state">
+              <i class="fa-solid fa-handshake-simple"></i>
+              <p>Henüz bir teklif vermedin.</p>
+              <a href="urunler.html" class="btn-primary">Ürün İncele</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="orders" class="tab-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h2>Sipariş Geçmişi</h2>
+            </div>
+
+            <div id="orderListContainer" class="orders-grid">
+              <p style="text-align: center; padding: 20px; color: #999">
+                Siparişleriniz yükleniyor...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages" class="tab-content">
+          <div class="content-section h-full">
+            <div class="section-header">
+              <h2>Gelen Kutusu</h2>
+              <a href="mesajlarim.html" class="btn-primary sm">Tüm Mesajlar</a>
+            </div>
+
+            <div id="dashboardMessagesList" class="msg-list-container">
+              <p class="text-gray-500 text-center py-4">Yükleniyor...</p>
+            </div>
+
+            <a href="mesajlarim.html" class="mobile-view-all-link">
+              Tüm Mesajları Gör <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div id="settings" class="tab-content">
+          
+          <div class="content-section" style="max-width: 600px; margin-bottom: 30px;">
+            <div class="section-header">
+              <h2>Profil Bilgileri</h2>
+            </div>
+            <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Ad</label>
+                  <input type="text" id="buyName" required />
+                </div>
+                <div class="form-group">
+                  <label>Soyad</label>
+                  <input type="text" id="buySurname" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>E-Posta <small style="color:#999; font-weight:400;">(Değiştirilemez)</small></label>
+                <input
+                  type="email"
+                  id="buyEmail"
+                  disabled
+                  class="disabled-input"
+                  style="cursor: not-allowed; opacity: 0.7;"
+                />
+              </div>
+              <button type="submit" class="btn-primary" style="width: 100%;">
+                Bilgileri Kaydet
+              </button>
+            </form>
+          </div>
+
+          <div class="content-section" style="max-width: 600px;">
+            <div class="section-header">
+              <h2>Şifre Değiştir</h2>
+            </div>
+            
+            <form id="passwordForm" onsubmit="handlePasswordChange(event)">
+              <div class="form-group">
+                <label>Mevcut Şifre</label>
+                <div style="position:relative;">
+                    <input type="password" id="currentPassword" placeholder="Şu anki şifreniz" required />
+                    <i class="fa-regular fa-eye" onclick="togglePass('currentPassword')" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; color:#999;"></i>
+                </div>
+              </div>
+
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+              <div class="form-grid">
+                <div class="form-group">
+                    <label>Yeni Şifre</label>
+                    <div style="position:relative;">
+                        <input type="password" id="newPassword" placeholder="En az 8 karakter" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Yeni Şifre (Tekrar)</label>
+                    <div style="position:relative;">
+                        <input type="password" id="confirmNewPassword" placeholder="Doğrula" required />
+                    </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">
+                <i class="fa-solid fa-lock"></i> Şifreyi Güncelle
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <div
+      id="trackModal"
+      class="modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          width: 90%;
+          max-width: 400px;
+          border-radius: 16px;
+          padding: 25px;
+          position: relative;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <button
+          onclick="document.getElementById('trackModal').style.display = 'none'"
+          style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #666;
+          "
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <h3 style="margin: 0 0 20px 0; color: #1e293b; text-align: center">
+          Sipariş Durumu
+        </h3>
+
+        <div class="tracking-timeline">
+          <div class="timeline-item active">
+            <div class="timeline-dot">
+              <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div class="timeline-text">
+              <strong>Sipariş Alındı</strong>
+              <span>Satıcı onayladı</span>
+            </div>
+          </div>
+
+          <div class="timeline-item" id="stepShipped">
+            <div class="timeline-dot">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div class="timeline-text">
+              <strong>Kargoya Verildi</strong>
+              <span id="trackInfoText">Takip No Bekleniyor...</span>
+            </div>
+          </div>
+
+          <div class="timeline-item" id="stepCompleted">
+            <div class="timeline-dot"><i class="fa-solid fa-box-open"></i></div>
+            <div class="timeline-text">
+              <strong>Teslim Edildi</strong>
+              <span>Sipariş tamamlandı</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="copyTrackArea"
+          style="
+            display: none;
+            margin-top: 20px;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+          "
+        >
+          <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #64748b">
+            Takip Numarası:
+          </p>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+            "
+          >
+            <strong id="modalTrackNo" style="font-size: 1.1rem; color: #1e293b"
+              >-</strong
+            >
+            <button
+              onclick="copyTrackingNo()"
+              style="
+                background: none;
+                border: none;
+                color: #0099d2;
+                cursor: pointer;
+              "
+              title="Kopyala"
+            >
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="reviewModal"
+      class="modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          width: 90%;
+          max-width: 450px;
+          border-radius: 20px;
+          padding: 30px;
+          position: relative;
+          text-align: center;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <button
+          onclick="closeReviewModal()"
+          style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+          "
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 15px auto;
+          "
+        >
+          <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h3 style="margin: 0 0 5px 0; color: #1e293b; font-size: 1.4rem">
+          Sipariş Tamamlandı!
+        </h3>
+        <p style="margin: 0 0 25px 0; color: #64748b; font-size: 0.9rem">
+          Deneyimini paylaşarak diğer alıcılara yardımcı ol.
+        </p>
+
+        <form id="reviewForm" onsubmit="submitReview(event)">
+          <input type="hidden" id="reviewProductId" />
+          <input type="hidden" id="reviewOrderId" />
+
+          <div
+            class="star-rating"
+            style="
+              display: flex;
+              justify-content: center;
+              gap: 10px;
+              margin-bottom: 20px;
+              flex-direction: row-reverse;
+            "
+          >
+            <input
+              type="radio"
+              id="star5"
+              name="rating"
+              value="5"
+              class="star-input"
+            /><label for="star5" title="Mükemmel"
+              ><i class="fa-solid fa-star"></i
+            ></label>
+            <input
+              type="radio"
+              id="star4"
+              name="rating"
+              value="4"
+              class="star-input"
+            /><label for="star4" title="Çok İyi"
+              ><i class="fa-solid fa-star"></i
+            ></label>
+            <input
+              type="radio"
+              id="star3"
+              name="rating"
+              value="3"
+              class="star-input"
+            /><label for="star3" title="İyi"
+              ><i class="fa-solid fa-star"></i
+            ></label>
+            <input
+              type="radio"
+              id="star2"
+              name="rating"
+              value="2"
+              class="star-input"
+            /><label for="star2" title="Kötü"
+              ><i class="fa-solid fa-star"></i
+            ></label>
+            <input
+              type="radio"
+              id="star1"
+              name="rating"
+              value="1"
+              class="star-input"
+            /><label for="star1" title="Berbat"
+              ><i class="fa-solid fa-star"></i
+            ></label>
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <textarea
+              id="reviewComment"
+              rows="3"
+              placeholder="Ürün nasıldı? Satıcı ilgili miydi?"
+              required
+              style="
+                width: 100%;
+                padding: 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                font-family: inherit;
+                resize: none;
+                font-size: 0.95rem;
+              "
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            style="
+              width: 100%;
+              padding: 12px;
+              font-size: 1rem;
+              border-radius: 10px;
+            "
+          >
+            Yorumu Gönder
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+      let confirmCallback = null;
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `siftah-toast ${type}`;
+
+        let icon =
+          type === "success" ? "fa-check-circle" : "fa-circle-exclamation";
+        if (type === "error") icon = "fa-circle-xmark";
+
+        toast.innerHTML = `
+                    <div class="toast-icon ${type}"><i class="fa-solid ${icon}"></i></div>
+                    <div>
+                        <h4 class="toast-title">${title}</h4>
+                        <p class="toast-desc">${message}</p>
+                    </div>
+                `;
+        container.appendChild(toast);
+        requestAnimationFrame(() => (toast.style.transform = "translateX(0)"));
+        setTimeout(() => {
+          toast.style.transform = "translateX(120%)";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      function openConfirmModal(title, desc, callback) {
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmDesc").textContent = desc;
+        document.getElementById("customConfirmModal").style.display = "flex";
+        confirmCallback = callback;
+      }
+
+      function closeConfirmModal() {
+        document.getElementById("customConfirmModal").style.display = "none";
+        confirmCallback = null;
+      }
+
+      document.getElementById("btnConfirmYes").addEventListener("click", () => {
+        if (confirmCallback) confirmCallback();
+        closeConfirmModal();
+      });
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userStr = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+
+        if (!userStr || !token) {
+          window.location.href = "giris.html";
+          return;
+        }
+        const user = JSON.parse(userStr);
+        if (user.role !== "buyer") {
+          window.location.href = "satici-paneli.html";
+          return;
+        }
+
+        document.getElementById("sidebarName").textContent =
+          user.name + " " + (user.surname || "");
+        document.getElementById("welcomeName").textContent = user.name;
+        document.querySelector(".avatar-circle").textContent = user.name
+          .charAt(0)
+          .toUpperCase();
+
+        document.getElementById("buyName").value = user.name;
+        document.getElementById("buySurname").value = user.surname || "";
+        document.getElementById("buyEmail").value = user.email || "";
+
+        loadFavorites();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTabParam = urlParams.get("tab");
+
+        if (activeTabParam) {
+          const tabLink = document.querySelector(
+            `.menu-item[onclick*="'${activeTabParam}'"]`,
+          );
+          if (tabLink) {
+            tabLink.click();
+          }
+        } else {
+          updateDashboardStats();
+        }
+      });
+
+      function switchTab(tabId, element) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
+
+        document
+          .querySelectorAll(".menu-item")
+          .forEach((i) => i.classList.remove("active"));
+        element.classList.add("active");
+
+        const titles = {
+          dashboard: "Hesap Özeti",
+          offers: "Tekliflerim",
+          orders: "Siparişlerim",
+          favorites: "Favorilerim",
+          messages: "Mesajlarım",
+          settings: "Ayarlar",
+        };
+        document.getElementById("pageTitle").textContent = titles[tabId];
+
+        if (tabId === "messages") {
+          loadDashboardMessages();
+        }
+        if (tabId === "orders") loadBuyerOrders();
+
+        if (window.innerWidth <= 992) toggleSidebar();
+
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set("tab", tabId);
+        window.history.pushState({}, "", newUrl);
+
+        if (tabId === "dashboard") updateDashboardStats();
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.querySelector(".sidebar-overlay");
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+      }
+
+      async function removeFavorite(productId) {
+        openConfirmModal(
+          "Favorilerden Çıkar",
+          "Bu ürünü favori listenizden çıkarmak istediğinize emin misiniz?",
+          async () => {
+            try {
+              // API çağrısı
+              const token = localStorage.getItem("token");
+              const res = await fetch(`${API_BASE_URL}/api/favorites/toggle`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ productId: productId }),
+              });
+
+              const data = await res.json();
+              if (data.success) {
+                showToast(
+                  "success",
+                  "Çıkarıldı",
+                  "Ürün favorilerden başarıyla kaldırıldı.",
+                );
+                loadFavorites(); 
+              } else {
+                showToast("error", "Hata", data.message);
+              }
+            } catch (e) {
+              showToast("error", "Hata", "Sunucu ile bağlantı kurulamadı.");
+            }
+          },
+        );
+      }
+
+      async function loadFavorites() {
+        const grid = document.getElementById("favGrid");
+        const token = localStorage.getItem("token");
+
+        try {
+          const res = await fetch(
+            `${API_BASE_URL}/api/favorites/my-favorites`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          const favs = await res.json();
+
+          grid.innerHTML = "";
+          if (favs.length === 0) {
+            grid.innerHTML = `
+                          <div class="empty-state" style="grid-column: 1/-1;">
+                              <i class="fa-regular fa-heart"></i>
+                              <p>Henüz favori ürününüz yok.</p>
+                              <a href="urunler.html" class="btn-primary">Ürünleri Keşfet</a>
+                          </div>`;
+            return;
+          }
+
+          favs.forEach((item) => {
+            const p = item.Product;
+            if (!p) return;
+
+            let img = "https://via.placeholder.com/200?text=Resim+Yok";
+            let rawPath = null;
+            if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+                rawPath = p.images[0];
+            } else if (p.image) {
+                rawPath = p.image;
+            }
+            
+            const fixed = fixImageUrl(rawPath);
+            if(fixed) img = fixed;
+
+            const html = `
+                          <div class="fav-card">
+                              <button class="remove-fav-btn" onclick="removeFavorite(${p.id})"><i class="fa-solid fa-xmark"></i></button>
+                              <img src="${img}" class="fav-img">
+                              <div class="fav-body">
+                                  <h4 class="fav-title">${p.title}</h4>
+                                  <p class="fav-price">${p.price} ₺</p>
+                                  <a href="urun-detay.html?id=${p.id}" class="btn-outline sm w-full" style="text-align:center;">İncele</a>
+                              </div>
+                          </div>
+                        `;
+            grid.innerHTML += html;
+          });
+        } catch (e) {
+          console.error(e);
+          grid.innerHTML = "<p>Yüklenirken hata oluştu.</p>";
+        }
+      }
+
+      function togglePass(id) {
+          const input = document.getElementById(id);
+          if (input.type === "password") input.type = "text";
+          else input.type = "password";
+      }
+
+      async function handleProfileUpdate(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Kaydediliyor...";
+
+        const name = document.getElementById("buyName").value;
+        const surname = document.getElementById("buySurname").value;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/users/profile`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ name, surname })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showToast("success", "Başarılı", "Profil bilgileriniz güncellendi.");
+                
+                const user = JSON.parse(localStorage.getItem("user"));
+                user.name = name;
+                user.surname = surname;
+                localStorage.setItem("user", JSON.stringify(user));
+
+                document.getElementById("sidebarName").textContent = name + " " + surname;
+            } else {
+                showToast("error", "Hata", data.message || "Güncelleme başarısız.");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+      }
+
+      async function handlePasswordChange(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        const originalText = btn.innerHTML;
+        
+        const currentPassword = document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+
+        if (newPassword.length < 8) {
+            showToast("warning", "Zayıf Şifre", "Yeni şifre en az 8 karakter olmalı.");
+            return;
+        }
+        if (newPassword !== confirmNewPassword) {
+            showToast("error", "Hata", "Yeni şifreler birbiriyle uyuşmuyor.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "İşleniyor...";
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showToast("success", "Şifre Değişti", "Şifreniz başarıyla güncellendi.");
+                document.getElementById("passwordForm").reset();
+            } else {
+                showToast("error", "Hata", data.message || "Şifre değiştirilemedi.");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+      }
+
+
+
+      async function updateDashboardStats() {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/orders/buyer`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (res.ok) {
+            const orders = await res.json();
+
+            const activeOrders = orders.filter(
+              (o) => o.status === "pending" || o.status === "shipped",
+            ).length;
+            const completedOrders = orders.filter(
+              (o) => o.status === "completed",
+            ).length;
+
+            document.getElementById("stat-active").textContent = activeOrders;
+            document.getElementById("stat-completed").textContent =
+              completedOrders;
+          }
+        } catch (e) {
+          console.error("İstatistik hatası", e);
+        }
+      }
+
+      async function loadBuyerOrders() {
+        const container = document.getElementById("orderListContainer");
+        container.innerHTML =
+          '<p style="text-align:center; padding:20px; color:#999;"><i class="fa-solid fa-circle-notch fa-spin"></i> Siparişleriniz yükleniyor...</p>';
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/orders/buyer`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+
+          if (!res.ok) {
+            throw new Error("Sunucu hatası: " + res.status);
+          }
+
+          const orders = await res.json();
+
+          if (!Array.isArray(orders)) {
+            throw new Error("Veri formatı hatalı.");
+          }
+
+          container.innerHTML = `
+            <div class="order-card skeleton skeleton-card"></div>
+            <div class="order-card skeleton skeleton-card"></div>
+            <div class="order-card skeleton skeleton-card"></div>
+          `;
+
+          if (orders.length === 0) {
+            container.innerHTML = `
+                  <div class="empty-state">
+                      <i class="fa-solid fa-bag-shopping" style="font-size:2rem; color:#cbd5e1; margin-bottom:10px;"></i>
+                      <p>Henüz bir siparişiniz yok.</p>
+                      <a href="urunler.html" class="btn-primary sm" style="text-decoration:none;">Alışverişe Başla</a>
+                  </div>`;
+            return;
+          }
+
+          orders.forEach((order) => {
+            const priceVal = parseFloat(order.price) || 0;
+            const qtyVal = parseInt(order.quantity) || 1;
+            const total = (priceVal * qtyVal).toLocaleString("tr-TR", {
+              minimumFractionDigits: 2,
+            });
+
+            const sellerName = order.Seller
+              ? order.Seller.brandName || order.Seller.name
+              : "Satıcı";
+
+            let productImg = "https://via.placeholder.com/100?text=Resim+Yok";
+            if (order.Product) {
+                let rawPath = null;
+                if (order.Product.images && Array.isArray(order.Product.images) && order.Product.images.length > 0) {
+                    rawPath = order.Product.images[0];
+                } 
+                else if (order.Product.image) {
+                    rawPath = order.Product.image;
+                }
+                const fixed = fixImageUrl(rawPath);
+                if(fixed) productImg = fixed;
+            }
+
+            let statusText = "";
+            let buttonsHtml = "";
+
+            if (order.status === "pending") {
+              statusText =
+                '<span style="color:#d97706; font-size:0.85rem;"><i class="fa-regular fa-clock"></i> Hazırlanıyor</span>';
+              // Satıcı ID kontrolü
+              const sellerId = order.Seller ? order.Seller.id : null;
+              if (sellerId) {
+                buttonsHtml = `<button onclick="goToChat(${sellerId})" class="btn-outline sm" style="border-color:#ddd; color:#555;">Satıcıya Sor</button>`;
+              }
+            } else if (order.status === "shipped") {
+              statusText =
+                '<span style="color:#0099d2; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-truck"></i> Kargoda</span>';
+
+              const trackUrl = getTrackingLink(
+                order.trackingCompany,
+                order.trackingNumber,
+              );
+              let trackBtn = "";
+
+              if (trackUrl !== "#") {
+                trackBtn = `<a href="${trackUrl}" target="_blank" class="btn-outline sm" style="color:#0099d2; border-color:#0099d2; text-decoration:none; display:inline-block; line-height:1.5;">Kargo Takip <i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
+              } else {
+                trackBtn = `<button onclick="openTrackModal('${order.trackingCompany || ""}', '${order.trackingNumber || ""}', '${order.status}')" class="btn-outline sm" style="color:#0099d2; border-color:#0099d2;">Kargo Takip</button>`;
+              }
+
+              buttonsHtml = `
+                  ${trackBtn}
+                  <button onclick="confirmOrder(${order.id}, ${order.Product ? order.Product.id : "null"})" class="btn-primary sm" style="background:#22c55e; border-color:#22c55e;">Teslim Aldım</button>
+              `;
+            } else if (order.status === "completed") {
+              statusText =
+                '<span style="color:#22c55e; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-check-double"></i> Teslim Edildi</span>';
+
+              if (order.isRated) {
+                buttonsHtml = `<button onclick="openReviewModal(${order.id}, ${order.Product ? order.Product.id : "null"})" class="btn-outline sm" style="border-color:#64748b; color:#64748b; background:#f8fafc;"><i class="fa-solid fa-pen-to-square"></i> Yorumu Düzenle</button>`;
+              } else {
+                buttonsHtml = `<button onclick="openReviewModal(${order.id}, ${order.Product ? order.Product.id : "null"})" class="btn-outline sm" style="border-color:#eab308; color:#ca8a04;">⭐ Puan Ver</button>`;
+              }
+            }
+
+            const html = `
+                  <div class="order-card">
+                      <img src="${productImg}" class="order-img" alt="Ürün">
+                      <div class="order-details">
+                          <h4 class="order-title">${order.Product ? order.Product.title : "Silinmiş Ürün"}</h4>
+                          <p class="order-meta">Satıcı: <strong>${sellerName}</strong></p>
+                          <p class="order-meta">
+                              <span class="order-price-tag">${total} ₺</span>
+                              <span style="color:#94a3b8; font-size:0.8rem;">(${order.quantity} Adet)</span>
+                          </p>
+                          <div style="margin-top:5px;">${statusText}</div>
+                      </div>
+                      <div class="order-actions">
+                          ${buttonsHtml}
+                      </div>
+                  </div>
+              `;
+            container.innerHTML += html;
+          });
+        } catch (error) {
+          console.error("Sipariş Yükleme Hatası:", error);
+          container.innerHTML =
+            '<div style="text-align:center; padding:20px; color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i><p>Siparişler yüklenemedi. Lütfen sayfayı yenileyin.</p></div>';
+          showToast(
+            "error",
+            "Hata",
+            "Sipariş verisi alınamadı. Backend loglarını kontrol et.",
+          );
+        }
+      }
+
+      function getTrackingLink(companyCode, trackingNo) {
+        if (!trackingNo) return "#";
+        const no = trackingNo.trim();
+        const code = companyCode ? companyCode.toLowerCase().trim() : "";
+
+
+        if (code === "yurtici" || code.includes("yurtiçi")) {
+          return `https://www.yurticikargo.com/tr/online-servisler/gonderi-sorgula?code=${no}`;
+        } else if (code === "aras" || code.includes("aras")) {
+          return `https://kargotakip.araskargo.com.tr/?code=${no}`;
+        } else if (code === "mng" || code.includes("mng")) {
+          return `https://kargotakip.mngkargo.com.tr/?takip=${no}`;
+        } else if (code === "ptt" || code.includes("ptt")) {
+          return `https://gonderitakip.ptt.gov.tr/Track/Verify?q=${no}`;
+        } else if (code === "surat" || code.includes("sürat")) {
+          return `https://www.suratkargo.com.tr/KargoTakip/?kargotakipno=${no}`;
+        } else if (code === "ups" || code.includes("ups")) {
+          return `https://www.ups.com.tr/WaybillSorgu.aspx?Waybill=${no}`;
+        } else if (code === "dhl" || code.includes("dhl")) {
+          return `https://www.dhl.com/tr-tr/home/tracking.html?tracking-id=${no}`;
+        }
+
+        return "#";
+      }
+
+      function openTrackModal(company, trackingNo, status) {
+        const modal = document.getElementById("trackModal");
+        const stepShipped = document.getElementById("stepShipped");
+        const stepCompleted = document.getElementById("stepCompleted");
+        const infoText = document.getElementById("trackInfoText");
+        const copyArea = document.getElementById("copyTrackArea");
+        const modalNo = document.getElementById("modalTrackNo");
+
+        stepShipped.classList.remove("active");
+        stepCompleted.classList.remove("active");
+        copyArea.style.display = "none";
+
+        if (status === "shipped" || status === "completed") {
+          stepShipped.classList.add("active");
+          infoText.innerHTML = `${
+            company || "Kargo Firması"
+          }<br><small>Yolda</small>`;
+
+          if (
+            trackingNo &&
+            trackingNo !== "null" &&
+            trackingNo !== "undefined"
+          ) {
+            copyArea.style.display = "block";
+            modalNo.textContent = trackingNo;
+          }
+        }
+
+        if (status === "completed") {
+          stepCompleted.classList.add("active");
+          infoText.innerHTML = `${company}<br><small>Teslim edildi</small>`;
+        }
+
+        modal.style.display = "flex";
+      }
+
+      function copyTrackingNo() {
+        const text = document.getElementById("modalTrackNo").textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(
+            "success",
+            "Kopyalandı",
+            "Kargo takip numarası panoya alındı.",
+          );
+        });
+      }
+
+      function confirmOrder(orderId, productId) {
+        openConfirmModal(
+          "Ürünü Teslim Aldınız mı?",
+          "Siparişi tamamlandı olarak işaretleyeceksiniz.",
+          async () => {
+            try {
+              const res = await fetch(
+                `${API_BASE_URL}/api/orders/${orderId}/status`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                  },
+                  body: JSON.stringify({ status: "completed" }),
+                },
+              );
+
+              if (res.ok) {
+                closeConfirmModal();
+                loadBuyerOrders();
+
+                setTimeout(() => {
+                  openReviewModal(orderId, productId);
+                }, 500);
+              } else {
+                showToast("error", "Hata", "İşlem yapılamadı.");
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          },
+        );
+      }
+
+      function fixImageUrl(dbPath) {
+        if (!dbPath || dbPath === "undefined" || dbPath === "null" || dbPath === "") {
+            return null; 
+        }
+        let strPath = String(dbPath);
+        let cleanPath = strPath.replace(/\\/g, "/");
+        if (cleanPath.startsWith("http")) return cleanPath;
+        if (cleanPath.includes("uploads/")) {
+            cleanPath = cleanPath.substring(cleanPath.indexOf("uploads/"));
+        } else if (cleanPath.startsWith("/")) {
+            cleanPath = cleanPath.substring(1);
+        }
+        return `${API_BASE_URL}/${cleanPath}`;
+      }
+
+      async function loadDashboardMessages() {
+        const listContainer = document.getElementById("dashboardMessagesList");
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+          const res = await fetch(
+            `${API_BASE_URL}/api/messages/conversations`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!res.ok) throw new Error("Mesajlar alınamadı");
+
+          const conversations = await res.json();
+
+          listContainer.innerHTML = ""; // Temizle
+
+          if (conversations.length === 0) {
+            listContainer.innerHTML = `
+                          <div class="empty-state">
+                              <i class="fa-regular fa-comments"></i>
+                              <p>Henüz kimseyle bir sohbetiniz yok.</p>
+                              <a href="urunler.html" class="btn-outline sm">Alışverişe Başla</a>
+                          </div>`;
+            return;
+          }
+
+          conversations.forEach((conv) => {
+            const otherUser = conv.user; 
+            const name =
+              otherUser.brandName ||
+              otherUser.name + " " + (otherUser.surname || "");
+
+            let avatarSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              name,
+            )}&background=f1f5f9&color=0f172a&bold=true`;
+
+            if (otherUser.logoUrl || otherUser.profileImage) {
+              const fixed = fixImageUrl(
+                otherUser.logoUrl || otherUser.profileImage,
+              );
+              if (fixed) avatarSrc = fixed;
+            }
+
+            const rawDate = conv.lastMessageDate || conv.createdAt || conv.time;
+            let dateStr = "";
+
+            if (rawDate) {
+              const dateObj = new Date(rawDate);
+              if (!isNaN(dateObj.getTime())) {
+                dateStr = dateObj.toLocaleDateString("tr-TR", {
+                  day: "numeric",
+                  month: "short",
+                });
+              }
+            }
+
+            const html = `
+                          <div class="msg-card" onclick="goToChat(${
+                            otherUser.id
+                          })">
+                              <img src="${avatarSrc}" alt="${name}" class="msg-avatar">
+                              <div class="msg-info">
+                                  <div class="msg-header">
+                                      <span class="msg-name">${name}</span>
+                                      <span class="msg-date">${dateStr}</span>
+                                  </div>
+                                  <p class="msg-preview">
+                                      ${
+                                        conv.lastMessageSenderId ===
+                                        JSON.parse(localStorage.getItem("user"))
+                                          .id
+                                          ? '<i class="fa-solid fa-reply" style="font-size:0.7rem; margin-right:3px;"></i> '
+                                          : ""
+                                      }
+                                      ${conv.lastMessage}
+                                  </p>
+                              </div>
+                          </div>
+                        `;
+            listContainer.innerHTML += html;
+          });
+        } catch (e) {
+          console.error(e);
+          listContainer.innerHTML =
+            '<p class="text-red-500 text-center">Mesajlar yüklenirken hata oluştu.</p>';
+        }
+      }
+
+      function goToChat(userId) {
+        window.location.href = `mesajlarim.html?chatUserId=${userId}`;
+      }
+
+      function confirmLogout() {
+        openConfirmModal(
+          "Çıkış Yap",
+          "Hesabınızdan çıkış yapmak istediğinize emin misiniz?",
+          () => {
+            localStorage.clear();
+            window.location.href = "/";
+          },
+        );
+      }
+
+      async function openReviewModal(orderId, productId) {
+        if (!productId || productId === "null") {
+          showToast("warning", "Hata", "Ürün bilgisi eksik.");
+          return;
+        }
+
+        document.getElementById("reviewOrderId").value = orderId;
+        document.getElementById("reviewProductId").value = productId;
+
+        document
+          .querySelectorAll(".star-input")
+          .forEach((i) => (i.checked = false));
+        document.getElementById("reviewComment").value = "";
+
+        const modal = document.getElementById("reviewModal");
+        const commentBox = document.getElementById("reviewComment");
+        modal.style.display = "flex";
+        commentBox.placeholder = "Veriler yükleniyor...";
+        commentBox.disabled = true; 
+
+        try {
+          const res = await fetch(
+            `${API_BASE_URL}/api/reviews/check/${productId}`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            },
+          );
+          const data = await res.json();
+
+          if (data.found && data.review) {
+            const starInput = document.querySelector(
+              `input[name="rating"][value="${data.review.rating}"]`,
+            );
+            if (starInput) starInput.checked = true;
+
+            commentBox.value = data.review.comment;
+          }
+        } catch (e) {
+          console.error("Yorum çekme hatası", e);
+        } finally {
+          commentBox.disabled = false;
+          commentBox.placeholder = "Ürün nasıldı? Satıcı ilgili miydi?";
+          commentBox.focus();
+        }
+      }
+
+      function closeReviewModal() {
+        document.getElementById("reviewModal").style.display = "none";
+      }
+
+      async function submitReview(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        btn.disabled = true;
+        btn.innerText = "Gönderiliyor...";
+
+        const orderId = document.getElementById("reviewOrderId").value;
+        const productId = document.getElementById("reviewProductId").value;
+        const comment = document.getElementById("reviewComment").value;
+
+        let rating = 0;
+        const stars = document.querySelectorAll('input[name="rating"]');
+        for (const star of stars) {
+          if (star.checked) {
+            rating = parseInt(star.value);
+            break;
+          }
+        }
+
+        if (rating === 0) {
+          showToast(
+            "warning",
+            "Eksik",
+            "Lütfen bir puan verin (Yıldız seçin).",
+          );
+          btn.disabled = false;
+          btn.innerText = "Yorumu Gönder";
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/reviews`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              productId: productId,
+              userId: JSON.parse(localStorage.getItem("user")).id,
+              rating: rating,
+              comment: comment,
+            }),
+          });
+
+          if (res.ok) {
+            showToast(
+              "success",
+              "Teşekkürler!",
+              "Yorumunuz başarıyla kaydedildi.",
+            );
+            closeReviewModal();
+            loadBuyerOrders();
+          } else {
+            showToast("error", "Hata", "Yorum kaydedilemedi.");
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("error", "Hata", "Sunucu hatası.");
+        } finally {
+          btn.disabled = false;
+          btn.innerText = "Yorumu Gönder";
+        }
+      }
+    </script>
+  </body>
+</html>

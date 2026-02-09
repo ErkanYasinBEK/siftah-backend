@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Ol | Siftah</title>
+    <link rel="icon" href="/images/navbar/logo.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="buyer-register.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <div class="register-wrapper">
+        <div class="register-visual">
+            <div class="visual-content">
+                <a href="/" class="logo-link">
+                    <span class="logo-text">siftah</span>
+                </a>
+                <h2>Keşfetmeye<br>Hazır mısın?</h2>
+                <p>En özgün tasarımlar ve güvenilir satıcılar bir tık uzağında.</p>
+                
+                <div class="trust-badges">
+                    <div class="badge-item"><i class="fa-solid fa-shield-halved"></i> Güvenli Alışveriş</div>
+                    <div class="badge-item"><i class="fa-solid fa-comments"></i> Birebir İletişim</div>
+                </div>
+
+                <div class="visual-footer">
+                    <span>© 2025 Siftah Inc.</span>
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop" alt="Alışveriş" class="bg-image">
+            <div class="overlay"></div>
+        </div>
+
+        <div class="register-form-container">
+
+            <div class="mobile-header">
+                <a href="/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> Geri</a>
+                <span class="mobile-logo">siftah</span>
+                <div class="spacer"></div> 
+            </div>
+            
+            <div class="form-header">
+                <h1>Aramıza Katıl</h1>
+                <p>Saniyeler içinde hesabını oluştur ve vitrinleri gezmeye başla.</p>
+            </div>
+
+            <form id="buyerForm" action="/register-buyer" method="POST">
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Adınız</label>
+                        <input type="text" name="name" placeholder="Adınız" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Soyadınız</label>
+                        <input type="text" name="surname" placeholder="Soyadınız" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>E-posta Adresi</label>
+                    <input type="email" name="email" placeholder="ornek@email.com" required>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Şifre</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" id="password" placeholder="En az 8 karakter" required>
+                            <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('password')"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Şifre (Tekrar)</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Tekrar girin" required>
+                            <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('confirmPassword')"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms"><a href="gizlilik-sozlesmesi.html" target="_blank">Kullanım Koşulları</a> ve <a href="gizlilik-sozlesmesi.html" target="_blank">Gizlilik Politikası</a>'nı okudum, kabul ediyorum.</label>
+                </div>
+
+                <button type="button" class="btn btn-primary w-100" onclick="validateAndSubmit()">Kayıt Ol</button>
+                
+                <div class="divider">
+                    <span>veya</span>
+                </div>
+
+                <button type="button" class="btn btn-google w-100">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo">
+                    Google ile Devam Et
+                </button>
+
+                <p class="login-redirect">Zaten hesabın var mı? <a href="giris.html">Giriş Yap</a></p>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        function showToast(type, title, message) {
+            const container = document.getElementById("toast-container");
+            
+            let iconClass = "fa-circle-check";
+            if (type === "error") iconClass = "fa-circle-xmark";
+            if (type === "warning") iconClass = "fa-triangle-exclamation";
+
+            const toast = document.createElement("div");
+            toast.className = `siftah-toast ${type}`;
+            
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass}"></i>
+                <div class="toast-content">
+                    <span class="toast-title">${title}</span>
+                    <span class="toast-msg">${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = "fadeOut 0.5s ease forwards";
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+
+        async function validateAndSubmit() {
+            const form = document.getElementById('buyerForm');
+            const pass1 = document.getElementById('password');
+            const pass2 = document.getElementById('confirmPassword');
+            const btn = document.querySelector('.btn-primary');
+            const originalBtnText = btn.textContent;
+
+            if (!form.name.value || !form.surname.value || !form.email.value || !pass1.value) {
+                showToast("warning", "Eksik Bilgi", "Lütfen tüm alanları doldurun.");
+                return;
+            }
+
+            const strongPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!strongPasswordRegex.test(pass1.value)) {
+                showToast("warning", "Zayıf Şifre", "Şifreniz en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.");
+                return;
+            }
+
+            if (pass1.value !== pass2.value) {
+                showToast("error", "Hata", "Girdiğiniz şifreler birbiriyle uyuşmuyor!");
+                return;
+            }
+
+            if (!document.getElementById('terms').checked) {
+                showToast("warning", "Onay Gerekli", "Lütfen kullanım koşullarını ve gizlilik politikasını kabul edin.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Kayıt Yapılıyor...';
+
+            const formData = {
+                name: form.name.value,
+                surname: form.surname.value,
+                email: form.email.value,
+                password: form.password.value,
+                role: 'buyer' 
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast("success", "Aramıza Hoş Geldin!", "Kayıt başarıyla oluşturuldu. Yönlendiriliyorsun...");
+                    
+                    setTimeout(() => {
+                        window.location.href = "giris.html"; 
+                    }, 2000);
+
+                } else {
+                    showToast("error", "Kayıt Başarısız", (data.message || "Bir sorun oluştu."));
+                    btn.disabled = false;
+                    btn.textContent = originalBtnText;
+                }
+
+            } catch (error) {
+                console.error("Sunucu Hatası:", error);
+                showToast("error", "Bağlantı Hatası", "Sunucuya ulaşılamadı! Backend çalışıyor mu?");
+                btn.disabled = false;
+                btn.textContent = originalBtnText;
+            }
+        }
+    </script>
+
+</body>
+</html>
